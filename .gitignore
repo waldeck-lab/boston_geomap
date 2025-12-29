@@ -1,0 +1,5 @@
+/__pycache__/
+/geomap/__pycache__/
+/data/
+/logs/
+settings.env
