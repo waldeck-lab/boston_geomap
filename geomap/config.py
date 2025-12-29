@@ -42,6 +42,11 @@ class Config:
     cache_dir: Path = None            # type: ignore[assignment]
     logs_dir: Path = None             # type: ignore[assignment]
 
+    # Weigth knobs for observations & number of species,
+    # high value gives more relevance for hotmap
+    hotmap_alpha: float = 2.0         # coverage emphasis
+    hotmap_beta: float = 0.5          # observation penalty
+    
     def __post_init__(self) -> None:
         def _p(env_key: str, default_rel: Path) -> Path:
             raw = os.getenv(env_key, str(default_rel))

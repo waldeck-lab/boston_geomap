@@ -51,11 +51,17 @@ def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
 
 def main() -> int:
     cfg = Config(repo_root=REPO_ROOT)
+    if "--alpha" in sys.argv:
+        cfg.hotmap_alpha = float(sys.argv[sys.argv.index("--alpha") + 1])
+    if "--beta" in sys.argv:
+        cfg.hotmap_beta = float(sys.argv[sys.argv.index("--beta") + 1])
+
     logger = setup_logger("build_hotmap", cfg.logs_dir)
 
     n = 5
     if "--n" in sys.argv:
         n = int(sys.argv[sys.argv.index("--n") + 1])
+
 
     taxon_ids = read_first_n_taxa(cfg.missing_species_csv, n)
     logger.info("Aggregating hotmap for n=%d taxa at zoom=%d", n, cfg.zoom)
@@ -64,7 +70,13 @@ def main() -> int:
     try:
         storage.ensure_schema(conn)
         conn.execute("BEGIN;")
-        storage.rebuild_hotmap(conn, cfg.zoom, taxon_ids)
+        storage.rebuild_hotmap(
+            conn,
+            cfg.zoom,
+            taxon_ids,
+            alpha=cfg.hotmap_alpha,
+            beta=cfg.hotmap_beta,
+        )
         conn.commit()
 
         tops = top_hotspots(conn, cfg.zoom, limit=10)

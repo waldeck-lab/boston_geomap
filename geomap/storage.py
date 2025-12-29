@@ -21,6 +21,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Tuple
+import math
 
 
 DDL = """
@@ -205,41 +206,67 @@ def replace_taxon_grid(conn: sqlite3.Connection, taxon_id: int, zoom: int, grid_
     )
 
 
-def rebuild_hotmap(conn: sqlite3.Connection, zoom: int, taxon_ids: list[int]) -> None:
-    """
-    coverage = number of taxa present in cell
-    score = sum(log(1+obs_count)) across taxa (implemented as ln via SQLite log() not portable)
-    To keep it portable, compute score as sum of a simple saturation: obs_count**0.5
-    (good enough for now; easy to swap later).
-    """
-    now = utc_now_iso()
+def rebuild_hotmap(
+    conn: sqlite3.Connection,
+    zoom: int,
+    taxon_ids: list[int],
+    *,
+    alpha: float = 2.0,
+    beta: float = 0.5,
+) -> None:
+    if not taxon_ids:
+        return
+
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+    # Clear previous hotmap for this zoom
     conn.execute("DELETE FROM grid_hotmap WHERE zoom=?;", (zoom,))
 
+    # Build placeholders (?, ?, ?, ...)
     placeholders = ",".join(["?"] * len(taxon_ids))
-    q = f"""
-    INSERT INTO grid_hotmap(
-      zoom, x, y, coverage, score,
-      bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
-      updated_at_utc
-    )
-    SELECT
-      zoom,
-      x,
-      y,
-      COUNT(*) AS coverage,
-      SUM( (observations_count * 1.0) * (observations_count * 1.0) ) AS score_sq,
-      MAX(bbox_top_lat) AS bbox_top_lat,
-      MIN(bbox_left_lon) AS bbox_left_lon,
-      MIN(bbox_bottom_lat) AS bbox_bottom_lat,
-      MAX(bbox_right_lon) AS bbox_right_lon,
-      ? AS updated_at_utc
-    FROM taxon_grid
-    WHERE zoom = ?
-      AND taxon_id IN ({placeholders})
-      AND observations_count > 0
-    GROUP BY zoom, x, y;
-    """
-    args = [now, zoom] + taxon_ids
-    conn.execute(q, args)
 
-    conn.execute("UPDATE grid_hotmap SET score = sqrt(score) WHERE zoom=?;", (zoom,))
+    # SQLite doesn't have POWER() enabled everywhere consistently, so use pow() via math in Python
+    # Option A (simple + portable): compute score in Python after fetching aggregates.
+    rows = conn.execute(
+        f"""
+        SELECT
+            zoom,
+            x,
+            y,
+            COUNT(DISTINCT taxon_id) AS coverage,
+            SUM(observations_count) AS obs_total,
+            bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
+        FROM taxon_grid
+        WHERE zoom=? AND taxon_id IN ({placeholders})
+        GROUP BY zoom, x, y;
+        """,
+        [zoom, *taxon_ids],
+    ).fetchall()
+
+    # Insert rows with computed score
+    conn.executemany(
+        """
+        INSERT INTO grid_hotmap(
+            zoom, x, y, coverage, score,
+            bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+            updated_at_utc
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """,
+        [
+            (
+                int(r[0]),
+                int(r[1]),
+                int(r[2]),
+                int(r[3]),
+                (float(r[3]) ** float(alpha)) / ((float(r[4] or 0) + 1.0) ** float(beta)),
+                float(r[5]),
+                float(r[6]),
+                float(r[7]),
+                float(r[8]),
+                now,
+            )
+            for r in rows
+        ],
+    )
+

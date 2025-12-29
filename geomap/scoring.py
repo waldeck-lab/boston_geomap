@@ -41,7 +41,7 @@ def top_hotspots(conn: sqlite3.Connection, zoom: int, limit: int = 20) -> List[H
                bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
         FROM grid_hotmap
         WHERE zoom=?
-        ORDER BY coverage DESC, score DESC
+        ORDER BY score DESC, coverage DESC
         LIMIT ?;
         """,
         (zoom, limit),
