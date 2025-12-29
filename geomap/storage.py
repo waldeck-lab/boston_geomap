@@ -1,3 +1,19 @@
+# MIT License
+#
+# Copyright (c) 2025 Jonas Waldeck
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+
 from __future__ import annotations
 
 import sqlite3
@@ -65,9 +81,66 @@ def connect(db_path: Path) -> sqlite3.Connection:
 
 
 def ensure_schema(conn: sqlite3.Connection) -> None:
-    conn.executescript(DDL)
-    conn.commit()
+    cur = conn.cursor()
 
+    # existing tables …
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS grid_hotmap (
+      zoom INTEGER NOT NULL,
+      x INTEGER NOT NULL,
+      y INTEGER NOT NULL,
+      coverage INTEGER NOT NULL,
+      score REAL NOT NULL,
+      bbox_top_lat REAL NOT NULL,
+      bbox_left_lon REAL NOT NULL,
+      bbox_bottom_lat REAL NOT NULL,
+      bbox_right_lon REAL NOT NULL,
+      updated_at_utc TEXT NOT NULL,
+      PRIMARY KEY (zoom, x, y)
+    );
+    """)
+
+    # existing tables taxon_grid, taxon_layer_state, etc…
+
+    # ---- ADD THIS PART ----
+    cur.execute("DROP VIEW IF EXISTS grid_hotmap_v;")
+    cur.execute("""
+    CREATE VIEW grid_hotmap_v AS
+    SELECT
+      h.zoom,
+      h.x,
+      h.y,
+      h.coverage,
+      h.score,
+
+      -- bbox
+      h.bbox_top_lat      AS topLeft_lat,
+      h.bbox_left_lon     AS topLeft_lon,
+      h.bbox_bottom_lat   AS bottomRight_lat,
+      h.bbox_right_lon    AS bottomRight_lon,
+
+      -- centroid
+      (h.bbox_top_lat + h.bbox_bottom_lat) / 2.0 AS centroid_lat,
+      (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
+
+      -- strength of signal
+      COALESCE(SUM(t.observations_count), 0) AS obs_total,
+
+      -- explainability
+      GROUP_CONCAT(t.taxon_id, ';') AS taxa_list,
+
+      h.updated_at_utc
+    FROM grid_hotmap h
+    LEFT JOIN taxon_grid t
+      ON t.zoom = h.zoom AND t.x = h.x AND t.y = h.y
+    GROUP BY
+      h.zoom, h.x, h.y, h.coverage, h.score,
+      h.bbox_top_lat, h.bbox_left_lon,
+      h.bbox_bottom_lat, h.bbox_right_lon,
+      h.updated_at_utc;
+    """)
+
+    conn.commit()
 
 def get_layer_state(conn: sqlite3.Connection, taxon_id: int, zoom: int) -> Optional[Tuple[str, str, int]]:
     row = conn.execute(
