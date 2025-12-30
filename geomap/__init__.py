@@ -7,4 +7,5 @@ __all__ = [
     "sos_client",
     "storage",
     "scoring",
+    "distance",
 ]

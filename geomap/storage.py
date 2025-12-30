@@ -72,10 +72,13 @@ def utc_now_iso() -> str:
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
-
 def connect(db_path: Path) -> sqlite3.Connection:
     ensure_parent_dir(db_path)
     conn = sqlite3.connect(str(db_path))
+
+    # Enable dict-like row access: row["centroid_lat"], etc.
+    conn.row_factory = sqlite3.Row
+
     conn.execute("PRAGMA journal_mode=WAL;")
     conn.execute("PRAGMA synchronous=NORMAL;")
     return conn
@@ -103,6 +106,16 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
     );
     """)
 
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS hotmap_taxa_set (
+      zoom INTEGER NOT NULL,
+      taxon_id INTEGER NOT NULL,
+      PRIMARY KEY (zoom, taxon_id)
+    );
+    """)
+    
+
+    
     cur.execute("""
     CREATE TABLE IF NOT EXISTS taxon_dim (
       taxon_id INTEGER PRIMARY KEY,
@@ -151,6 +164,8 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
 
     # 3) A “summary” view your CSV exporter can use
     # Build it from grid_hotspot_taxa_v so taxa_list/obs_total only include taxa in cells that are in the hotmap.
+
+    cur.execute("DROP VIEW IF EXISTS grid_hotmap_v;")
     cur.execute("""
     CREATE VIEW grid_hotmap_v AS
     SELECT
@@ -170,25 +185,20 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
       (h.bbox_top_lat + h.bbox_bottom_lat) / 2.0 AS centroid_lat,
       (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
 
-      -- strength of signal (only taxa that join via grid_hotspot_taxa_v)
-      COALESCE(SUM(g.observations_count), 0) AS obs_total,
+      -- strength of signal (only within current taxa set)
+      COALESCE(SUM(t.observations_count), 0) AS obs_total,
 
-      -- explainability (ids + readable names)
-      GROUP_CONCAT(g.taxon_id, ';') AS taxa_list,
-      GROUP_CONCAT(
-        CASE
-          WHEN g.scientific_name != '' AND g.swedish_name != '' THEN g.scientific_name || ' (' || g.swedish_name || ')'
-          WHEN g.scientific_name != '' THEN g.scientific_name
-          WHEN g.swedish_name != '' THEN g.swedish_name
-          ELSE CAST(g.taxon_id AS TEXT)
-        END,
-        ' | '
-      ) AS taxa_names,
+      -- explainability (only within current taxa set)
+      GROUP_CONCAT(t.taxon_id, ';') AS taxa_list,
 
       h.updated_at_utc
     FROM grid_hotmap h
-    LEFT JOIN grid_hotspot_taxa_v g
-      ON g.zoom=h.zoom AND g.x=h.x AND g.y=h.y
+    LEFT JOIN taxon_grid t
+      ON t.zoom = h.zoom AND t.x = h.x AND t.y = h.y
+    LEFT JOIN hotmap_taxa_set s
+      ON s.zoom = t.zoom AND s.taxon_id = t.taxon_id
+    WHERE h.zoom = t.zoom
+      AND (s.taxon_id IS NOT NULL OR t.taxon_id IS NULL)
     GROUP BY
       h.zoom, h.x, h.y, h.coverage, h.score,
       h.bbox_top_lat, h.bbox_left_lon,
@@ -196,6 +206,23 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
       h.updated_at_utc;
     """)
 
+    cur.execute("DROP VIEW IF EXISTS grid_hotmap_taxa_names_v;")
+    cur.execute("""
+    CREATE VIEW grid_hotmap_taxa_names_v AS
+    SELECT
+      h.zoom, h.x, h.y,
+      t.taxon_id,
+      COALESCE(d.scientific_name,'') AS scientific_name,
+      COALESCE(d.swedish_name,'')    AS swedish_name,
+      t.observations_count
+    FROM grid_hotmap h
+    JOIN taxon_grid t
+      ON t.zoom=h.zoom AND t.x=h.x AND t.y=h.y
+    JOIN hotmap_taxa_set s
+      ON s.zoom=t.zoom AND s.taxon_id=t.taxon_id
+    LEFT JOIN taxon_dim d
+      ON d.taxon_id=t.taxon_id;
+    """)
     conn.commit()
 
 def get_layer_state(conn: sqlite3.Connection, taxon_id: int, zoom: int) -> Optional[Tuple[str, str, int]]:
@@ -297,6 +324,13 @@ def rebuild_hotmap(
     # Build placeholders (?, ?, ?, ...)
     placeholders = ",".join(["?"] * len(taxon_ids))
 
+    # Replace current active taxa set for this zoom
+    conn.execute("DELETE FROM hotmap_taxa_set WHERE zoom=?;", (zoom,))
+    conn.executemany(
+        "INSERT OR IGNORE INTO hotmap_taxa_set(zoom, taxon_id) VALUES (?, ?);",
+        [(zoom, tid) for tid in taxon_ids],
+    )
+    
     # SQLite doesn't have POWER() enabled everywhere consistently, so use pow() via math in Python
     # Option A (simple + portable): compute score in Python after fetching aggregates.
     rows = conn.execute(
