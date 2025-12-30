@@ -50,6 +50,7 @@ def _tile_bbox_latlon(x: int, y: int, z: int) -> Tuple[float, float, float, floa
 def export_top_sites_csv(
     conn: sqlite3.Connection,
     zoom: int,
+    slot_id: int, 
     out_path: Path,
     limit: int = 200,
     source_table: str = "grid_hotmap",
@@ -61,11 +62,11 @@ def export_top_sites_csv(
         f"""
         SELECT zoom, x, y, coverage, score
         FROM {source_table}
-        WHERE zoom = ?
+        WHERE zoom = ? AND slot_id=?
         ORDER BY coverage DESC, score DESC
         LIMIT ?
         """,
-        (zoom, limit),
+        (zoom, slot_id, limit),
     )
     rows = cur.fetchall()
 
@@ -75,6 +76,7 @@ def export_top_sites_csv(
             [
                 "rank",
                 "zoom",
+                "slot_id",
                 "x",
                 "y",
                 "coverage",
@@ -98,6 +100,7 @@ def export_top_sites_csv(
                 [
                     i,
                     z,
+                    slot_id,
                     x,
                     y,
                     coverage,

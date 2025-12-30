@@ -81,6 +81,9 @@ def main() -> int:
 
     show_all_taxa = "--show-all-taxa" in sys.argv
     taxa_top_n = int(_get_arg("--taxa-top", "10"))  # used when not showing all
+
+    slot_id = int(_get_arg("--slot", "0"))
+    logger.info("Slot: %d", slot_id)
     
     logger.info("Using position: lat=%.6f lon=%.6f", lat, lon)
     logger.info("Decay: mode=%s d0_km=%.3f gamma=%.3f max_km=%.3f", mode, d0_km, gamma, max_km)
@@ -94,7 +97,7 @@ def main() -> int:
         candidate_rows = conn.execute(
             """
             SELECT
-              zoom, x, y, coverage, score,
+              zoom, slot_id, x, y, coverage, score,
               centroid_lat, centroid_lon,
               topLeft_lat, topLeft_lon, bottomRight_lat, bottomRight_lon,
               obs_total,
@@ -104,7 +107,7 @@ def main() -> int:
             ORDER BY coverage DESC, score DESC
             LIMIT 2000;
             """,
-            (cfg.zoom,),
+            (cfg.zoom, slot_id),
         ).fetchall()
 
 
@@ -113,12 +116,12 @@ def main() -> int:
             return 0
 
         scored = []
-        seen: set[tuple[int, int, int]] = set()
+        seen: set[tuple[int, int, int, int]] = set()
 
         logger.info("Candidates fetched: %d", len(candidate_rows))
 
         for row in candidate_rows:
-            key = (int(row["zoom"]), int(row["x"]), int(row["y"]))
+            key = (int(row["zoom"]), int(row["slot_id"]), int(row["x"]), int(row["y"]))
             if key in seen:
                 continue
             seen.add(key)
@@ -161,7 +164,7 @@ def main() -> int:
         ## Debug vvv
         out_keys = set()
         for i, (dw_score, d_km, row) in enumerate(scored[:limit], 1):
-            key = (int(row["zoom"]), int(row["x"]), int(row["y"]))
+            key = (int(row["zoom"]), int(row["slot_id"]), int(row["x"]), int(row["y"]))
             if key in out_keys:
                 logger.info("DEBUG DUP OUTPUT at rank %d key=%s", i, key)
             out_keys.add(key)
@@ -169,18 +172,17 @@ def main() -> int:
 
         show = scored[:limit]
         for i, (dw_score, d_km, r) in enumerate(show, 1):
-            zoom, x, y = int(r["zoom"]), int(r["x"]), int(r["y"])
+            zoom, slot_id, x, y = int(r["zoom"]), int(r["slot_id"]),int(r["x"]), int(r["y"])
             coverage = int(r["coverage"])
             base_score = float(r["score"])
 
-            taxa_named = fmt_taxa(taxa_for_cell(conn, zoom, x, y), max_items=8)
 
-
-            taxa = taxa_for_cell(conn, zoom, x, y)
+            taxa = taxa_for_cell(conn, zoom, slot_id, x, y)
+            taxa_named = fmt_taxa(taxa, max_items=8)
 
             logger.info(
-                "Rank %d: dw_score=%.6f base=%.6f dist_km=%.2f coverage=%d cell=(%d,%d)",
-                i, dw_score, base_score, d_km, coverage, x, y
+                "Rank %d: dw_score=%.6f base=%.6f dist_km=%.2f coverage=%d cell=(%d,%d) taxa=%s",
+                i, dw_score, base_score, d_km, coverage, x, y, taxa_named
             )
 
             logger.info("        species: %d taxa", len(taxa))

@@ -114,7 +114,6 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
     cur.execute("DROP VIEW IF EXISTS grid_hotspot_taxa_v;")
     cur.execute("DROP VIEW IF EXISTS grid_taxa_v;")
 
-    # Include slot_id everywhere
     cur.execute("""
     CREATE VIEW grid_taxa_v AS
     SELECT
@@ -129,72 +128,71 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
     FROM taxon_grid tg
     LEFT JOIN taxon_dim td ON td.taxon_id = tg.taxon_id;
     """)
-
+    
     cur.execute("""
     CREATE VIEW grid_hotspot_taxa_v AS
     SELECT
-      gh.zoom, gh.slot_id, gh.x, gh.y,
-      gh.coverage, gh.score,
-      gh.bbox_top_lat, gh.bbox_left_lon, gh.bbox_bottom_lat, gh.bbox_right_lon,
-      gt.taxon_id, gt.scientific_name, gt.swedish_name, gt.observations_count,
-      gh.updated_at_utc
+    gh.zoom, gh.slot_id, gh.x, gh.y,
+    gh.coverage, gh.score,
+    gh.bbox_top_lat, gh.bbox_left_lon, gh.bbox_bottom_lat, gh.bbox_right_lon,
+    gt.taxon_id, gt.scientific_name, gt.swedish_name, gt.observations_count,
+    gh.updated_at_utc
     FROM grid_hotmap gh
     JOIN grid_taxa_v gt
-      ON gt.zoom=gh.zoom AND gt.slot_id=gh.slot_id AND gt.x=gh.x AND gt.y=gh.y;
+    ON gt.zoom=gh.zoom AND gt.slot_id=gh.slot_id AND gt.x=gh.x AND gt.y=gh.y;
     """)
-
-    # Summary view used by exporters/rankers
+    
     cur.execute("""
     CREATE VIEW grid_hotmap_v AS
     SELECT
-      h.zoom,
-      h.slot_id,
-      h.x,
-      h.y,
-      h.coverage,
-      h.score,
+    h.zoom,
+    h.slot_id,
+    h.x,
+    h.y,
+    h.coverage,
+    h.score,
     
-      h.bbox_top_lat    AS topLeft_lat,
-      h.bbox_left_lon   AS topLeft_lon,
-      h.bbox_bottom_lat AS bottomRight_lat,
-      h.bbox_right_lon  AS bottomRight_lon,
+    h.bbox_top_lat    AS topLeft_lat,
+    h.bbox_left_lon   AS topLeft_lon,
+    h.bbox_bottom_lat AS bottomRight_lat,
+    h.bbox_right_lon  AS bottomRight_lon,
     
-      (h.bbox_top_lat + h.bbox_bottom_lat) / 2.0 AS centroid_lat,
-      (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
+    (h.bbox_top_lat + h.bbox_bottom_lat) / 2.0 AS centroid_lat,
+    (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
     
-      COALESCE(SUM(CASE WHEN s.taxon_id IS NOT NULL THEN t.observations_count ELSE 0 END), 0) AS obs_total,
+    COALESCE(SUM(CASE WHEN s.taxon_id IS NOT NULL THEN t.observations_count ELSE 0 END), 0) AS obs_total,
     GROUP_CONCAT(CASE WHEN s.taxon_id IS NOT NULL THEN t.taxon_id END, ';') AS taxa_list,
     
-      h.updated_at_utc
+    h.updated_at_utc
     FROM grid_hotmap h
     LEFT JOIN taxon_grid t
-      ON t.zoom=h.zoom AND t.slot_id=h.slot_id AND t.x=h.x AND t.y=h.y
+    ON t.zoom=h.zoom AND t.slot_id=h.slot_id AND t.x=h.x AND t.y=h.y
     LEFT JOIN hotmap_taxa_set s
-      ON s.zoom=h.zoom AND s.slot_id=h.slot_id AND s.taxon_id=t.taxon_id
+    ON s.zoom=t.zoom AND s.slot_id=t.slot_id AND s.taxon_id=t.taxon_id
     GROUP BY
-      h.zoom, h.slot_id, h.x, h.y, h.coverage, h.score,
-      h.bbox_top_lat, h.bbox_left_lon, h.bbox_bottom_lat, h.bbox_right_lon,
-      h.updated_at_utc;
+    h.zoom, h.slot_id, h.x, h.y, h.coverage, h.score,
+    h.bbox_top_lat, h.bbox_left_lon,
+    h.bbox_bottom_lat, h.bbox_right_lon,
+    h.updated_at_utc;
     """)
-
+    
     # For --show-all-taxa / GUI “click a cell”
     cur.execute("""
     CREATE VIEW grid_hotmap_taxa_names_v AS
     SELECT
-      h.zoom, h.slot_id, h.x, h.y,
-      t.taxon_id,
+    h.zoom, h.slot_id, h.x, h.y,
+    t.taxon_id,
     COALESCE(d.scientific_name,'') AS scientific_name,
     COALESCE(d.swedish_name,'')    AS swedish_name,
-      t.observations_count
+    t.observations_count
     FROM grid_hotmap h
     JOIN taxon_grid t
-      ON t.zoom=h.zoom AND t.slot_id=h.slot_id AND t.x=h.x AND t.y=h.y
+    ON t.zoom=h.zoom AND t.slot_id=h.slot_id AND t.x=h.x AND t.y=h.y
     JOIN hotmap_taxa_set s
-      ON s.zoom=h.zoom AND s.slot_id=h.slot_id AND s.taxon_id=t.taxon_id
+    ON s.zoom=t.zoom AND s.slot_id=t.slot_id AND s.taxon_id=t.taxon_id
     LEFT JOIN taxon_dim d
-      ON d.taxon_id=t.taxon_id;
+    ON d.taxon_id=t.taxon_id;
     """)
-
     conn.commit()
 
 def get_layer_state(conn: sqlite3.Connection, taxon_id: int, zoom: int, slot_id: int) -> Optional[Tuple[str, str, int]]:

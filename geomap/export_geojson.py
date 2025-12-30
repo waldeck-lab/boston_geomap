@@ -20,24 +20,22 @@ import json
 from pathlib import Path
 import sqlite3
 
-
-def export_hotmap_geojson(conn: sqlite3.Connection, zoom: int, out_path: Path) -> None:
+def export_hotmap_geojson(conn: sqlite3.Connection, zoom: int, slot_id: int, out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     rows = conn.execute(
         """
-        SELECT x, y, coverage, score,
+        SELECT slot_id, x, y, coverage, score,
                bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
         FROM grid_hotmap
-        WHERE zoom=?
+        WHERE zoom=? AND slot_id=?
         ORDER BY coverage DESC, score DESC;
         """,
-        (zoom,),
+        (zoom, slot_id),
     ).fetchall()
 
     features = []
-    for (x, y, coverage, score, top_lat, left_lon, bottom_lat, right_lon) in rows:
-        # bbox polygon (lon,lat)
+    for (slot_id_db, x, y, coverage, score, top_lat, left_lon, bottom_lat, right_lon) in rows:
         poly = [
             [left_lon, top_lat],
             [right_lon, top_lat],
@@ -49,7 +47,8 @@ def export_hotmap_geojson(conn: sqlite3.Connection, zoom: int, out_path: Path) -
             {
                 "type": "Feature",
                 "properties": {
-                    "zoom": zoom,
+                    "zoom": int(zoom),
+                    "slot_id": int(slot_id_db),
                     "x": int(x),
                     "y": int(y),
                     "coverage": int(coverage),
