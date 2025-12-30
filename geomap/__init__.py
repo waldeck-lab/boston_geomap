@@ -8,4 +8,6 @@ __all__ = [
     "storage",
     "scoring",
     "distance",
+    "timeslots",
+    "sos_filters_ext",
 ]

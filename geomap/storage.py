@@ -28,6 +28,7 @@ DDL = """
 CREATE TABLE IF NOT EXISTS taxon_grid (
   taxon_id INTEGER NOT NULL,
   zoom INTEGER NOT NULL,
+  slot_id INTEGER NOT NULL,
   x INTEGER NOT NULL,
   y INTEGER NOT NULL,
   observations_count INTEGER NOT NULL,
@@ -37,20 +38,22 @@ CREATE TABLE IF NOT EXISTS taxon_grid (
   bbox_bottom_lat REAL NOT NULL,
   bbox_right_lon REAL NOT NULL,
   fetched_at_utc TEXT NOT NULL,
-  PRIMARY KEY (taxon_id, zoom, x, y)
+  PRIMARY KEY (taxon_id, zoom, slot_id, x, y)
 );
 
 CREATE TABLE IF NOT EXISTS taxon_layer_state (
   taxon_id INTEGER NOT NULL,
   zoom INTEGER NOT NULL,
+  slot_id INTEGER NOT NULL,
   last_fetch_utc TEXT NOT NULL,
   payload_sha256 TEXT NOT NULL,
   grid_cell_count INTEGER NOT NULL,
-  PRIMARY KEY (taxon_id, zoom)
+  PRIMARY KEY (taxon_id, zoom, slot_id)
 );
 
 CREATE TABLE IF NOT EXISTS grid_hotmap (
   zoom INTEGER NOT NULL,
+  slot_id INTEGER NOT NULL,
   x INTEGER NOT NULL,
   y INTEGER NOT NULL,
   coverage INTEGER NOT NULL,
@@ -60,10 +63,23 @@ CREATE TABLE IF NOT EXISTS grid_hotmap (
   bbox_bottom_lat REAL NOT NULL,
   bbox_right_lon REAL NOT NULL,
   updated_at_utc TEXT NOT NULL,
-  PRIMARY KEY (zoom, x, y)
+  PRIMARY KEY (zoom, slot_id, x, y)
+);
+
+CREATE TABLE IF NOT EXISTS hotmap_taxa_set (
+  zoom INTEGER NOT NULL,
+  slot_id INTEGER NOT NULL,
+  taxon_id INTEGER NOT NULL,
+  PRIMARY KEY (zoom, slot_id, taxon_id)
+);
+
+CREATE TABLE IF NOT EXISTS taxon_dim (
+  taxon_id INTEGER PRIMARY KEY,
+  scientific_name TEXT,
+  swedish_name TEXT,
+  updated_at_utc TEXT NOT NULL
 );
 """
-
 
 def utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -80,68 +96,36 @@ def connect(db_path: Path) -> sqlite3.Connection:
     conn.execute("PRAGMA synchronous=NORMAL;")
     return conn
 
+
 def ensure_schema(conn: sqlite3.Connection) -> None:
     cur = conn.cursor()
 
-    # 1) Base tables first (anything views depend on)
+    cur.executescript(DDL)
 
-    # existing tables … (taxon_grid, taxon_layer_state, etc) should be created above as you already do
+    # Indexes
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell ON taxon_grid(zoom, slot_id, x, y);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_taxon ON taxon_grid(taxon_id, zoom, slot_id);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_grid_hotmap_slot ON grid_hotmap(zoom, slot_id, coverage, score);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_hotmap_taxa_set ON hotmap_taxa_set(zoom, slot_id, taxon_id);")
 
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS grid_hotmap (
-      zoom INTEGER NOT NULL,
-      x INTEGER NOT NULL,
-      y INTEGER NOT NULL,
-      coverage INTEGER NOT NULL,
-      score REAL NOT NULL,
-      bbox_top_lat REAL NOT NULL,
-      bbox_left_lon REAL NOT NULL,
-      bbox_bottom_lat REAL NOT NULL,
-      bbox_right_lon REAL NOT NULL,
-      updated_at_utc TEXT NOT NULL,
-      PRIMARY KEY (zoom, x, y)
-    );
-    """)
-
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS hotmap_taxa_set (
-      zoom INTEGER NOT NULL,
-      taxon_id INTEGER NOT NULL,
-      PRIMARY KEY (zoom, taxon_id)
-    );
-    """)
-    
-
-    
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS taxon_dim (
-      taxon_id INTEGER PRIMARY KEY,
-      scientific_name TEXT,
-      swedish_name TEXT,
-      updated_at_utc TEXT NOT NULL
-    );
-    """)
-
-    # Helpful indexes (optional but recommended once the DB grows)
-    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell ON taxon_grid(zoom, x, y);")
-    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_taxon ON taxon_grid(taxon_id);")
-
-    # 2) Views next (drop/recreate in dependency order)
-
+    # Drop views in dependency order
+    cur.execute("DROP VIEW IF EXISTS grid_hotmap_taxa_names_v;")
     cur.execute("DROP VIEW IF EXISTS grid_hotmap_v;")
     cur.execute("DROP VIEW IF EXISTS grid_hotspot_taxa_v;")
     cur.execute("DROP VIEW IF EXISTS grid_taxa_v;")
 
+    # Include slot_id everywhere
     cur.execute("""
     CREATE VIEW grid_taxa_v AS
     SELECT
-      tg.zoom,
-      tg.x,
-      tg.y,
-      tg.taxon_id,
-      COALESCE(td.scientific_name, '') AS scientific_name,
-      COALESCE(td.swedish_name, '') AS swedish_name,
-      tg.observations_count
+    tg.zoom,
+    tg.slot_id,
+    tg.x,
+    tg.y,
+    tg.taxon_id,
+    COALESCE(td.scientific_name, '') AS scientific_name,
+    COALESCE(td.swedish_name, '') AS swedish_name,
+    tg.observations_count
     FROM taxon_grid tg
     LEFT JOIN taxon_dim td ON td.taxon_id = tg.taxon_id;
     """)
@@ -149,76 +133,78 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
     cur.execute("""
     CREATE VIEW grid_hotspot_taxa_v AS
     SELECT
-      gh.zoom, gh.x, gh.y,
+      gh.zoom, gh.slot_id, gh.x, gh.y,
       gh.coverage, gh.score,
       gh.bbox_top_lat, gh.bbox_left_lon, gh.bbox_bottom_lat, gh.bbox_right_lon,
       gt.taxon_id, gt.scientific_name, gt.swedish_name, gt.observations_count,
       gh.updated_at_utc
     FROM grid_hotmap gh
     JOIN grid_taxa_v gt
-      ON gt.zoom=gh.zoom AND gt.x=gh.x AND gt.y=gh.y;
+      ON gt.zoom=gh.zoom AND gt.slot_id=gh.slot_id AND gt.x=gh.x AND gt.y=gh.y;
     """)
 
-    # 3) A “summary” view your CSV exporter can use
-    # Build it from grid_hotspot_taxa_v so taxa_list/obs_total only include taxa in cells that are in the hotmap.
-
-    cur.execute("DROP VIEW IF EXISTS grid_hotmap_v;")
+    # Summary view used by exporters/rankers
     cur.execute("""
     CREATE VIEW grid_hotmap_v AS
     SELECT
       h.zoom,
+      h.slot_id,
       h.x,
       h.y,
       h.coverage,
       h.score,
-
+    
       h.bbox_top_lat    AS topLeft_lat,
       h.bbox_left_lon   AS topLeft_lon,
       h.bbox_bottom_lat AS bottomRight_lat,
       h.bbox_right_lon  AS bottomRight_lon,
-
+    
       (h.bbox_top_lat + h.bbox_bottom_lat) / 2.0 AS centroid_lat,
       (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
-
+    
       COALESCE(SUM(CASE WHEN s.taxon_id IS NOT NULL THEN t.observations_count ELSE 0 END), 0) AS obs_total,
-      GROUP_CONCAT(CASE WHEN s.taxon_id IS NOT NULL THEN t.taxon_id END, ';') AS taxa_list,
-
+    GROUP_CONCAT(CASE WHEN s.taxon_id IS NOT NULL THEN t.taxon_id END, ';') AS taxa_list,
+    
       h.updated_at_utc
     FROM grid_hotmap h
     LEFT JOIN taxon_grid t
-      ON t.zoom = h.zoom AND t.x = h.x AND t.y = h.y
+      ON t.zoom=h.zoom AND t.slot_id=h.slot_id AND t.x=h.x AND t.y=h.y
     LEFT JOIN hotmap_taxa_set s
-      ON s.zoom = t.zoom AND s.taxon_id = t.taxon_id
+      ON s.zoom=h.zoom AND s.slot_id=h.slot_id AND s.taxon_id=t.taxon_id
     GROUP BY
-      h.zoom, h.x, h.y, h.coverage, h.score,
-      h.bbox_top_lat, h.bbox_left_lon,
-      h.bbox_bottom_lat, h.bbox_right_lon,
+      h.zoom, h.slot_id, h.x, h.y, h.coverage, h.score,
+      h.bbox_top_lat, h.bbox_left_lon, h.bbox_bottom_lat, h.bbox_right_lon,
       h.updated_at_utc;
     """)
 
-    cur.execute("DROP VIEW IF EXISTS grid_hotmap_taxa_names_v;")
+    # For --show-all-taxa / GUI “click a cell”
     cur.execute("""
     CREATE VIEW grid_hotmap_taxa_names_v AS
     SELECT
-      h.zoom, h.x, h.y,
+      h.zoom, h.slot_id, h.x, h.y,
       t.taxon_id,
-      COALESCE(d.scientific_name,'') AS scientific_name,
-      COALESCE(d.swedish_name,'')    AS swedish_name,
+    COALESCE(d.scientific_name,'') AS scientific_name,
+    COALESCE(d.swedish_name,'')    AS swedish_name,
       t.observations_count
     FROM grid_hotmap h
     JOIN taxon_grid t
-      ON t.zoom=h.zoom AND t.x=h.x AND t.y=h.y
+      ON t.zoom=h.zoom AND t.slot_id=h.slot_id AND t.x=h.x AND t.y=h.y
     JOIN hotmap_taxa_set s
-      ON s.zoom=t.zoom AND s.taxon_id=t.taxon_id
+      ON s.zoom=h.zoom AND s.slot_id=h.slot_id AND s.taxon_id=t.taxon_id
     LEFT JOIN taxon_dim d
       ON d.taxon_id=t.taxon_id;
     """)
+
     conn.commit()
 
-def get_layer_state(conn: sqlite3.Connection, taxon_id: int, zoom: int) -> Optional[Tuple[str, str, int]]:
+def get_layer_state(conn: sqlite3.Connection, taxon_id: int, zoom: int, slot_id: int) -> Optional[Tuple[str, str, int]]:
     row = conn.execute(
-        "SELECT last_fetch_utc, payload_sha256, grid_cell_count FROM taxon_layer_state WHERE taxon_id=? AND zoom=?;",
-        (taxon_id, zoom),
+        """
+        SELECT last_fetch_utc, payload_sha256, grid_cell_count
+        FROM taxon_layer_state
+        WHERE taxon_id=? AND zoom=? AND slot_id=?;
+        """,
+        (taxon_id, zoom, slot_id),
     ).fetchone()
     if not row:
         return None
@@ -242,25 +228,40 @@ def upsert_taxon_dim(
         [(tid, sci, swe, now) for tid, sci, swe in taxa],
     )
 
-def upsert_layer_state(conn: sqlite3.Connection, taxon_id: int, zoom: int, payload_sha256: str, grid_cell_count: int) -> None:
+def upsert_layer_state(
+    conn: sqlite3.Connection,
+    taxon_id: int,
+    zoom: int,
+    slot_id: int,
+    payload_sha256: str,
+    grid_cell_count: int
+) -> None:
     now = utc_now_iso()
     conn.execute(
         """
-        INSERT INTO taxon_layer_state(taxon_id, zoom, last_fetch_utc, payload_sha256, grid_cell_count)
-        VALUES(?,?,?,?,?)
-        ON CONFLICT(taxon_id, zoom) DO UPDATE SET
+        INSERT INTO taxon_layer_state(taxon_id, zoom, slot_id, last_fetch_utc, payload_sha256, grid_cell_count)
+        VALUES(?,?,?,?,?,?)
+        ON CONFLICT(taxon_id, zoom, slot_id) DO UPDATE SET
           last_fetch_utc=excluded.last_fetch_utc,
           payload_sha256=excluded.payload_sha256,
           grid_cell_count=excluded.grid_cell_count;
         """,
-        (taxon_id, zoom, now, payload_sha256, int(grid_cell_count)),
+        (taxon_id, zoom, slot_id, now, payload_sha256, int(grid_cell_count)),
     )
 
-
-def replace_taxon_grid(conn: sqlite3.Connection, taxon_id: int, zoom: int, grid_cells: Iterable[Dict[str, Any]]) -> None:
+def replace_taxon_grid(
+    conn: sqlite3.Connection,
+    taxon_id: int,
+    zoom: int,
+    slot_id: int,
+    grid_cells: Iterable[Dict[str, Any]]
+) -> None:
     now = utc_now_iso()
 
-    conn.execute("DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=?;", (taxon_id, zoom))
+    conn.execute(
+        "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
+        (taxon_id, zoom, slot_id),
+    )
 
     rows = []
     for c in grid_cells:
@@ -271,6 +272,7 @@ def replace_taxon_grid(conn: sqlite3.Connection, taxon_id: int, zoom: int, grid_
             (
                 taxon_id,
                 zoom,
+                slot_id,
                 int(c["x"]),
                 int(c["y"]),
                 int(c.get("observationsCount") or 0),
@@ -286,18 +288,18 @@ def replace_taxon_grid(conn: sqlite3.Connection, taxon_id: int, zoom: int, grid_
     conn.executemany(
         """
         INSERT INTO taxon_grid(
-          taxon_id, zoom, x, y, observations_count, taxa_count,
+          taxon_id, zoom, slot_id, x, y, observations_count, taxa_count,
           bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
           fetched_at_utc
-        ) VALUES(?,?,?,?,?,?,?,?,?,?,?);
+        ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
         """,
         rows,
     )
 
-
 def rebuild_hotmap(
     conn: sqlite3.Connection,
     zoom: int,
+    slot_id: int,
     taxon_ids: list[int],
     *,
     alpha: float = 2.0,
@@ -306,48 +308,45 @@ def rebuild_hotmap(
     if not taxon_ids:
         return
 
-    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    now = utc_now_iso()
 
-    # Clear previous hotmap for this zoom
-    conn.execute("DELETE FROM grid_hotmap WHERE zoom=?;", (zoom,))
+    # Clear previous hotmap for this zoom+slot
+    conn.execute("DELETE FROM grid_hotmap WHERE zoom=? AND slot_id=?;", (zoom, slot_id))
 
-    # Build placeholders (?, ?, ?, ...)
     placeholders = ",".join(["?"] * len(taxon_ids))
 
-    # Replace current active taxa set for this zoom
-    conn.execute("DELETE FROM hotmap_taxa_set WHERE zoom=?;", (zoom,))
+    # Replace active taxa set for this zoom+slot
+    conn.execute("DELETE FROM hotmap_taxa_set WHERE zoom=? AND slot_id=?;", (zoom, slot_id))
     conn.executemany(
-        "INSERT OR IGNORE INTO hotmap_taxa_set(zoom, taxon_id) VALUES (?, ?);",
-        [(zoom, tid) for tid in taxon_ids],
+        "INSERT OR IGNORE INTO hotmap_taxa_set(zoom, slot_id, taxon_id) VALUES (?, ?, ?);",
+        [(zoom, slot_id, tid) for tid in taxon_ids],
     )
-    
-    # SQLite doesn't have POWER() enabled everywhere consistently, so use pow() via math in Python
-    # Option A (simple + portable): compute score in Python after fetching aggregates.
+
     rows = conn.execute(
         f"""
         SELECT
             zoom,
+            slot_id,
             x,
             y,
             COUNT(DISTINCT taxon_id) AS coverage,
             SUM(observations_count) AS obs_total,
             bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
         FROM taxon_grid
-        WHERE zoom=? AND taxon_id IN ({placeholders})
-        GROUP BY zoom, x, y;
+        WHERE zoom=? AND slot_id=? AND taxon_id IN ({placeholders})
+        GROUP BY zoom, slot_id, x, y;
         """,
-        [zoom, *taxon_ids],
+        [zoom, slot_id, *taxon_ids],
     ).fetchall()
 
-    # Insert rows with computed score
     conn.executemany(
         """
         INSERT INTO grid_hotmap(
-            zoom, x, y, coverage, score,
+            zoom, slot_id, x, y, coverage, score,
             bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
             updated_at_utc
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """,
         [
             (
@@ -355,14 +354,14 @@ def rebuild_hotmap(
                 int(r[1]),
                 int(r[2]),
                 int(r[3]),
-                (float(r[3]) ** float(alpha)) / ((float(r[4] or 0) + 1.0) ** float(beta)),
-                float(r[5]),
+                int(r[4]),
+                (float(r[4]) ** float(alpha)) / ((float(r[5] or 0) + 1.0) ** float(beta)),
                 float(r[6]),
                 float(r[7]),
                 float(r[8]),
+                float(r[9]),
                 now,
             )
             for r in rows
         ],
     )
-

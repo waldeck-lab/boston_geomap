@@ -20,10 +20,10 @@ from dataclasses import dataclass
 from typing import Iterable, List, Tuple
 import sqlite3
 
-
 @dataclass(frozen=True)
 class Hotspot:
     zoom: int
+    slot_id: int
     x: int
     y: int
     coverage: int
@@ -33,31 +33,31 @@ class Hotspot:
     bbox_bottom_lat: float
     bbox_right_lon: float
 
-
-def top_hotspots(conn: sqlite3.Connection, zoom: int, limit: int = 20) -> List[Hotspot]:
+def top_hotspots(conn: sqlite3.Connection, zoom: int, slot_id: int, limit: int = 20) -> List[Hotspot]:
     rows = conn.execute(
         """
-        SELECT zoom, x, y, coverage, score,
+        SELECT zoom, slot_id, x, y, coverage, score,
                bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
         FROM grid_hotmap
-        WHERE zoom=?
-        ORDER BY score DESC, coverage DESC
+        WHERE zoom=? AND slot_id=?
+        ORDER BY coverage DESC, score DESC
         LIMIT ?;
         """,
-        (zoom, limit),
+        (zoom, slot_id, limit),
     ).fetchall()
 
     return [
         Hotspot(
             zoom=int(r[0]),
-            x=int(r[1]),
-            y=int(r[2]),
-            coverage=int(r[3]),
-            score=float(r[4]),
-            bbox_top_lat=float(r[5]),
-            bbox_left_lon=float(r[6]),
-            bbox_bottom_lat=float(r[7]),
-            bbox_right_lon=float(r[8]),
+            slot_id=int(r[1]),
+            x=int(r[2]),
+            y=int(r[3]),
+            coverage=int(r[4]),
+            score=float(r[5]),
+            bbox_top_lat=float(r[6]),
+            bbox_left_lon=float(r[7]),
+            bbox_bottom_lat=float(r[8]),
+            bbox_right_lon=float(r[9]),
         )
         for r in rows
     ]

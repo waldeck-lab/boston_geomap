@@ -44,15 +44,16 @@ def _get_arg(name: str, default: str | None = None) -> str | None:
         return sys.argv[sys.argv.index(name) + 1]
     return default
 
-def taxa_for_cell(conn, zoom: int, x: int, y: int) -> list[tuple[int,str,str,int]]:
+
+def taxa_for_cell(conn, zoom: int, slot_id: int, x: int, y: int) -> list[tuple[int,str,str,int]]:
     rows = conn.execute(
         """
         SELECT taxon_id, scientific_name, swedish_name, observations_count
         FROM grid_hotmap_taxa_names_v
-        WHERE zoom=? AND x=? AND y=?
+        WHERE zoom=? AND slot_id=? AND x=? AND y=?
         ORDER BY observations_count DESC, taxon_id;
         """,
-        (zoom, x, y),
+        (zoom, slot_id, x, y),
     ).fetchall()
     return [(int(r[0]), r[1], r[2], int(r[3])) for r in rows]
 
@@ -99,7 +100,7 @@ def main() -> int:
               obs_total,
               taxa_list
             FROM grid_hotmap_v
-            WHERE zoom=?
+            WHERE zoom=? AND slot_id=?
             ORDER BY coverage DESC, score DESC
             LIMIT 2000;
             """,

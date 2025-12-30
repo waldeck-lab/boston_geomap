@@ -34,6 +34,11 @@ from geomap.sos_client import SOSClient, stable_gridcells_hash, throttle
 from geomap import storage
 
 
+def _get_arg(name: str, default: str | None = None) -> str | None:
+    if name in sys.argv:
+        return sys.argv[sys.argv.index(name) + 1]
+    return default
+
 def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
     taxa: list[int] = []
     with csv_path.open("r", encoding="utf-8") as f:
@@ -57,6 +62,9 @@ def main() -> int:
     logger.info("Geomap DB: %s", cfg.geomap_db_path)
     logger.info("Zoom: %d", cfg.zoom)
 
+    slot_id = int(_get_arg("--slot", "0"))
+    logger.info("Slot: %d", slot_id)
+    
     if not cfg.subscription_key:
         logger.error("Missing ARTDATABANKEN_SUBSCRIPTION_KEY")
         return 2
@@ -92,11 +100,12 @@ def main() -> int:
             grid_cells = payload.get("gridCells") or []
             sha = stable_gridcells_hash(payload)
 
-            prev = storage.get_layer_state(conn, taxon_id, cfg.zoom)
+            prev = storage.get_layer_state(conn, taxon_id, cfg.zoom, slot_id)
+
             if prev and prev[1] == sha:
                 logger.info("No change for taxon_id=%d (sha256 match). gridCells=%d", taxon_id, len(grid_cells))
                 conn.execute("BEGIN;")
-                storage.upsert_layer_state(conn, taxon_id, cfg.zoom, sha, len(grid_cells))
+                storage.upsert_layer_state(conn, taxon_id, cfg.zoom, slot_id, sha, len(grid_cells))
                 conn.commit()
                 continue
 
@@ -108,8 +117,8 @@ def main() -> int:
             )
 
             conn.execute("BEGIN;")
-            storage.replace_taxon_grid(conn, taxon_id, cfg.zoom, grid_cells)
-            storage.upsert_layer_state(conn, taxon_id, cfg.zoom, sha, len(grid_cells))
+            storage.replace_taxon_grid(conn, taxon_id, cfg.zoom, slot_id, grid_cells)
+            storage.upsert_layer_state(conn, taxon_id, cfg.zoom, slot_id, sha, len(grid_cells))
             conn.commit()
 
         logger.info("Done.")

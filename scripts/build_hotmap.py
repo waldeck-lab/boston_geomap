@@ -45,6 +45,11 @@ class TaxonRow:
     swedish_name: str
 
 
+def _get_arg(name: str, default: str | None = None) -> str | None:
+    if name in sys.argv:
+        return sys.argv[sys.argv.index(name) + 1]
+    return default
+    
 def read_first_n_taxa_rows(csv_path: Path, n: int) -> list[TaxonRow]:
     rows: list[TaxonRow] = []
 
@@ -96,6 +101,10 @@ def main() -> int:
     logger = setup_logger("build_hotmap", cfg.logs_dir)
 
     n = 5
+
+    slot_id = int(_get_arg("--slot", "0"))
+    logger.info("Slot: %d", slot_id)
+    
     if "--n" in sys.argv:
         n = int(sys.argv[sys.argv.index("--n") + 1])
 
@@ -121,13 +130,14 @@ def main() -> int:
         storage.rebuild_hotmap(
             conn,
             cfg.zoom,
+            slot_id,
             taxon_ids,
             alpha=alpha,
             beta=beta,
         )
         conn.commit()
 
-        tops = top_hotspots(conn, cfg.zoom, limit=10)
+        tops = top_hotspots(conn, cfg.zoom, slot_id, limit=10)
         for i, h in enumerate(tops, 1):
             logger.info(
                 "Top %d: coverage=%d score=%.3f cell=(%d,%d) bbox=[(%.5f,%.5f)->(%.5f,%.5f)]",
