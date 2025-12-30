@@ -80,11 +80,13 @@ def connect(db_path: Path) -> sqlite3.Connection:
     conn.execute("PRAGMA synchronous=NORMAL;")
     return conn
 
-
 def ensure_schema(conn: sqlite3.Connection) -> None:
     cur = conn.cursor()
 
-    # existing tables …
+    # 1) Base tables first (anything views depend on)
+
+    # existing tables … (taxon_grid, taxon_layer_state, etc) should be created above as you already do
+
     cur.execute("""
     CREATE TABLE IF NOT EXISTS grid_hotmap (
       zoom INTEGER NOT NULL,
@@ -101,10 +103,54 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
     );
     """)
 
-    # existing tables taxon_grid, taxon_layer_state, etc…
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS taxon_dim (
+      taxon_id INTEGER PRIMARY KEY,
+      scientific_name TEXT,
+      swedish_name TEXT,
+      updated_at_utc TEXT NOT NULL
+    );
+    """)
 
-    # ---- ADD THIS PART ----
+    # Helpful indexes (optional but recommended once the DB grows)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell ON taxon_grid(zoom, x, y);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_taxon ON taxon_grid(taxon_id);")
+
+    # 2) Views next (drop/recreate in dependency order)
+
     cur.execute("DROP VIEW IF EXISTS grid_hotmap_v;")
+    cur.execute("DROP VIEW IF EXISTS grid_hotspot_taxa_v;")
+    cur.execute("DROP VIEW IF EXISTS grid_taxa_v;")
+
+    cur.execute("""
+    CREATE VIEW grid_taxa_v AS
+    SELECT
+      tg.zoom,
+      tg.x,
+      tg.y,
+      tg.taxon_id,
+      COALESCE(td.scientific_name, '') AS scientific_name,
+      COALESCE(td.swedish_name, '') AS swedish_name,
+      tg.observations_count
+    FROM taxon_grid tg
+    LEFT JOIN taxon_dim td ON td.taxon_id = tg.taxon_id;
+    """)
+
+    cur.execute("""
+    CREATE VIEW grid_hotspot_taxa_v AS
+    SELECT
+      gh.zoom, gh.x, gh.y,
+      gh.coverage, gh.score,
+      gh.bbox_top_lat, gh.bbox_left_lon, gh.bbox_bottom_lat, gh.bbox_right_lon,
+      gt.taxon_id, gt.scientific_name, gt.swedish_name, gt.observations_count,
+      gh.updated_at_utc
+    FROM grid_hotmap gh
+    JOIN grid_taxa_v gt
+      ON gt.zoom=gh.zoom AND gt.x=gh.x AND gt.y=gh.y;
+    """)
+
+    # 3) A “summary” view your CSV exporter can use
+    # Build it from grid_hotspot_taxa_v so taxa_list/obs_total only include taxa in cells that are in the hotmap.
     cur.execute("""
     CREATE VIEW grid_hotmap_v AS
     SELECT
@@ -124,16 +170,25 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
       (h.bbox_top_lat + h.bbox_bottom_lat) / 2.0 AS centroid_lat,
       (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
 
-      -- strength of signal
-      COALESCE(SUM(t.observations_count), 0) AS obs_total,
+      -- strength of signal (only taxa that join via grid_hotspot_taxa_v)
+      COALESCE(SUM(g.observations_count), 0) AS obs_total,
 
-      -- explainability
-      GROUP_CONCAT(t.taxon_id, ';') AS taxa_list,
+      -- explainability (ids + readable names)
+      GROUP_CONCAT(g.taxon_id, ';') AS taxa_list,
+      GROUP_CONCAT(
+        CASE
+          WHEN g.scientific_name != '' AND g.swedish_name != '' THEN g.scientific_name || ' (' || g.swedish_name || ')'
+          WHEN g.scientific_name != '' THEN g.scientific_name
+          WHEN g.swedish_name != '' THEN g.swedish_name
+          ELSE CAST(g.taxon_id AS TEXT)
+        END,
+        ' | '
+      ) AS taxa_names,
 
       h.updated_at_utc
     FROM grid_hotmap h
-    LEFT JOIN taxon_grid t
-      ON t.zoom = h.zoom AND t.x = h.x AND t.y = h.y
+    LEFT JOIN grid_hotspot_taxa_v g
+      ON g.zoom=h.zoom AND g.x=h.x AND g.y=h.y
     GROUP BY
       h.zoom, h.x, h.y, h.coverage, h.score,
       h.bbox_top_lat, h.bbox_left_lon,
@@ -152,6 +207,23 @@ def get_layer_state(conn: sqlite3.Connection, taxon_id: int, zoom: int) -> Optio
         return None
     return (row[0], row[1], int(row[2]))
 
+def upsert_taxon_dim(
+    conn: sqlite3.Connection,
+    taxa: list[tuple[int, str, str]],
+) -> None:
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+    conn.executemany(
+        """
+        INSERT INTO taxon_dim(taxon_id, scientific_name, swedish_name, updated_at_utc)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(taxon_id) DO UPDATE SET
+          scientific_name=excluded.scientific_name,
+          swedish_name=excluded.swedish_name,
+          updated_at_utc=excluded.updated_at_utc;
+        """,
+        [(tid, sci, swe, now) for tid, sci, swe in taxa],
+    )
 
 def upsert_layer_state(conn: sqlite3.Connection, taxon_id: int, zoom: int, payload_sha256: str, grid_cell_count: int) -> None:
     now = utc_now_iso()

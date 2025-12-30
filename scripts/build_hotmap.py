@@ -34,6 +34,39 @@ from geomap import storage
 from geomap.scoring import top_hotspots
 
 
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class TaxonRow:
+    taxon_id: int
+    scientific_name: str
+    swedish_name: str
+
+
+def read_first_n_taxa_rows(csv_path: Path, n: int) -> list[TaxonRow]:
+    rows: list[TaxonRow] = []
+
+    with csv_path.open("r", encoding="utf-8") as f:
+        r = csv.DictReader(f)
+        for rec in r:
+            tid = (rec.get("taxon_id") or "").strip()
+            if not tid.isdigit():
+                continue
+
+            rows.append(
+                TaxonRow(
+                    taxon_id=int(tid),
+                    scientific_name=(rec.get("scientific_name") or "").strip(),
+                    swedish_name=(rec.get("swedish_name") or "").strip(),
+                )
+            )
+
+            if len(rows) >= n:
+                break
+
+    return rows
+
+
 def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
     taxa: list[int] = []
     with csv_path.open("r", encoding="utf-8") as f:
@@ -51,10 +84,12 @@ def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
 
 def main() -> int:
     cfg = Config(repo_root=REPO_ROOT)
+    alpha = cfg.hotmap_alpha
+    beta = cfg.hotmap_beta
     if "--alpha" in sys.argv:
-        cfg.hotmap_alpha = float(sys.argv[sys.argv.index("--alpha") + 1])
+        alpha = float(sys.argv[sys.argv.index("--alpha") + 1])
     if "--beta" in sys.argv:
-        cfg.hotmap_beta = float(sys.argv[sys.argv.index("--beta") + 1])
+        beta = float(sys.argv[sys.argv.index("--beta") + 1])
 
     logger = setup_logger("build_hotmap", cfg.logs_dir)
 
@@ -62,20 +97,31 @@ def main() -> int:
     if "--n" in sys.argv:
         n = int(sys.argv[sys.argv.index("--n") + 1])
 
+    taxa = read_first_n_taxa_rows(cfg.missing_species_csv, n)
+    taxon_ids = [t.taxon_id for t in taxa]
 
-    taxon_ids = read_first_n_taxa(cfg.missing_species_csv, n)
-    logger.info("Aggregating hotmap for n=%d taxa at zoom=%d", n, cfg.zoom)
+    logger.info(
+        "Aggregating hotmap for n=%d taxa at zoom=%d",
+        len(taxon_ids), cfg.zoom
+    )
 
     conn = storage.connect(cfg.geomap_db_path)
     try:
         storage.ensure_schema(conn)
         conn.execute("BEGIN;")
+
+        # NEW: populate taxon_dim
+        storage.upsert_taxon_dim(
+            conn,
+            [(t.taxon_id, t.scientific_name, t.swedish_name) for t in taxa],
+        )
+
         storage.rebuild_hotmap(
             conn,
             cfg.zoom,
             taxon_ids,
-            alpha=cfg.hotmap_alpha,
-            beta=cfg.hotmap_beta,
+            alpha=alpha,
+            beta=beta,
         )
         conn.commit()
 

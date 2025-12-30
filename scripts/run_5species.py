@@ -28,6 +28,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 # --------------------------------
 
+from geomap.config import Config
+
 def run(cmd: list[str]) -> None:
     p = subprocess.run(cmd)
     if p.returncode != 0:
@@ -35,10 +37,35 @@ def run(cmd: list[str]) -> None:
 
 
 def main() -> int:
+    cfg = Config(repo_root=REPO_ROOT)
+    if "--alpha" in sys.argv:
+        cfg.hotmap_alpha = float(sys.argv[sys.argv.index("--alpha") + 1])
+    if "--beta" in sys.argv:
+        cfg.hotmap_beta = float(sys.argv[sys.argv.index("--beta") + 1])
+
+
     python = sys.executable
 
     run([python, str(REPO_ROOT / "scripts" / "fetch_layers.py"), "--n", "5"])
     run([python, str(REPO_ROOT / "scripts" / "build_hotmap.py"), "--n", "5"])
+    run([python, str(REPO_ROOT / "scripts" / "export_hotmap.py")])
+    return 0
+
+
+def main() -> int:
+    cfg = Config(repo_root=REPO_ROOT)
+
+    alpha = cfg.hotmap_alpha
+    beta = cfg.hotmap_beta
+    if "--alpha" in sys.argv:
+        alpha = float(sys.argv[sys.argv.index("--alpha") + 1])
+    if "--beta" in sys.argv:
+        beta = float(sys.argv[sys.argv.index("--beta") + 1])
+
+    python = sys.executable
+    # pass args through to the scripts that actually compute/rebuild
+    run([python, str(REPO_ROOT / "scripts" / "fetch_layers.py"), "--n", "5"])
+    run([python, str(REPO_ROOT / "scripts" / "build_hotmap.py"), "--n", "5","--alpha", str(alpha), "--beta", str(beta)])
     run([python, str(REPO_ROOT / "scripts" / "export_hotmap.py")])
     return 0
 
