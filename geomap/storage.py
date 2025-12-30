@@ -75,10 +75,7 @@ def ensure_parent_dir(path: Path) -> None:
 def connect(db_path: Path) -> sqlite3.Connection:
     ensure_parent_dir(db_path)
     conn = sqlite3.connect(str(db_path))
-
-    # Enable dict-like row access: row["centroid_lat"], etc.
-    conn.row_factory = sqlite3.Row
-
+    conn.row_factory = sqlite3.Row 
     conn.execute("PRAGMA journal_mode=WAL;")
     conn.execute("PRAGMA synchronous=NORMAL;")
     return conn
@@ -175,21 +172,16 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
       h.coverage,
       h.score,
 
-      -- bbox
-      h.bbox_top_lat      AS topLeft_lat,
-      h.bbox_left_lon     AS topLeft_lon,
-      h.bbox_bottom_lat   AS bottomRight_lat,
-      h.bbox_right_lon    AS bottomRight_lon,
+      h.bbox_top_lat    AS topLeft_lat,
+      h.bbox_left_lon   AS topLeft_lon,
+      h.bbox_bottom_lat AS bottomRight_lat,
+      h.bbox_right_lon  AS bottomRight_lon,
 
-      -- centroid
       (h.bbox_top_lat + h.bbox_bottom_lat) / 2.0 AS centroid_lat,
       (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
 
-      -- strength of signal (only within current taxa set)
-      COALESCE(SUM(t.observations_count), 0) AS obs_total,
-
-      -- explainability (only within current taxa set)
-      GROUP_CONCAT(t.taxon_id, ';') AS taxa_list,
+      COALESCE(SUM(CASE WHEN s.taxon_id IS NOT NULL THEN t.observations_count ELSE 0 END), 0) AS obs_total,
+      GROUP_CONCAT(CASE WHEN s.taxon_id IS NOT NULL THEN t.taxon_id END, ';') AS taxa_list,
 
       h.updated_at_utc
     FROM grid_hotmap h
@@ -197,8 +189,6 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
       ON t.zoom = h.zoom AND t.x = h.x AND t.y = h.y
     LEFT JOIN hotmap_taxa_set s
       ON s.zoom = t.zoom AND s.taxon_id = t.taxon_id
-    WHERE h.zoom = t.zoom
-      AND (s.taxon_id IS NOT NULL OR t.taxon_id IS NULL)
     GROUP BY
       h.zoom, h.x, h.y, h.coverage, h.score,
       h.bbox_top_lat, h.bbox_left_lon,

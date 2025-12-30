@@ -34,15 +34,37 @@ from geomap import storage
 from geomap.distance import haversine_km, distance_weight_rational, distance_weight_exp
 
 
+# Dalby center of this Universe
+DEFAULT_LAT = "55.667"
+DEFAULT_LON = "13.350"
+
+
 def _get_arg(name: str, default: str | None = None) -> str | None:
     if name in sys.argv:
         return sys.argv[sys.argv.index(name) + 1]
     return default
 
+def taxa_for_cell(conn, zoom: int, x: int, y: int) -> list[tuple[int,str,str,int]]:
+    rows = conn.execute(
+        """
+        SELECT taxon_id, scientific_name, swedish_name, observations_count
+        FROM grid_hotmap_taxa_names_v
+        WHERE zoom=? AND x=? AND y=?
+        ORDER BY observations_count DESC, taxon_id;
+        """,
+        (zoom, x, y),
+    ).fetchall()
+    return [(int(r[0]), r[1], r[2], int(r[3])) for r in rows]
 
-# Dalby center of this Universe
-DEFAULT_LAT = "55.667"
-DEFAULT_LON = "13.350"
+def fmt_taxa(taxa: list[tuple[int, str, str, int]], max_items: int = 8) -> str:
+    # tid, sci, swe, obs
+    parts = []
+    for tid, sci, swe, obs in taxa[:max_items]:
+        name = swe.strip() or sci.strip() or str(tid)
+        parts.append(f"{tid}:{name}({obs})")
+    more = "" if len(taxa) <= max_items else f" …+{len(taxa)-max_items}"
+    return ", ".join(parts) + more
+
 
 def main() -> int:
     cfg = Config(repo_root=REPO_ROOT)
@@ -56,6 +78,9 @@ def main() -> int:
     gamma = float(_get_arg("--gamma", "2.0"))   # only used for rational
     max_km = float(_get_arg("--max-km", "250")) # ignore very far cells
 
+    show_all_taxa = "--show-all-taxa" in sys.argv
+    taxa_top_n = int(_get_arg("--taxa-top", "10"))  # used when not showing all
+    
     logger.info("Using position: lat=%.6f lon=%.6f", lat, lon)
     logger.info("Decay: mode=%s d0_km=%.3f gamma=%.3f max_km=%.3f", mode, d0_km, gamma, max_km)
 
@@ -85,25 +110,44 @@ def main() -> int:
         if not candidate_rows:
             logger.warning("No hotmap rows at all for zoom=%d", cfg.zoom)
             return 0
+
+        scored = []
+        seen: set[tuple[int, int, int]] = set()
+
+        logger.info("Candidates fetched: %d", len(candidate_rows))
+
+        for row in candidate_rows:
+            key = (int(row["zoom"]), int(row["x"]), int(row["y"]))
+            if key in seen:
+                continue
+            seen.add(key)
+
+            base_score = float(row["score"])
+            c_lat = float(row["centroid_lat"])
+            c_lon = float(row["centroid_lon"])
         
-        scored = []        
-        for r in candidate_rows:
-            for idx, r in enumerate(candidate_rows):
-                base_score = float(r["score"])
-                c_lat = float(r["centroid_lat"])
-                c_lon = float(r["centroid_lon"])
+            d_km = haversine_km(lat, lon, c_lat, c_lon)
 
-                d_km = haversine_km(lat, lon, c_lat, c_lon)
-                if d_km > max_km:
-                    continue
+            # Debug a few rows
+            if len(seen) <= 5:
+                logger.info(
+                    "DEBUG cand %d key=%s centroid=(%.6f,%.6f) d_km=%.2f base=%.6f",
+                    len(seen), key, c_lat, c_lon, d_km, base_score
+                )
 
-                if mode == "exp":
-                    w = distance_weight_exp(d_km, d0_km)
-                else:
-                    w = distance_weight_rational(d_km, d0_km, gamma)
+            if d_km > max_km:
+                continue
 
-                dw_score = base_score * w
-                scored.append((dw_score, d_km, r))
+            if mode == "exp":
+                w = distance_weight_exp(d_km, d0_km)
+            else:
+                w = distance_weight_rational(d_km, d0_km, gamma)
+
+            dw_score = base_score * w
+            scored.append((dw_score, d_km, row))
+
+        logger.info("Unique cells considered: %d", len(seen))
+        logger.info("Scored within max_km: %d", len(scored))
 
         if not scored:
             logger.warning(
@@ -111,19 +155,53 @@ def main() -> int:
                 max_km, cfg.zoom)
             return 0
             
-        scored.sort(key=lambda t: (t[0], -t[1]), reverse=True)
+        scored.sort(key=lambda t: (-t[0], t[1]))  # highest dw_score, then nearest
+
+        ## Debug vvv
+        out_keys = set()
+        for i, (dw_score, d_km, row) in enumerate(scored[:limit], 1):
+            key = (int(row["zoom"]), int(row["x"]), int(row["y"]))
+            if key in out_keys:
+                logger.info("DEBUG DUP OUTPUT at rank %d key=%s", i, key)
+            out_keys.add(key)
+        ## Debug ^^^
 
         show = scored[:limit]
         for i, (dw_score, d_km, r) in enumerate(show, 1):
             zoom, x, y = int(r["zoom"]), int(r["x"]), int(r["y"])
             coverage = int(r["coverage"])
             base_score = float(r["score"])
-            taxa_list = r["taxa_list"] or ""
+
+            taxa_named = fmt_taxa(taxa_for_cell(conn, zoom, x, y), max_items=8)
+
+
+            taxa = taxa_for_cell(conn, zoom, x, y)
+
             logger.info(
-                "Rank %d: dw_score=%.6f base=%.6f dist_km=%.2f coverage=%d cell=(%d,%d) taxa=%s",
-                i, dw_score, base_score, d_km, coverage, x, y, taxa_list
+                "Rank %d: dw_score=%.6f base=%.6f dist_km=%.2f coverage=%d cell=(%d,%d)",
+                i, dw_score, base_score, d_km, coverage, x, y
             )
 
+            logger.info("        species: %d taxa", len(taxa))
+
+            if not taxa:
+                continue
+
+            if show_all_taxa:
+                logger.info("        all:")
+                for tid, sci, swe, obs in taxa:
+                    name = swe or sci or ""
+                    logger.info("          %d\t%s\tobs=%d", tid, name, obs)
+            else:
+                top_taxa = taxa[:taxa_top_n]
+                logger.info(
+                    "        top: %s",
+                    ", ".join(
+                        f"{tid}:{(swe or sci or '')}({obs})"
+                        for tid, sci, swe, obs in top_taxa
+                    )
+                )
+                        
         return 0
     finally:
         conn.close()
