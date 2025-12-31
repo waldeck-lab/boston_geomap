@@ -130,6 +130,12 @@ def is_valid_local_from(payload_sha: str | None, src_zoom: int, src_sha: str) ->
         return False
     return payload_sha == local_from_marker(src_zoom, src_sha)
 
+def has_any_taxon_grid(conn, taxon_id: int, zoom: int, slot_id: int) -> bool:
+    r = conn.execute(
+        "SELECT 1 FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=? LIMIT 1;",
+        (taxon_id, zoom, slot_id),
+    ).fetchone()
+    return r is not None
 
 def clear_hotmap(
     conn: sqlite3.Connection,

@@ -70,13 +70,6 @@ def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
                 break
     return taxa
 
-def has_any_taxon_grid(conn, taxon_id: int, zoom: int, slot_id: int) -> bool:
-    r = conn.execute(
-        "SELECT 1 FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=? LIMIT 1;",
-        (taxon_id, zoom, slot_id),
-    ).fetchone()
-    return r is not None
-
 def main() -> int:
     cfg = Config(repo_root=REPO_ROOT)
 
@@ -147,25 +140,40 @@ def main() -> int:
                     storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells))
 
                 # Ensure derived zooms exist and are valid relative to current base_sha
+
+
+                # Ensure derived zooms exist and are valid relative to current base_sha
                 for z in zooms[1:]:
                     prev_z = storage.get_layer_state(conn, taxon_id, z, slot_id)
+
                     valid = False
                     if prev_z:
                         valid = storage.is_valid_local_from(prev_z[1], base_zoom, base_sha)
                         
-                    if valid and has_any_taxon_grid(
+                    if valid and storage.has_any_taxon_grid(
                             conn,
                             taxon_id=taxon_id,
                             zoom=z,
-                            slot_id=slot_id,):
-                        logger.info("Derived zoom=%d OK for taxon_id=%d slot=%d (cache valid)", z, taxon_id, slot_id)
+                            slot_id=slot_id,
+                    ):
+                        logger.info(
+                            "Derived zoom=%d OK for taxon_id=%d slot=%d (cache valid)",
+                            z, taxon_id, slot_id
+                        )
                         continue
 
+                    # Verbose info
+                    reason = "stale"
+                    if not prev_z:
+                        reason = "missing state"
+                    elif not storage.has_any_taxon_grid(conn, taxon_id, z, slot_id):
+                        reason = "missing rows"
                     logger.info(
                         "Rebuilding derived zoom=%d from base_zoom=%d for taxon_id=%d slot=%d (reason=%s)",
                         z, base_zoom, taxon_id, slot_id,
-                        "missing" if not prev_z else "stale",
+                        str(reason),
                     )
+
                     storage.materialize_parent_zoom_from_child(
                         conn,
                         taxon_id=taxon_id,
@@ -174,7 +182,6 @@ def main() -> int:
                         dst_zoom=z,
                         src_sha=base_sha,
                     )
-
                 conn.commit()
             except Exception:
                 conn.rollback()
