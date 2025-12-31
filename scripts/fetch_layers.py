@@ -41,6 +41,7 @@ def _get_arg(name: str, default: str | None = None) -> str | None:
         return sys.argv[sys.argv.index(name) + 1]
     return default
 
+
 def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
     taxa: list[int] = []
     with csv_path.open("r", encoding="utf-8") as f:
@@ -48,10 +49,10 @@ def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
         for row in r:
             if not row:
                 continue
-            taxon_id = row[0].strip()
-            if taxon_id.isdigit():
-                taxa.append(int(taxon_id))
-            if len(taxa) >= n:
+            tid = row[0].strip()
+            if tid.isdigit():
+                taxa.append(int(tid))
+            if n > 0 and len(taxa) >= n:
                 break
     return taxa
 
@@ -62,8 +63,10 @@ def main() -> int:
     logger = setup_logger("fetch_layers", cfg.logs_dir)
     logger.info("Missing species CSV: %s", cfg.missing_species_csv)
     logger.info("Geomap DB: %s", cfg.geomap_db_path)
-    logger.info("Zoom: %d", cfg.zoom)
 
+    zoom = int(_get_arg("--zoom", "15"))
+    logger.info("Zoom: %d", zoom)
+    
     slot_id = int(_get_arg("--slot", "0"))
     logger.info("Slot: %d", slot_id)
     
@@ -96,18 +99,18 @@ def main() -> int:
         for taxon_id in taxon_ids:
             throttle(2.0, throttle_state)
 
-            logger.info("Fetching GeoGridAggregation: taxon_id=%d zoom=%d", taxon_id, cfg.zoom)
-            payload = client.geogrid_aggregation([taxon_id], zoom=cfg.zoom)
+            logger.info("Fetching GeoGridAggregation: taxon_id=%d zoom=%d", taxon_id, zoom)
+            payload = client.geogrid_aggregation([taxon_id], zoom=zoom)
 
             grid_cells = payload.get("gridCells") or []
             sha = stable_gridcells_hash(payload)
 
-            prev = storage.get_layer_state(conn, taxon_id, cfg.zoom, slot_id)
+            prev = storage.get_layer_state(conn, taxon_id, zoom, slot_id)
 
             if prev and prev[1] == sha:
                 logger.info("No change for taxon_id=%d (sha256 match). gridCells=%d", taxon_id, len(grid_cells))
                 conn.execute("BEGIN;")
-                storage.upsert_layer_state(conn, taxon_id, cfg.zoom, slot_id, sha, len(grid_cells))
+                storage.upsert_layer_state(conn, taxon_id, zoom, slot_id, sha, len(grid_cells))
                 conn.commit()
                 continue
 
@@ -119,8 +122,8 @@ def main() -> int:
             )
 
             conn.execute("BEGIN;")
-            storage.replace_taxon_grid(conn, taxon_id, cfg.zoom, slot_id, grid_cells)
-            storage.upsert_layer_state(conn, taxon_id, cfg.zoom, slot_id, sha, len(grid_cells))
+            storage.replace_taxon_grid(conn, taxon_id, zoom, slot_id, grid_cells)
+            storage.upsert_layer_state(conn, taxon_id, zoom, slot_id, sha, len(grid_cells))
             conn.commit()
 
         logger.info("Done.")

@@ -102,6 +102,9 @@ def main() -> int:
 
     logger = setup_logger("build_hotmap", cfg.logs_dir)
 
+    zoom = int(_get_arg("--zoom", "15"))
+    logger.info("Zoom: %d", zoom)
+
     n = 5
 
     slot_id = int(_get_arg("--slot", "0"))
@@ -115,7 +118,7 @@ def main() -> int:
 
     logger.info(
         "Aggregating hotmap for n=%d taxa at zoom=%d",
-        len(taxon_ids), cfg.zoom
+        len(taxon_ids), zoom
     )
 
     conn = storage.connect(cfg.geomap_db_path)
@@ -131,7 +134,7 @@ def main() -> int:
 
         storage.rebuild_hotmap(
             conn,
-            cfg.zoom,
+            zoom,
             slot_id,
             taxon_ids,
             alpha=alpha,
@@ -139,7 +142,7 @@ def main() -> int:
         )
         conn.commit()
 
-        tops = top_hotspots(conn, cfg.zoom, slot_id, limit=10)
+        tops = top_hotspots(conn, zoom, slot_id, limit=10)
         for i, h in enumerate(tops, 1):
             logger.info(
                 "Top %d: coverage=%d score=%.3f cell=(%d,%d) bbox=[(%.5f,%.5f)->(%.5f,%.5f)]",

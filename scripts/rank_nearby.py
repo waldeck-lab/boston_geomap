@@ -85,6 +85,9 @@ def main() -> int:
     taxa_top_n = int(_get_arg("--taxa-top", "10"))  # used when not showing all
 
     slot_id = int(_get_arg("--slot", "0"))
+    zoom = int(_get_arg("--zoom", "15"))
+    logger.info("Zoom: %d", zoom)
+
     logger.info("Slot: %d", slot_id)
     if slot_id < 0 or slot_id > 47:
         logger.error("slot_id out of range: %d", slot_id)
@@ -111,12 +114,12 @@ def main() -> int:
             ORDER BY coverage DESC, score DESC
             LIMIT 2000;
             """,
-            (cfg.zoom, slot_id),
+            (zoom, slot_id),
         ).fetchall()
 
 
         if not candidate_rows:
-            logger.warning("No hotmap rows at all for zoom=%d", cfg.zoom)
+            logger.warning("No hotmap rows at all for zoom=%d", zoom)
             return 0
 
         scored = []
@@ -160,7 +163,7 @@ def main() -> int:
         if not scored:
             logger.warning(
                 "No hotspots within max_km=%.1f km (zoom=%d). Closest exists, try --max-km 600",
-                max_km, cfg.zoom)
+                max_km, zoom)
             return 0
             
         scored.sort(key=lambda t: (-t[0], t[1]))  # highest dw_score, then nearest

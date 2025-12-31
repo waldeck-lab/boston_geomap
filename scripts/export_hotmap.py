@@ -35,7 +35,7 @@ from geomap.config import Config
 from geomap.logging_utils import setup_logger
 from geomap import storage
 from geomap.export_geojson import export_hotmap_geojson
-from geomap.export_csv import export_top_sites_csv  # NEW
+from geomap.export_csv import export_top_sites_csv  
 
 def _get_arg(name: str, default: str | None = None) -> str | None:
     if name in sys.argv:
@@ -47,9 +47,11 @@ def main() -> int:
     logger = setup_logger("export_hotmap", cfg.logs_dir)
 
     slot_id = int(_get_arg("--slot", "0"))
+    zoom = int(_get_arg("--zoom", "15"))
+    logger.info("Zoom: %d", zoom)
 
-    out_geojson = cfg.repo_root / "data" / "out" / f"hotmap_zoom{cfg.zoom}_slot{slot_id}.geojson"
-    out_csv  = cfg.repo_root / "data" / "out" / f"top_sites_zoom{cfg.zoom}_slot{slot_id}.csv"
+    out_geojson = cfg.repo_root / "data" / "out" / f"hotmap_zoom{zoom}_slot{slot_id}.geojson"
+    out_csv  = cfg.repo_root / "data" / "out" / f"top_sites_zoom{zoom}_slot{slot_id}.csv"
 
     logger.info("Exporting slot_id: %d", slot_id)
     logger.info("Exporting hotmap to: %s", out_geojson)
@@ -59,8 +61,8 @@ def main() -> int:
     try:
         storage.ensure_schema(conn)
 
-        export_hotmap_geojson(conn, cfg.zoom, slot_id, out_geojson)
-        export_top_sites_csv(conn, cfg.zoom, slot_id, out_csv, limit=200)
+        export_hotmap_geojson(conn, zoom, slot_id, out_geojson)
+        export_top_sites_csv(conn, zoom, slot_id, out_csv, limit=200)
 
         logger.info("Export complete.")
         return 0
