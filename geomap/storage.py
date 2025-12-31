@@ -25,6 +25,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Tuple
 import math
 
+from geomap.tiles import tile_bbox_latlon
 
 DDL = """
 CREATE TABLE IF NOT EXISTS taxon_grid (
@@ -83,9 +84,8 @@ CREATE TABLE IF NOT EXISTS taxon_dim (
 );
 """
 
-def utc_now_iso() -> str:
+def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-
 
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -246,7 +246,7 @@ def upsert_layer_state(
     payload_sha256: str,
     grid_cell_count: int
 ) -> None:
-    now = utc_now_iso()
+    now = _utc_now_iso()
     conn.execute(
         """
         INSERT INTO taxon_layer_state(taxon_id, zoom, slot_id, last_fetch_utc, payload_sha256, grid_cell_count)
@@ -259,6 +259,82 @@ def upsert_layer_state(
         (taxon_id, zoom, slot_id, now, payload_sha256, int(grid_cell_count)),
     )
 
+def build_taxon_grid_derived_zoom(
+    conn: sqlite3.Connection,
+    *,
+    slot_id: int,
+    src_zoom: int,
+    dst_zoom: int,
+) -> None:
+    """
+    Build coarser zoom taxon_grid rows locally by aggregating from src_zoom.
+    Only supports dst_zoom <= src_zoom.
+    """
+    if dst_zoom > src_zoom:
+        raise ValueError(f"dst_zoom ({dst_zoom}) must be <= src_zoom ({src_zoom})")
+
+    if dst_zoom == src_zoom:
+        return
+
+    shift = src_zoom - dst_zoom
+    now = _utc_now_iso()
+
+    # Remove old derived rows at dst_zoom for this slot (optional but keeps it clean)
+    conn.execute("DELETE FROM taxon_grid WHERE zoom=? AND slot_id=?;", (dst_zoom, slot_id))
+
+    # Group in SQL (fast), then compute bbox in Python (simple + exact)
+    rows = conn.execute(
+        """
+        SELECT
+          taxon_id,
+          (x >> ?) AS px,
+          (y >> ?) AS py,
+          SUM(observations_count) AS obs_sum
+        FROM taxon_grid
+        WHERE zoom=? AND slot_id=?
+        GROUP BY taxon_id, px, py;
+        """,
+        (shift, shift, src_zoom, slot_id),
+    ).fetchall()
+
+    out = []
+    for r in rows:
+        taxon_id = int(r["taxon_id"])
+        px = int(r["px"])
+        py = int(r["py"])
+        obs_sum = int(r["obs_sum"] or 0)
+
+        top_lat, left_lon, bottom_lat, right_lon = tile_bbox_latlon(px, py, dst_zoom)
+
+        out.append(
+            (
+                taxon_id,
+                dst_zoom,
+                slot_id,
+                px,
+                py,
+                obs_sum,
+                1,  # taxa_count: not very meaningful per-taxon; keep 1 or 0. (You can also store obs_sum>0 ? 1 : 0)
+                float(top_lat),
+                float(left_lon),
+                float(bottom_lat),
+                float(right_lon),
+                now,
+            )
+        )
+
+    conn.executemany(
+        """
+        INSERT INTO taxon_grid(
+          taxon_id, zoom, slot_id, x, y,
+          observations_count, taxa_count,
+          bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+          fetched_at_utc
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
+        """,
+        out,
+    )
+    
 def replace_taxon_grid(
     conn: sqlite3.Connection,
     taxon_id: int,
@@ -266,7 +342,7 @@ def replace_taxon_grid(
     slot_id: int,
     grid_cells: Iterable[Dict[str, Any]]
 ) -> None:
-    now = utc_now_iso()
+    now = _utc_now_iso()
 
     conn.execute(
         "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
@@ -318,7 +394,7 @@ def rebuild_hotmap(
     if not taxon_ids:
         return
 
-    now = utc_now_iso()
+    now = _utc_now_iso()
 
     # Clear previous hotmap for this zoom+slot
     conn.execute("DELETE FROM grid_hotmap WHERE zoom=? AND slot_id=?;", (zoom, slot_id))

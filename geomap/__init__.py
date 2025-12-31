@@ -10,4 +10,5 @@ __all__ = [
     "distance",
     "timeslots",
     "sos_filters_ext",
+    "tiles",
 ]
