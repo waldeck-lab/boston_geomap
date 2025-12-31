@@ -34,7 +34,7 @@ class Config:
     subscription_key: str = os.getenv("ARTDATABANKEN_SUBSCRIPTION_KEY", "").strip()
     authorization: str = os.getenv("ARTDATABANKEN_AUTHORIZATION", "").strip()
 
-    zoom: int = int(os.getenv("GEOMAP_ZOOM", "15"))
+    #zoom: int = int(os.getenv("GEOMAP_ZOOM", "15")) # Obsolete, removed
 
     missing_species_csv: Path = None  # type: ignore[assignment]
     observed_db_path: Path = None     # type: ignore[assignment]

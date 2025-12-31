@@ -99,7 +99,7 @@ def main() -> int:
 
     zoom = int(_get_arg("--zoom", "15"))
     ## TODO: store zoom
-    logger.info("Running pipeline: n=%d slot=%d zoom=%d", n, slot_id, cfg.zoom)
+    logger.info("Running pipeline: n=%d slot=%d zoom=%d", n, slot_id, zoom)
     
     python = sys.executable
 
