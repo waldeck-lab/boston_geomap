@@ -69,12 +69,10 @@ def read_first_n_taxa_rows(csv_path: Path, n: int) -> list[TaxonRow]:
                     swedish_name=(rec.get("swedish_name") or "").strip(),
                 )
             )
-
-            if len(rows) >= n:
+            if n > 0 and len(rows) >= n:
                 break
 
     return rows
-
 
 def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
     taxa: list[int] = []
@@ -86,7 +84,7 @@ def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
             tid = row[0].strip()
             if tid.isdigit():
                 taxa.append(int(tid))
-            if len(taxa) >= n:
+            if n > 0 and len(taxa) >= n:
                 break
     return taxa
 

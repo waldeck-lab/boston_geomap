@@ -131,84 +131,89 @@ def materialize_parent_zoom_from_child(
     dst_zoom: int,
 ) -> None:
     """
-    Build taxon_grid rows for dst_zoom by aggregating rows from src_zoom.
-    Assumes src_zoom > dst_zoom and src_zoom data already exists.
+    Aggregate an existing per-taxon grid layer from src_zoom into dst_zoom (dst_zoom < src_zoom),
+    without calling SOS.
+
+    Rules:
+      parent_x = x >> shift
+      parent_y = y >> shift
+      observations_count = SUM(child.observations_count)
+      taxa_count = MAX(child.taxa_count)  (usually 1 for single-taxon queries)
+      bbox = union of children (top=max lat, left=min lon, bottom=min lat, right=max lon)
     """
     if dst_zoom >= src_zoom:
-        raise ValueError("dst_zoom must be < src_zoom")
+        raise ValueError(f"dst_zoom must be < src_zoom (got src={src_zoom}, dst={dst_zoom})")
 
     shift = src_zoom - dst_zoom
+    now = _utc_now_iso()
 
-    # Aggregate in SQL using bit-shifts (fast and simple).
-    agg = conn.execute(
-        """
-        SELECT
-          (x >> ?) AS px,
-          (y >> ?) AS py,
-          SUM(observations_count) AS obs_sum
-        FROM taxon_grid
-        WHERE taxon_id=? AND zoom=? AND slot_id=?
-        GROUP BY px, py;
-        """,
-        (shift, shift, taxon_id, src_zoom, slot_id),
-    ).fetchall()
-
-    # Replace destination zoom rows for this taxon+slot
+    # Rebuild deterministically
     conn.execute(
         "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
         (taxon_id, dst_zoom, slot_id),
     )
 
-    now = _utc_now_iso()
+    rows = conn.execute(
+        """
+        SELECT
+          (x >> ?) AS px,
+          (y >> ?) AS py,
+          SUM(observations_count) AS obs_sum,
+          MAX(taxa_count) AS taxa_max,
+          MAX(bbox_top_lat) AS top_lat,
+          MIN(bbox_left_lon) AS left_lon,
+          MIN(bbox_bottom_lat) AS bottom_lat,
+          MAX(bbox_right_lon) AS right_lon
+        FROM taxon_grid
+        WHERE taxon_id=? AND zoom=? AND slot_id=?
+        GROUP BY (x >> ?), (y >> ?);
+        """,
+        (shift, shift, taxon_id, src_zoom, slot_id, shift, shift),
+    ).fetchall()
 
-    out_rows = []
-    # store for stable hash and layer_state
-    hash_rows: list[tuple[int, int, int]] = []
+    if not rows:
+        # Nothing to materialize (src layer missing)
+        # Keep dst empty and still update state to reflect emptiness if you want.
+        upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, payload_sha256="LOCAL_EMPTY", grid_cell_count=0)
+        return
 
-    for r in agg:
-        px = int(r[0])
-        py = int(r[1])
-        obs_sum = int(r[2] or 0)
-
-        top_lat, left_lon, bottom_lat, right_lon = _tile_bbox_latlon(dst_zoom, px, py)
-
-        # taxa_count for a single taxon layer is not super meaningful.
-        # Keep it simple and consistent:
-        taxa_count = 1 if obs_sum > 0 else 0
-
-        out_rows.append(
+    conn.executemany(
+        """
+        INSERT INTO taxon_grid(
+          taxon_id, zoom, slot_id, x, y,
+          observations_count, taxa_count,
+          bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+          fetched_at_utc
+        ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
+        """,
+        [
             (
                 taxon_id,
                 dst_zoom,
                 slot_id,
-                px,
-                py,
-                obs_sum,
-                taxa_count,
-                float(top_lat),
-                float(left_lon),
-                float(bottom_lat),
-                float(right_lon),
+                int(r["px"]),
+                int(r["py"]),
+                int(r["obs_sum"] or 0),
+                int(r["taxa_max"] or 0),
+                float(r["top_lat"]),
+                float(r["left_lon"]),
+                float(r["bottom_lat"]),
+                float(r["right_lon"]),
                 now,
             )
-        )
-        hash_rows.append((px, py, obs_sum))
+            for r in rows
+        ],
+    )
 
-    if out_rows:
-        conn.executemany(
-            """
-            INSERT INTO taxon_grid(
-              taxon_id, zoom, slot_id, x, y,
-              observations_count, taxa_count,
-              bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
-              fetched_at_utc
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
-            """,
-            out_rows,
-        )
-
-    sha = _stable_agg_hash(hash_rows)
-    upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, sha, len(out_rows))
+    # Mark layer state as locally derived (simple + transparent)
+    upsert_layer_state(
+        conn,
+        taxon_id,
+        dst_zoom,
+        slot_id,
+        payload_sha256=f"LOCAL_FROM_{src_zoom}",
+        grid_cell_count=len(rows),
+    )
 
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -231,7 +236,7 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
     cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell ON taxon_grid(zoom, slot_id, x, y);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_taxon ON taxon_grid(taxon_id, zoom, slot_id);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_grid_hotmap_slot ON grid_hotmap(zoom, slot_id, coverage, score);")
-    cur.execute("CREATE INDEX IF NOT EXISTS idx_hotmap_taxa_set_slot ON hotmap_taxa_set(zoom, slot_id);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_hotmap_taxa_set_slot ON hotmap_taxa_set(zoom, slot_id, taxon_id);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell_obs ON taxon_grid(zoom, slot_id, x, y, observations_count DESC);")
 
 
