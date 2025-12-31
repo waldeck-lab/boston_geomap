@@ -42,6 +42,20 @@ def _get_arg(name: str, default: str | None = None) -> str | None:
     return default
 
 
+def _parse_zooms(arg: str) -> list[int]:
+    # accepts "15,14,13" or "15"
+    zs = []
+    for part in (arg or "").split(","):
+        part = part.strip()
+        if not part:
+            continue
+        zs.append(int(part))
+    if not zs:
+        raise ValueError("empty --zooms")
+    # unique, sorted descending (highest zoom first)
+    return sorted(set(zs), reverse=True)
+
+
 def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
     taxa: list[int] = []
     with csv_path.open("r", encoding="utf-8") as f:
@@ -64,8 +78,10 @@ def main() -> int:
     logger.info("Missing species CSV: %s", cfg.missing_species_csv)
     logger.info("Geomap DB: %s", cfg.geomap_db_path)
 
-    zoom = int(_get_arg("--zoom", "15"))
-    logger.info("Zoom: %d", zoom)
+    zooms = _parse_zooms(_get_arg("--zooms", _get_arg("--zoom", "15")))
+    base_zoom = zooms[0]
+    logger.info("Zooms: %s (base=%d fetched from SOS)", zooms, base_zoom)
+    logger.info("Zoom: %d", base_zoom)
     
     slot_id = int(_get_arg("--slot", "0"))
     logger.info("Slot: %d", slot_id)
@@ -99,34 +115,81 @@ def main() -> int:
         for taxon_id in taxon_ids:
             throttle(2.0, throttle_state)
 
-            logger.info("Fetching GeoGridAggregation: taxon_id=%d zoom=%d", taxon_id, zoom)
-            payload = client.geogrid_aggregation([taxon_id], zoom=zoom)
+            logger.info("Fetching GeoGridAggregation: taxon_id=%d zoom=%d", taxon_id, base_zoom)
+            payload = client.geogrid_aggregation([taxon_id], zoom=base_zoom)
 
             grid_cells = payload.get("gridCells") or []
             sha = stable_gridcells_hash(payload)
 
-            prev = storage.get_layer_state(conn, taxon_id, zoom, slot_id)
+            prev = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id)
+            base_unchanged = bool(prev and prev[1] == sha)
 
-            if prev and prev[1] == sha:
-                logger.info("No change for taxon_id=%d (sha256 match). gridCells=%d", taxon_id, len(grid_cells))
-                conn.execute("BEGIN;")
-                storage.upsert_layer_state(conn, taxon_id, zoom, slot_id, sha, len(grid_cells))
-                conn.commit()
-                continue
-
-            logger.info(
-                "Updating layer for taxon_id=%d: gridCells=%d (changed=%s)",
-                taxon_id,
-                len(grid_cells),
-                "yes" if prev else "new",
-            )
-
+            # Always make sure base zoom is stored/up-to-date first
             conn.execute("BEGIN;")
-            storage.replace_taxon_grid(conn, taxon_id, zoom, slot_id, grid_cells)
-            storage.upsert_layer_state(conn, taxon_id, zoom, slot_id, sha, len(grid_cells))
+            if base_unchanged:
+                logger.info("No change for taxon_id=%d (sha256 match). gridCells=%d", taxon_id, len(grid_cells))
+                storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, sha, len(grid_cells))
+            else:
+                logger.info(
+                    "Updating layer for taxon_id=%d: gridCells=%d (changed=%s)",
+                    taxon_id,
+                    len(grid_cells),
+                    "yes" if prev else "new",
+                )
+                storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells)
+                storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, sha, len(grid_cells))
             conn.commit()
 
-        logger.info("Done.")
+            # Now materialize derived zooms from the (now correct) base zoom.
+            # Simple version: always do it (fast, avoids missing layers).
+            if len(zooms) > 1:
+                conn.execute("BEGIN;")
+                for z in zooms[1:]:
+                    logger.info(
+                        "Materializing local zoom=%d from base_zoom=%d for taxon_id=%d slot=%d",
+                        z, base_zoom, taxon_id, slot_id
+                    )
+                    storage.materialize_parent_zoom_from_child(
+                        conn,
+                        taxon_id=taxon_id,
+                        slot_id=slot_id,
+                        src_zoom=base_zoom,
+                        dst_zoom=z,
+                    )
+                conn.commit()
+        #     prev = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id)
+
+        #     if prev and prev[1] == sha:
+        #         logger.info("No change for taxon_id=%d (sha256 match). gridCells=%d", taxon_id, len(grid_cells))
+        #         conn.execute("BEGIN;")
+        #         storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, sha, len(grid_cells))
+        #         conn.commit()
+        #         continue
+
+        #     # Materialize lower zooms locally from the base zoom
+        #     for z in zooms[1:]:
+        #         logger.info("Materializing local zoom=%d from base_zoom=%d for taxon_id=%d slot=%d", z, base_zoom, taxon_id, slot_id)
+        #         storage.materialize_parent_zoom_from_child(
+        #             conn,
+        #             taxon_id=taxon_id,
+        #             slot_id=slot_id,
+        #             src_zoom=base_zoom,
+        #             dst_zoom=z,
+        #         )
+            
+        #     logger.info(
+        #         "Updating layer for taxon_id=%d: gridCells=%d (changed=%s)",
+        #         taxon_id,
+        #         len(grid_cells),
+        #         "yes" if prev else "new",
+        #     )
+
+        #     conn.execute("BEGIN;")
+        #     storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells)
+        #     storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, sha, len(grid_cells))
+        #     conn.commit()
+
+        # logger.info("Done.")
         return 0
 
     finally:

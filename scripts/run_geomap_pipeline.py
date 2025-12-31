@@ -75,6 +75,16 @@ def _get_arg(name: str, default: str | None = None) -> str | None:
             return sys.argv[i + 1]
     return default
 
+def _parse_zooms(arg: str) -> list[int]:
+    zs = []
+    for part in (arg or "").split(","):
+        part = part.strip()
+        if not part:
+            continue
+        zs.append(int(part))
+    if not zs:
+        raise ValueError("empty --zooms")
+    return sorted(set(zs), reverse=True)
 
 def run(cmd: list[str]) -> None:
     p = subprocess.run(cmd)
@@ -97,28 +107,29 @@ def main() -> int:
     alpha = float(_get_arg("--alpha", str(cfg.hotmap_alpha)))
     beta = float(_get_arg("--beta", str(cfg.hotmap_beta)))
 
-    zoom = int(_get_arg("--zoom", "15"))
-    ## TODO: store zoom
-    logger.info("Running pipeline: n=%d slot=%d zoom=%d", n, slot_id, zoom)
+    zooms = _parse_zooms(_get_arg("--zooms", _get_arg("--zoom", "15")))
+    logger.info("Running pipeline: n=%d slot=%d zooms=%s", n, slot_id, zooms)
     
     python = sys.executable
 
     # Always pass slot through the whole chain
     run([python, str(REPO_ROOT / "scripts" / "fetch_layers.py"),
          "--n", str(n),
-         "--zoom", str(zoom),
+         "--zooms", ",".join(str(z) for z in zooms),
          "--slot", str(slot_id)])
 
-    run([python, str(REPO_ROOT / "scripts" / "build_hotmap.py"),
-         "--n", str(n),
-         "--zoom", str(zoom),
-         "--slot", str(slot_id),
-         "--alpha", str(alpha),
-         "--beta", str(beta)])
+    # Re-run all pipeline steps per zoom-level
+    for zoom in zooms:
+        run([python, str(REPO_ROOT / "scripts" / "build_hotmap.py"),
+             "--n", str(n),
+             "--zoom", str(zoom),
+             "--slot", str(slot_id),
+             "--alpha", str(alpha),
+             "--beta", str(beta)])
 
-    run([python, str(REPO_ROOT / "scripts" / "export_hotmap.py"),
-         "--zoom", str(zoom),
-         "--slot", str(slot_id)])
+        run([python, str(REPO_ROOT / "scripts" / "export_hotmap.py"),
+             "--zoom", str(zoom),
+             "--slot", str(slot_id)])
 
     return 0
 

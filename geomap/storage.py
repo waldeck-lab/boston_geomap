@@ -18,6 +18,9 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
+
 import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -86,6 +89,126 @@ CREATE TABLE IF NOT EXISTS taxon_dim (
 
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _tile_bbox_latlon(z: int, x: int, y: int) -> Tuple[float, float, float, float]:
+    """
+    Returns (topLeft_lat, topLeft_lon, bottomRight_lat, bottomRight_lon)
+    for slippy-map tiles in Web Mercator (EPSG:3857).
+    """
+    n = 2 ** z
+
+    lon_left = x / n * 360.0 - 180.0
+    lon_right = (x + 1) / n * 360.0 - 180.0
+
+    def lat_from_ytile(yy: int) -> float:
+        lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * yy / n)))
+        return lat_rad * 180.0 / math.pi
+
+    lat_top = lat_from_ytile(y)
+    lat_bottom = lat_from_ytile(y + 1)
+
+    return (lat_top, lon_left, lat_bottom, lon_right)
+
+
+def _stable_agg_hash(rows: Iterable[tuple[int, int, int]]) -> str:
+    """
+    rows: iterable of (x, y, observations_sum) at some zoom/slot/taxon.
+    Stable hash used for taxon_layer_state for locally-derived zoom levels.
+    """
+    slim = [(int(x), int(y), int(obs)) for (x, y, obs) in rows]
+    slim.sort(key=lambda t: (t[0], t[1]))
+    blob = json.dumps(slim, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return hashlib.sha256(blob).hexdigest()
+
+
+def materialize_parent_zoom_from_child(
+    conn: sqlite3.Connection,
+    *,
+    taxon_id: int,
+    slot_id: int,
+    src_zoom: int,
+    dst_zoom: int,
+) -> None:
+    """
+    Build taxon_grid rows for dst_zoom by aggregating rows from src_zoom.
+    Assumes src_zoom > dst_zoom and src_zoom data already exists.
+    """
+    if dst_zoom >= src_zoom:
+        raise ValueError("dst_zoom must be < src_zoom")
+
+    shift = src_zoom - dst_zoom
+
+    # Aggregate in SQL using bit-shifts (fast and simple).
+    agg = conn.execute(
+        """
+        SELECT
+          (x >> ?) AS px,
+          (y >> ?) AS py,
+          SUM(observations_count) AS obs_sum
+        FROM taxon_grid
+        WHERE taxon_id=? AND zoom=? AND slot_id=?
+        GROUP BY px, py;
+        """,
+        (shift, shift, taxon_id, src_zoom, slot_id),
+    ).fetchall()
+
+    # Replace destination zoom rows for this taxon+slot
+    conn.execute(
+        "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
+        (taxon_id, dst_zoom, slot_id),
+    )
+
+    now = _utc_now_iso()
+
+    out_rows = []
+    # store for stable hash and layer_state
+    hash_rows: list[tuple[int, int, int]] = []
+
+    for r in agg:
+        px = int(r[0])
+        py = int(r[1])
+        obs_sum = int(r[2] or 0)
+
+        top_lat, left_lon, bottom_lat, right_lon = _tile_bbox_latlon(dst_zoom, px, py)
+
+        # taxa_count for a single taxon layer is not super meaningful.
+        # Keep it simple and consistent:
+        taxa_count = 1 if obs_sum > 0 else 0
+
+        out_rows.append(
+            (
+                taxon_id,
+                dst_zoom,
+                slot_id,
+                px,
+                py,
+                obs_sum,
+                taxa_count,
+                float(top_lat),
+                float(left_lon),
+                float(bottom_lat),
+                float(right_lon),
+                now,
+            )
+        )
+        hash_rows.append((px, py, obs_sum))
+
+    if out_rows:
+        conn.executemany(
+            """
+            INSERT INTO taxon_grid(
+              taxon_id, zoom, slot_id, x, y,
+              observations_count, taxa_count,
+              bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+              fetched_at_utc
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
+            """,
+            out_rows,
+        )
+
+    sha = _stable_agg_hash(hash_rows)
+    upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, sha, len(out_rows))
 
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
