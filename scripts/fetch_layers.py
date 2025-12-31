@@ -124,32 +124,24 @@ def main() -> int:
             prev = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id)
             
             changed = (not prev) or (prev[1] != sha)
-                
-            conn.execute("BEGIN;")
-            if changed:
-                logger.info(
-                    "Updating base layer: taxon_id=%d zoom=%d slot=%d gridCells=%d",
-                    taxon_id, base_zoom, slot_id, len(grid_cells)
-                )
-                storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells)
-                storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, sha, len(grid_cells))
-            else:
-                # still refresh last_fetch_utc etc
-                logger.info("No change for taxon_id=%d (sha256 match). gridCells=%d", taxon_id, len(grid_cells))
-                storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, sha, len(grid_cells))
 
-            # Now materialize requested lower zooms from the *current* base zoom rows.
-            # Do it iteratively so you can request e.g. 15,14,13 and always aggregate from the closest child.
+
+            need_base_write = not (prev and prev[1] == sha)
+
+            conn.execute("BEGIN;")
+
+            if need_base_write:
+                storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells)
+
+            # Always update base layer_state (it also acts as “we checked”)
+            storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, sha, len(grid_cells))
+
+            # Rebuild derived if base changed OR derived state missing
             src = base_zoom
             for z in zooms[1:]:
-                logger.info("Materializing local zoom=%d from zoom=%d for taxon_id=%d slot=%d", z, src, taxon_id, slot_id)
-                storage.materialize_parent_zoom_from_child(
-                    conn,
-                    taxon_id=taxon_id,
-                    slot_id=slot_id,
-                    src_zoom=src,
-                    dst_zoom=z,
-                )
+                derived = storage.get_layer_state(conn, taxon_id, z, slot_id)
+                if need_base_write or (derived is None) or (derived[1] == ""):
+                    storage.materialize_parent_zoom_from_child(conn, taxon_id, slot_id, src, z)
                 src = z
 
             conn.commit()

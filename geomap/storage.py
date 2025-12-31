@@ -121,62 +121,165 @@ def _stable_agg_hash(rows: Iterable[tuple[int, int, int]]) -> str:
     blob = json.dumps(slim, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     return hashlib.sha256(blob).hexdigest()
 
+from pathlib import Path
+import os
+
+def clear_hotmap(
+    conn: sqlite3.Connection,
+    *,
+    zoom: int | None = None,
+    slot_id: int | None = None,
+) -> tuple[int, int]:
+    """
+    Delete rebuildable hotmap artifacts.
+    Returns (deleted_grid_hotmap_rows, deleted_hotmap_taxa_set_rows).
+    """
+    where = []
+    args: list[int] = []
+    if zoom is not None:
+        where.append("zoom=?")
+        args.append(int(zoom))
+    if slot_id is not None:
+        where.append("slot_id=?")
+        args.append(int(slot_id))
+
+    wh = (" WHERE " + " AND ".join(where)) if where else ""
+
+    cur = conn.cursor()
+    cur.execute(f"DELETE FROM grid_hotmap{wh};", args)
+    n_hotmap = cur.rowcount
+
+    cur.execute(f"DELETE FROM hotmap_taxa_set{wh};", args)
+    n_set = cur.rowcount
+
+    return (int(n_hotmap), int(n_set))
+
+
+def clear_derived_zoom_cache(
+    conn: sqlite3.Connection,
+    *,
+    keep_zoom: int,
+    slot_id: int | None = None,
+) -> tuple[int, int]:
+    """
+    Delete locally-derived zoom layers (taxon_grid + taxon_layer_state) for zoom != keep_zoom,
+    identified via payload_sha256 like 'LOCAL_FROM_%' OR zoom != keep_zoom.
+    Returns (deleted_taxon_grid_rows, deleted_layer_state_rows).
+
+    Note: If you want maximum safety, rely primarily on the LOCAL_FROM_% marker.
+    """
+    args: list[int] = [int(keep_zoom)]
+    slot_clause = ""
+    if slot_id is not None:
+        slot_clause = " AND slot_id=?"
+        args.append(int(slot_id))
+
+    cur = conn.cursor()
+
+    # Remove derived layer_state rows (marked LOCAL_FROM_*)
+    cur.execute(
+        f"""
+        DELETE FROM taxon_layer_state
+        WHERE zoom != ?
+          {slot_clause}
+          AND payload_sha256 LIKE 'LOCAL_FROM_%';
+        """,
+        args,
+    )
+    n_state = cur.rowcount
+
+    # Remove derived taxon_grid rows for zoom != keep_zoom (and slot if given)
+    # This is safe if you are sure you only ever fetch keep_zoom from SOS.
+    cur.execute(
+        f"""
+        DELETE FROM taxon_grid
+        WHERE zoom != ?
+          {slot_clause};
+        """,
+        args,
+    )
+    n_grid = cur.rowcount
+
+    return (int(n_grid), int(n_state))
+
+
+def clear_export_files(
+    out_dir: Path,
+    *,
+    zoom: int | None = None,
+    slot_id: int | None = None,
+) -> int:
+    """
+    Delete exported hotmap files. Returns number of deleted files.
+    Matches your naming: hotmap_zoom{z}_slot{s}.geojson and top_sites_zoom{z}_slot{s}.csv
+    """
+    if not out_dir.exists():
+        return 0
+
+    patterns: list[str] = []
+    if zoom is None and slot_id is None:
+        patterns = ["hotmap_zoom", "top_sites_zoom"]
+    elif zoom is not None and slot_id is None:
+        patterns = [f"hotmap_zoom{int(zoom)}_", f"top_sites_zoom{int(zoom)}_"]
+    elif zoom is None and slot_id is not None:
+        patterns = [f"_slot{int(slot_id)}."]
+    else:
+        patterns = [f"zoom{int(zoom)}_slot{int(slot_id)}."]
+
+    deleted = 0
+    for p in out_dir.iterdir():
+        if not p.is_file():
+            continue
+        name = p.name
+        # crude but safe enough for your naming convention
+        if any(tok in name for tok in patterns) and (name.endswith(".geojson") or name.endswith(".csv")):
+            try:
+                p.unlink()
+                deleted += 1
+            except OSError:
+                pass
+    return deleted
 
 def materialize_parent_zoom_from_child(
     conn: sqlite3.Connection,
-    *,
     taxon_id: int,
     slot_id: int,
     src_zoom: int,
     dst_zoom: int,
 ) -> None:
-    """
-    Aggregate an existing per-taxon grid layer from src_zoom into dst_zoom (dst_zoom < src_zoom),
-    without calling SOS.
+    assert dst_zoom < src_zoom, "dst_zoom must be a parent zoom (smaller number)"
 
-    Rules:
-      parent_x = x >> shift
-      parent_y = y >> shift
-      observations_count = SUM(child.observations_count)
-      taxa_count = MAX(child.taxa_count)  (usually 1 for single-taxon queries)
-      bbox = union of children (top=max lat, left=min lon, bottom=min lat, right=max lon)
-    """
-    if dst_zoom >= src_zoom:
-        raise ValueError(f"dst_zoom must be < src_zoom (got src={src_zoom}, dst={dst_zoom})")
-
+    # parent tile mapping: x_parent = x_child // 2^(src-dst)
     shift = src_zoom - dst_zoom
-    now = _utc_now_iso()
+    factor = 1 << shift
 
-    # Rebuild deterministically
     conn.execute(
         "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
         (taxon_id, dst_zoom, slot_id),
     )
 
     rows = conn.execute(
-        """
+        f"""
         SELECT
-          (x >> ?) AS px,
-          (y >> ?) AS py,
-          SUM(observations_count) AS obs_sum,
-          MAX(taxa_count) AS taxa_max,
-          MAX(bbox_top_lat) AS top_lat,
-          MIN(bbox_left_lon) AS left_lon,
-          MIN(bbox_bottom_lat) AS bottom_lat,
-          MAX(bbox_right_lon) AS right_lon
+          ? AS taxon_id,
+          ? AS zoom,
+          ? AS slot_id,
+          (x / {factor}) AS x_parent,
+          (y / {factor}) AS y_parent,
+          SUM(observations_count) AS observations_count,
+          MAX(taxa_count) AS taxa_count,
+          MAX(bbox_top_lat) AS bbox_top_lat,
+          MIN(bbox_left_lon) AS bbox_left_lon,
+          MIN(bbox_bottom_lat) AS bbox_bottom_lat,
+          MAX(bbox_right_lon) AS bbox_right_lon
         FROM taxon_grid
         WHERE taxon_id=? AND zoom=? AND slot_id=?
-        GROUP BY (x >> ?), (y >> ?);
+        GROUP BY x_parent, y_parent;
         """,
-        (shift, shift, taxon_id, src_zoom, slot_id, shift, shift),
+        (taxon_id, dst_zoom, slot_id, taxon_id, src_zoom, slot_id),
     ).fetchall()
 
-    if not rows:
-        # Nothing to materialize (src layer missing)
-        # Keep dst empty and still update state to reflect emptiness if you want.
-        upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, payload_sha256="LOCAL_EMPTY", grid_cell_count=0)
-        return
-
+    now = _utc_now_iso()
     conn.executemany(
         """
         INSERT INTO taxon_grid(
@@ -184,36 +287,122 @@ def materialize_parent_zoom_from_child(
           observations_count, taxa_count,
           bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
           fetched_at_utc
-        ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
+        )
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
         """,
         [
             (
-                taxon_id,
-                dst_zoom,
-                slot_id,
-                int(r["px"]),
-                int(r["py"]),
-                int(r["obs_sum"] or 0),
-                int(r["taxa_max"] or 0),
-                float(r["top_lat"]),
-                float(r["left_lon"]),
-                float(r["bottom_lat"]),
-                float(r["right_lon"]),
-                now,
+                int(r[0]), int(r[1]), int(r[2]), int(r[3]), int(r[4]),
+                int(r[5] or 0), int(r[6] or 0),
+                float(r[7]), float(r[8]), float(r[9]), float(r[10]),
+                now
             )
             for r in rows
         ],
     )
 
-    # Mark layer state as locally derived (simple + transparent)
+    # Mark derived state
     upsert_layer_state(
         conn,
-        taxon_id,
-        dst_zoom,
-        slot_id,
+        taxon_id=taxon_id,
+        zoom=dst_zoom,
+        slot_id=slot_id,
         payload_sha256=f"LOCAL_FROM_{src_zoom}",
         grid_cell_count=len(rows),
     )
+
+# def materialize_parent_zoom_from_child(
+#     conn: sqlite3.Connection,
+#     *,
+#     taxon_id: int,
+#     slot_id: int,
+#     src_zoom: int,
+#     dst_zoom: int,
+# ) -> None:
+#     """
+#     Aggregate an existing per-taxon grid layer from src_zoom into dst_zoom (dst_zoom < src_zoom),
+#     without calling SOS.
+
+#     Rules:
+#       parent_x = x >> shift
+#       parent_y = y >> shift
+#       observations_count = SUM(child.observations_count)
+#       taxa_count = MAX(child.taxa_count)  (usually 1 for single-taxon queries)
+#       bbox = union of children (top=max lat, left=min lon, bottom=min lat, right=max lon)
+#     """
+#     if dst_zoom >= src_zoom:
+#         raise ValueError(f"dst_zoom must be < src_zoom (got src={src_zoom}, dst={dst_zoom})")
+
+#     shift = src_zoom - dst_zoom
+#     now = _utc_now_iso()
+
+#     # Rebuild deterministically
+#     conn.execute(
+#         "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
+#         (taxon_id, dst_zoom, slot_id),
+#     )
+
+#     rows = conn.execute(
+#         """
+#         SELECT
+#           (x >> ?) AS px,
+#           (y >> ?) AS py,
+#           SUM(observations_count) AS obs_sum,
+#           MAX(taxa_count) AS taxa_max,
+#           MAX(bbox_top_lat) AS top_lat,
+#           MIN(bbox_left_lon) AS left_lon,
+#           MIN(bbox_bottom_lat) AS bottom_lat,
+#           MAX(bbox_right_lon) AS right_lon
+#         FROM taxon_grid
+#         WHERE taxon_id=? AND zoom=? AND slot_id=?
+#         GROUP BY (x >> ?), (y >> ?);
+#         """,
+#         (shift, shift, taxon_id, src_zoom, slot_id, shift, shift),
+#     ).fetchall()
+
+#     if not rows:
+#         # Nothing to materialize (src layer missing)
+#         # Keep dst empty and still update state to reflect emptiness if you want.
+#         upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, payload_sha256="LOCAL_EMPTY", grid_cell_count=0)
+#         return
+
+#     conn.executemany(
+#         """
+#         INSERT INTO taxon_grid(
+#           taxon_id, zoom, slot_id, x, y,
+#           observations_count, taxa_count,
+#           bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+#           fetched_at_utc
+#         ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
+#         """,
+#         [
+#             (
+#                 taxon_id,
+#                 dst_zoom,
+#                 slot_id,
+#                 int(r["px"]),
+#                 int(r["py"]),
+#                 int(r["obs_sum"] or 0),
+#                 int(r["taxa_max"] or 0),
+#                 float(r["top_lat"]),
+#                 float(r["left_lon"]),
+#                 float(r["bottom_lat"]),
+#                 float(r["right_lon"]),
+#                 now,
+#             )
+#             for r in rows
+#         ],
+#     )
+
+#     # Mark layer state as locally derived (simple + transparent)
+#     upsert_layer_state(
+#         conn,
+#         taxon_id,
+#         dst_zoom,
+#         slot_id,
+#         payload_sha256=f"LOCAL_FROM_{src_zoom}",
+#         grid_cell_count=len(rows),
+#     )
 
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
