@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 
 import sqlite3
 from dataclasses import dataclass
@@ -121,8 +122,14 @@ def _stable_agg_hash(rows: Iterable[tuple[int, int, int]]) -> str:
     blob = json.dumps(slim, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     return hashlib.sha256(blob).hexdigest()
 
-from pathlib import Path
-import os
+def local_from_marker(src_zoom: int, src_sha: str) -> str:
+    return f"LOCAL_FROM_{int(src_zoom)}:{src_sha}"
+
+def is_valid_local_from(payload_sha: str | None, src_zoom: int, src_sha: str) -> bool:
+    if not payload_sha:
+        return False
+    return payload_sha == local_from_marker(src_zoom, src_sha)
+
 
 def clear_hotmap(
     conn: sqlite3.Connection,
@@ -242,167 +249,93 @@ def clear_export_files(
 
 def materialize_parent_zoom_from_child(
     conn: sqlite3.Connection,
+    *,
     taxon_id: int,
     slot_id: int,
     src_zoom: int,
     dst_zoom: int,
+    src_sha: str,
 ) -> None:
-    assert dst_zoom < src_zoom, "dst_zoom must be a parent zoom (smaller number)"
+    """
+    Build dst_zoom rows by aggregating existing taxon_grid rows at src_zoom.
+    Assumes src_zoom > dst_zoom.
+    Writes:
+      - taxon_grid at dst_zoom for this taxon_id+slot_id
+      - taxon_layer_state at dst_zoom with payload_sha256 = LOCAL_FROM_srcZoom:srcSha
+    """
+    if dst_zoom >= src_zoom:
+        raise ValueError(f"dst_zoom must be < src_zoom (got src={src_zoom} dst={dst_zoom})")
 
-    # parent tile mapping: x_parent = x_child // 2^(src-dst)
-    shift = src_zoom - dst_zoom
-    factor = 1 << shift
+    factor = 2 ** (src_zoom - dst_zoom)
+    now = _utc_now_iso()
 
+    # Aggregate child tiles into parent tiles.
+    rows = conn.execute(
+        """
+        SELECT
+          (x / ?) AS px,
+          (y / ?) AS py,
+
+          SUM(observations_count) AS obs_sum,
+          MAX(taxa_count) AS taxa_count_max,
+
+          MAX(bbox_top_lat) AS top_lat,
+          MIN(bbox_left_lon) AS left_lon,
+          MIN(bbox_bottom_lat) AS bottom_lat,
+          MAX(bbox_right_lon) AS right_lon
+        FROM taxon_grid
+        WHERE taxon_id=? AND zoom=? AND slot_id=?
+        GROUP BY px, py
+        ORDER BY px, py;
+        """,
+        (factor, factor, taxon_id, src_zoom, slot_id),
+    ).fetchall()
+
+    # Replace destination zoom rows for this taxon+slot
     conn.execute(
         "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
         (taxon_id, dst_zoom, slot_id),
     )
 
-    rows = conn.execute(
-        f"""
-        SELECT
-          ? AS taxon_id,
-          ? AS zoom,
-          ? AS slot_id,
-          (x / {factor}) AS x_parent,
-          (y / {factor}) AS y_parent,
-          SUM(observations_count) AS observations_count,
-          MAX(taxa_count) AS taxa_count,
-          MAX(bbox_top_lat) AS bbox_top_lat,
-          MIN(bbox_left_lon) AS bbox_left_lon,
-          MIN(bbox_bottom_lat) AS bbox_bottom_lat,
-          MAX(bbox_right_lon) AS bbox_right_lon
-        FROM taxon_grid
-        WHERE taxon_id=? AND zoom=? AND slot_id=?
-        GROUP BY x_parent, y_parent;
-        """,
-        (taxon_id, dst_zoom, slot_id, taxon_id, src_zoom, slot_id),
-    ).fetchall()
+    out = []
+    for r in rows:
+        px = int(r[0]); py = int(r[1])
+        obs_sum = int(r[2] or 0)
+        taxa_count_max = int(r[3] or 0)
 
-    now = _utc_now_iso()
-    conn.executemany(
-        """
-        INSERT INTO taxon_grid(
-          taxon_id, zoom, slot_id, x, y,
-          observations_count, taxa_count,
-          bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
-          fetched_at_utc
-        )
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
-        """,
-        [
+        out.append(
             (
-                int(r[0]), int(r[1]), int(r[2]), int(r[3]), int(r[4]),
-                int(r[5] or 0), int(r[6] or 0),
-                float(r[7]), float(r[8]), float(r[9]), float(r[10]),
-                now
+                taxon_id,
+                int(dst_zoom),
+                int(slot_id),
+                px,
+                py,
+                obs_sum,
+                taxa_count_max,
+                float(r[4]),
+                float(r[5]),
+                float(r[6]),
+                float(r[7]),
+                now,
             )
-            for r in rows
-        ],
-    )
+        )
 
-    # Mark derived state
-    upsert_layer_state(
-        conn,
-        taxon_id=taxon_id,
-        zoom=dst_zoom,
-        slot_id=slot_id,
-        payload_sha256=f"LOCAL_FROM_{src_zoom}",
-        grid_cell_count=len(rows),
-    )
+    if out:
+        conn.executemany(
+            """
+            INSERT INTO taxon_grid(
+              taxon_id, zoom, slot_id, x, y,
+              observations_count, taxa_count,
+              bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+              fetched_at_utc
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
+            """,
+            out,
+        )
 
-# def materialize_parent_zoom_from_child(
-#     conn: sqlite3.Connection,
-#     *,
-#     taxon_id: int,
-#     slot_id: int,
-#     src_zoom: int,
-#     dst_zoom: int,
-# ) -> None:
-#     """
-#     Aggregate an existing per-taxon grid layer from src_zoom into dst_zoom (dst_zoom < src_zoom),
-#     without calling SOS.
-
-#     Rules:
-#       parent_x = x >> shift
-#       parent_y = y >> shift
-#       observations_count = SUM(child.observations_count)
-#       taxa_count = MAX(child.taxa_count)  (usually 1 for single-taxon queries)
-#       bbox = union of children (top=max lat, left=min lon, bottom=min lat, right=max lon)
-#     """
-#     if dst_zoom >= src_zoom:
-#         raise ValueError(f"dst_zoom must be < src_zoom (got src={src_zoom}, dst={dst_zoom})")
-
-#     shift = src_zoom - dst_zoom
-#     now = _utc_now_iso()
-
-#     # Rebuild deterministically
-#     conn.execute(
-#         "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
-#         (taxon_id, dst_zoom, slot_id),
-#     )
-
-#     rows = conn.execute(
-#         """
-#         SELECT
-#           (x >> ?) AS px,
-#           (y >> ?) AS py,
-#           SUM(observations_count) AS obs_sum,
-#           MAX(taxa_count) AS taxa_max,
-#           MAX(bbox_top_lat) AS top_lat,
-#           MIN(bbox_left_lon) AS left_lon,
-#           MIN(bbox_bottom_lat) AS bottom_lat,
-#           MAX(bbox_right_lon) AS right_lon
-#         FROM taxon_grid
-#         WHERE taxon_id=? AND zoom=? AND slot_id=?
-#         GROUP BY (x >> ?), (y >> ?);
-#         """,
-#         (shift, shift, taxon_id, src_zoom, slot_id, shift, shift),
-#     ).fetchall()
-
-#     if not rows:
-#         # Nothing to materialize (src layer missing)
-#         # Keep dst empty and still update state to reflect emptiness if you want.
-#         upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, payload_sha256="LOCAL_EMPTY", grid_cell_count=0)
-#         return
-
-#     conn.executemany(
-#         """
-#         INSERT INTO taxon_grid(
-#           taxon_id, zoom, slot_id, x, y,
-#           observations_count, taxa_count,
-#           bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
-#           fetched_at_utc
-#         ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
-#         """,
-#         [
-#             (
-#                 taxon_id,
-#                 dst_zoom,
-#                 slot_id,
-#                 int(r["px"]),
-#                 int(r["py"]),
-#                 int(r["obs_sum"] or 0),
-#                 int(r["taxa_max"] or 0),
-#                 float(r["top_lat"]),
-#                 float(r["left_lon"]),
-#                 float(r["bottom_lat"]),
-#                 float(r["right_lon"]),
-#                 now,
-#             )
-#             for r in rows
-#         ],
-#     )
-
-#     # Mark layer state as locally derived (simple + transparent)
-#     upsert_layer_state(
-#         conn,
-#         taxon_id,
-#         dst_zoom,
-#         slot_id,
-#         payload_sha256=f"LOCAL_FROM_{src_zoom}",
-#         grid_cell_count=len(rows),
-#     )
+    # Mark derived state (this is the “validity token”)
+    marker = local_from_marker(src_zoom, src_sha)
+    upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, marker, len(out))
 
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)

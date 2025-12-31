@@ -70,6 +70,12 @@ def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
                 break
     return taxa
 
+def has_any_taxon_grid(conn, taxon_id: int, zoom: int, slot_id: int) -> bool:
+    r = conn.execute(
+        "SELECT 1 FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=? LIMIT 1;",
+        (taxon_id, zoom, slot_id),
+    ).fetchone()
+    return r is not None
 
 def main() -> int:
     cfg = Config(repo_root=REPO_ROOT)
@@ -114,37 +120,65 @@ def main() -> int:
         throttle_state = {}
         for taxon_id in taxon_ids:
             throttle(2.0, throttle_state)
-            
+
+
             logger.info("Fetching GeoGridAggregation: taxon_id=%d zoom=%d", taxon_id, base_zoom)
             payload = client.geogrid_aggregation([taxon_id], zoom=base_zoom)
             
             grid_cells = payload.get("gridCells") or []
-            sha = stable_gridcells_hash(payload)
+            base_sha = stable_gridcells_hash(payload)
+
+            prev_base = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id)
+            base_changed = (not prev_base) or (prev_base[1] != base_sha)
             
-            prev = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id)
-            
-            changed = (not prev) or (prev[1] != sha)
-
-
-            need_base_write = not (prev and prev[1] == sha)
-
             conn.execute("BEGIN;")
+            try:
+                if base_changed:
+                    logger.info(
+                        "Updating BASE layer for taxon_id=%d zoom=%d slot=%d: gridCells=%d (changed=%s)",
+                        taxon_id, base_zoom, slot_id, len(grid_cells),
+                        "new" if not prev_base else "yes",
+                    )
+                    storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells)
+                    storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells))
+                else:
+                    # keep last_fetch fresh even if unchanged
+                    logger.info("No change for BASE taxon_id=%d (sha256 match). gridCells=%d", taxon_id, len(grid_cells))
+                    storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells))
 
-            if need_base_write:
-                storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells)
+                # Ensure derived zooms exist and are valid relative to current base_sha
+                for z in zooms[1:]:
+                    prev_z = storage.get_layer_state(conn, taxon_id, z, slot_id)
+                    valid = False
+                    if prev_z:
+                        valid = storage.is_valid_local_from(prev_z[1], base_zoom, base_sha)
+                        
+                    if valid and has_any_taxon_grid(
+                            conn,
+                            taxon_id=taxon_id,
+                            zoom=z,
+                            slot_id=slot_id,):
+                        logger.info("Derived zoom=%d OK for taxon_id=%d slot=%d (cache valid)", z, taxon_id, slot_id)
+                        continue
 
-            # Always update base layer_state (it also acts as “we checked”)
-            storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, sha, len(grid_cells))
+                    logger.info(
+                        "Rebuilding derived zoom=%d from base_zoom=%d for taxon_id=%d slot=%d (reason=%s)",
+                        z, base_zoom, taxon_id, slot_id,
+                        "missing" if not prev_z else "stale",
+                    )
+                    storage.materialize_parent_zoom_from_child(
+                        conn,
+                        taxon_id=taxon_id,
+                        slot_id=slot_id,
+                        src_zoom=base_zoom,
+                        dst_zoom=z,
+                        src_sha=base_sha,
+                    )
 
-            # Rebuild derived if base changed OR derived state missing
-            src = base_zoom
-            for z in zooms[1:]:
-                derived = storage.get_layer_state(conn, taxon_id, z, slot_id)
-                if need_base_write or (derived is None) or (derived[1] == ""):
-                    storage.materialize_parent_zoom_from_child(conn, taxon_id, slot_id, src, z)
-                src = z
-
-            conn.commit()
+                conn.commit()
+            except Exception:
+                conn.rollback()
+                raise
         return 0
 
     finally:
