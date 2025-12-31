@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# script:export_hotmap.py 
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck

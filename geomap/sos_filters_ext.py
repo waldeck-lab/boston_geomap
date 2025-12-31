@@ -1,3 +1,5 @@
+# geomap:sos_filters_ext.py
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck
@@ -14,7 +16,6 @@
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
-# geomap/sos_filters_ext.py
 
 from __future__ import annotations
 from typing import Any, Dict

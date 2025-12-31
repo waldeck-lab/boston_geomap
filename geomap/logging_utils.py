@@ -1,3 +1,5 @@
+# geomap:logging_utils.py
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck

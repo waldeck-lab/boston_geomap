@@ -1,3 +1,5 @@
+# geomap:export_csv.py
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck
@@ -23,52 +25,30 @@ import sqlite3
 from pathlib import Path
 from typing import Tuple
 
-
-def _tile_bbox_latlon(x: int, y: int, z: int) -> Tuple[float, float, float, float]:
-    """
-    Returns (topLeft_lat, topLeft_lon, bottomRight_lat, bottomRight_lon)
-    for slippy-map tiles in Web Mercator (EPSG:3857).
-    """
-
-    n = 2 ** z
-
-    # longitudes are linear
-    lon_left = x / n * 360.0 - 180.0
-    lon_right = (x + 1) / n * 360.0 - 180.0
-
-    # latitudes use inverse mercator
-    def lat_from_ytile(yy: int) -> float:
-        lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * yy / n)))
-        return lat_rad * 180.0 / math.pi
-
-    lat_top = lat_from_ytile(y)
-    lat_bottom = lat_from_ytile(y + 1)
-
-    return (lat_top, lon_left, lat_bottom, lon_right)
-
-
 def export_top_sites_csv(
     conn: sqlite3.Connection,
     zoom: int,
-    slot_id: int, 
+    slot_id: int,
     out_path: Path,
     limit: int = 200,
     source_table: str = "grid_hotmap",
 ) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    cur = conn.cursor()
-    cur.execute(
+    if source_table not in {"grid_hotmap"}:
+        raise ValueError(f"Unsupported source_table: {source_table}")
+
+    rows = conn.execute(
         f"""
-        SELECT zoom, x, y, coverage, score
+        SELECT zoom, slot_id, x, y, coverage, score,
+               bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
         FROM {source_table}
-        WHERE zoom = ? AND slot_id=?
+        WHERE zoom=? AND slot_id=?
         ORDER BY coverage DESC, score DESC
-        LIMIT ?
+        LIMIT ?;
         """,
         (zoom, slot_id, limit),
-    )
-    rows = cur.fetchall()
+    ).fetchall()
 
     with out_path.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -91,26 +71,25 @@ def export_top_sites_csv(
             ]
         )
 
-        for i, (z, x, y, coverage, score) in enumerate(rows, start=1):
-            tl_lat, tl_lon, br_lat, br_lon = _tile_bbox_latlon(x, y, z)
-            centroid_lat = (tl_lat + br_lat) / 2.0
-            centroid_lon = (tl_lon + br_lon) / 2.0
+        for i, (z, sid, x, y, coverage, score, tl_lat, tl_lon, br_lat, br_lon) in enumerate(rows, start=1):
+            centroid_lat = (float(tl_lat) + float(br_lat)) / 2.0
+            centroid_lon = (float(tl_lon) + float(br_lon)) / 2.0
 
             w.writerow(
                 [
                     i,
-                    z,
-                    slot_id,
-                    x,
-                    y,
-                    coverage,
-                    score,
+                    int(z),
+                    int(sid),
+                    int(x),
+                    int(y),
+                    int(coverage),
+                    float(score),
                     centroid_lat,
                     centroid_lon,
-                    tl_lat,
-                    tl_lon,
-                    br_lat,
-                    br_lon,
+                    float(tl_lat),
+                    float(tl_lon),
+                    float(br_lat),
+                    float(br_lon),
                     source_table,
                 ]
             )

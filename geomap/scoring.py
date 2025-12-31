@@ -1,3 +1,5 @@
+# geomap:scoring.py
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck
@@ -40,7 +42,7 @@ def top_hotspots(conn: sqlite3.Connection, zoom: int, slot_id: int, limit: int =
                bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
         FROM grid_hotmap
         WHERE zoom=? AND slot_id=?
-        ORDER BY coverage DESC, score DESC
+        ORDER BY coverage DESC, score DESC, x ASC, y ASC
         LIMIT ?;
         """,
         (zoom, slot_id, limit),

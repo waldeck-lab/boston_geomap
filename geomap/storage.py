@@ -1,3 +1,5 @@
+# geomap:storage.py
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck
@@ -106,7 +108,9 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
     cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell ON taxon_grid(zoom, slot_id, x, y);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_taxon ON taxon_grid(taxon_id, zoom, slot_id);")
     cur.execute("CREATE INDEX IF NOT EXISTS idx_grid_hotmap_slot ON grid_hotmap(zoom, slot_id, coverage, score);")
-    cur.execute("CREATE INDEX IF NOT EXISTS idx_hotmap_taxa_set ON hotmap_taxa_set(zoom, slot_id, taxon_id);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_hotmap_taxa_set_slot ON hotmap_taxa_set(zoom, slot_id);")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell_obs ON taxon_grid(zoom, slot_id, x, y, observations_count DESC);")
+
 
     # Drop views in dependency order
     cur.execute("DROP VIEW IF EXISTS grid_hotmap_taxa_names_v;")
@@ -161,8 +165,7 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
     (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
     
     COALESCE(SUM(CASE WHEN s.taxon_id IS NOT NULL THEN t.observations_count ELSE 0 END), 0) AS obs_total,
-    GROUP_CONCAT(CASE WHEN s.taxon_id IS NOT NULL THEN t.taxon_id END, ';') AS taxa_list,
-    
+    GROUP_CONCAT(CASE WHEN s.taxon_id IS NOT NULL THEN CAST(t.taxon_id AS TEXT) END, ';') AS taxa_list
     h.updated_at_utc
     FROM grid_hotmap h
     LEFT JOIN taxon_grid t

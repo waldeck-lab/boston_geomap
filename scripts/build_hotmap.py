@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# script:build_hotmap.py 
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck

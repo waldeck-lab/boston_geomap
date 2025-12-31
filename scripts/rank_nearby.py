@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# script:rank_nearby.py 
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck
@@ -84,7 +86,9 @@ def main() -> int:
 
     slot_id = int(_get_arg("--slot", "0"))
     logger.info("Slot: %d", slot_id)
-    
+    if slot_id < 0 or slot_id > 47:
+        logger.error("slot_id out of range: %d", slot_id)
+        return 2
     logger.info("Using position: lat=%.6f lon=%.6f", lat, lon)
     logger.info("Decay: mode=%s d0_km=%.3f gamma=%.3f max_km=%.3f", mode, d0_km, gamma, max_km)
 

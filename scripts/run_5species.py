@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# script:run_5species.py 
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck
@@ -31,6 +33,15 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from geomap.config import Config
 
+
+def _get_arg(name: str, default: str | None = None) -> str | None:
+    if name in sys.argv:
+        i = sys.argv.index(name)
+        if i + 1 < len(sys.argv):
+            return sys.argv[i + 1]
+    return default
+
+
 def run(cmd: list[str]) -> None:
     p = subprocess.run(cmd)
     if p.returncode != 0:
@@ -39,37 +50,32 @@ def run(cmd: list[str]) -> None:
 
 def main() -> int:
     cfg = Config(repo_root=REPO_ROOT)
-    if "--alpha" in sys.argv:
-        cfg.hotmap_alpha = float(sys.argv[sys.argv.index("--alpha") + 1])
-    if "--beta" in sys.argv:
-        cfg.hotmap_beta = float(sys.argv[sys.argv.index("--beta") + 1])
 
+    n = int(_get_arg("--n", "5"))
+    slot_id = int(_get_arg("--slot", "0"))
 
-    python = sys.executable
-
-    run([python, str(REPO_ROOT / "scripts" / "fetch_layers.py"), "--n", "5"])
-    run([python, str(REPO_ROOT / "scripts" / "build_hotmap.py"), "--n", "5"])
-    run([python, str(REPO_ROOT / "scripts" / "export_hotmap.py")])
-    return 0
-
-
-def main() -> int:
-    cfg = Config(repo_root=REPO_ROOT)
-
-    alpha = cfg.hotmap_alpha
-    beta = cfg.hotmap_beta
-    if "--alpha" in sys.argv:
-        alpha = float(sys.argv[sys.argv.index("--alpha") + 1])
-    if "--beta" in sys.argv:
-        beta = float(sys.argv[sys.argv.index("--beta") + 1])
+    alpha = float(_get_arg("--alpha", str(cfg.hotmap_alpha)))
+    beta = float(_get_arg("--beta", str(cfg.hotmap_beta)))
 
     python = sys.executable
-    # pass args through to the scripts that actually compute/rebuild
-    run([python, str(REPO_ROOT / "scripts" / "fetch_layers.py"), "--n", "5"])
-    run([python, str(REPO_ROOT / "scripts" / "build_hotmap.py"), "--n", "5","--alpha", str(alpha), "--beta", str(beta)])
-    run([python, str(REPO_ROOT / "scripts" / "export_hotmap.py")])
+
+    # Always pass slot through the whole chain
+    run([python, str(REPO_ROOT / "scripts" / "fetch_layers.py"),
+         "--n", str(n),
+         "--slot", str(slot_id)])
+
+    run([python, str(REPO_ROOT / "scripts" / "build_hotmap.py"),
+         "--n", str(n),
+         "--slot", str(slot_id),
+         "--alpha", str(alpha),
+         "--beta", str(beta)])
+
+    run([python, str(REPO_ROOT / "scripts" / "export_hotmap.py"),
+         "--slot", str(slot_id)])
+
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

@@ -1,3 +1,5 @@
+# geomap:export_geoson.py
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck
@@ -35,7 +37,7 @@ def export_hotmap_geojson(conn: sqlite3.Connection, zoom: int, slot_id: int, out
     ).fetchall()
 
     features = []
-    for (slot_id_db, x, y, coverage, score, top_lat, left_lon, bottom_lat, right_lon) in rows:
+    for (slot_id, x, y, coverage, score, top_lat, left_lon, bottom_lat, right_lon) in rows:
         poly = [
             [left_lon, top_lat],
             [right_lon, top_lat],
@@ -48,7 +50,7 @@ def export_hotmap_geojson(conn: sqlite3.Connection, zoom: int, slot_id: int, out
                 "type": "Feature",
                 "properties": {
                     "zoom": int(zoom),
-                    "slot_id": int(slot_id_db),
+                    "slot_id": int(slot_id),
                     "x": int(x),
                     "y": int(y),
                     "coverage": int(coverage),
@@ -59,4 +61,5 @@ def export_hotmap_geojson(conn: sqlite3.Connection, zoom: int, slot_id: int, out
         )
 
     fc = {"type": "FeatureCollection", "features": features}
-    out_path.write_text(json.dumps(fc, ensure_ascii=False), encoding="utf-8")
+    out_path.write_text(json.dumps(fc, ensure_ascii=False, separators=(",", ":"), sort_keys=True), encoding="utf-8")
+

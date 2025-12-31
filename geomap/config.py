@@ -1,3 +1,5 @@
+# geomap:config.py
+
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck
