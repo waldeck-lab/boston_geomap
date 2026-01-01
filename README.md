@@ -126,3 +126,92 @@ o richer metadata for taxa and occurrence windows
 
 ---
 
+
+## Pipeline overview
+
+```mermaid
+flowchart TD
+    A[run_geomap_pipeline.py] --> B[fetch_layers.py]
+
+    B -->|Fetch base zoom Z from SOS| C[(taxon_grid<br/>zoom=Z)]
+    B -->|Cache SHA| D[(taxon_layer_state)]
+
+    C -->|Local aggregation| E[(taxon_grid<br/>zoom=Z-1)]
+    E -->|Local aggregation| F[(taxon_grid<br/>zoom=Z-2)]
+
+    C --> G[build_hotmap.py]
+    E --> G
+    F --> G
+
+    G --> H[(grid_hotmap)]
+    G --> I[(hotmap_taxa_set)]
+
+    H --> J[export_hotmap.py]
+    J --> K[GeoJSON<br/>hotmap_zoomX_slotY.geojson]
+    J --> L[CSV<br/>top_sites_zoomX_slotY.csv]
+
+    H --> M[rank_nearby.py]
+    M --> N[Distance-weighted ranking]
+
+    subgraph Cache safety
+        D -->|Validate| E
+        D -->|Invalidate| G
+    end
+
+
+---
+### GUI Flow
+sequenceDiagram
+  autonumber
+  actor U as User
+  participant UI as React GUI
+  participant API as Local API (geomap)
+  participant DB as SQLite (geomap.sqlite)
+  participant SOS as ArtDatabanken SOS API
+  participant QGIS as QGIS / Map renderer
+
+  U->>UI: Choose position (lat/lon)
+  U->>UI: Choose slot_id (0..47) + hysteresis (optional)
+  U->>UI: Choose base zoom (e.g. 15) + derived zooms (e.g. 14,13)
+  U->>UI: Choose N species (0 = all)
+  U->>UI: Click "Build / Refresh"
+
+  UI->>API: POST /pipeline {slot_id, zooms, n, alpha, beta}
+  API->>DB: ensure_schema()
+
+  loop each taxon_id
+    API->>DB: get_layer_state(taxon_id, base_zoom, slot_id)
+    alt cache miss or sha changed
+      API->>SOS: GeoGridAggregation(taxon_id, base_zoom, filters incl. slot)
+      SOS-->>API: gridCells + bboxes
+      API->>DB: replace_taxon_grid(taxon_id, base_zoom, slot_id, gridCells)
+      API->>DB: upsert_layer_state(taxon_id, base_zoom, slot_id, sha, nCells)
+      API->>DB: materialize derived zooms from base (local aggregation)
+      API->>DB: upsert_layer_state(... dst_zoom ... payload_sha256="LOCAL_FROM_...")
+    else cache hit
+      API->>DB: (optional) verify derived zooms exist; rebuild if missing/stale
+    end
+  end
+
+  loop each zoom in zooms
+    API->>DB: rebuild_hotmap(zoom, slot_id, active_taxa_set, alpha, beta)
+    API->>DB: export geojson/csv (optional on-demand)
+  end
+
+  API-->>UI: Done + available layers {zoom, slot_id}
+
+  U->>UI: View hotspots map (choose zoom)
+  UI->>API: GET /hotmap?zoom=&slot_id=
+  API->>DB: SELECT from grid_hotmap/grid_hotmap_v
+  API-->>UI: GeoJSON FeatureCollection (polygons + properties)
+  UI->>QGIS: Render layer (MapLibre/Leaflet) + optional WMS/WMTS basemap
+
+  U->>UI: Click a cell polygon
+  UI->>API: GET /cell_taxa?zoom=&slot_id=&x=&y=
+  API->>DB: SELECT from grid_hotmap_taxa_names_v ORDER BY observations_count DESC
+  API-->>UI: taxa list (sv name, sci name, obs)
+
+  U->>UI: Run "Rank nearby"
+  UI->>API: GET /rank_nearby?lat=&lon=&zoom=&slot_id=&max_km=&mode=
+  API->>DB: SELECT candidates from grid_hotmap_v WHERE zoom=? AND slot_id=?
+  API-->>UI: ranked list + optional expanded taxa per cell
