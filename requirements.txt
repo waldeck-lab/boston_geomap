@@ -1,1 +1,24 @@
-requests>=2.31
+# Generated via pip freeze
+# Baseline environment for initial Flask service
+#
+# Re-install
+#  > python -m venv venv
+#  > source venv/bin/activate
+#  > pip install -r requirements.txt
+#
+# Update requirements (check/update):
+#  > pip freeze > requirements.tmp
+#
+
+blinker==1.9.0
+certifi==2025.11.12
+charset-normalizer==3.4.4
+click==8.3.1
+Flask==3.1.2
+flask-cors==6.0.2
+idna==3.11
+itsdangerous==2.2.0
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+requests==2.32.5
+urllib3==2.6.2
