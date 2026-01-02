@@ -215,3 +215,8 @@ sequenceDiagram
   UI->>API: GET /rank_nearby?lat=&lon=&zoom=&slot_id=&max_km=&mode=
   API->>DB: SELECT candidates from grid_hotmap_v WHERE zoom=? AND slot_id=?
   API-->>UI: ranked list + optional expanded taxa per cell
+
+## Development
+
+For local development setup (Debian/Ubuntu, Python backend, and Node 24 frontend),
+see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).

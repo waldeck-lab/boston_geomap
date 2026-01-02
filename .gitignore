@@ -2,4 +2,7 @@
 /geomap/__pycache__/
 /data/
 /logs/
+
+/geomap-ui/node_modules/
+
 settings.env
