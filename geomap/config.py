@@ -22,6 +22,11 @@ from dataclasses import dataclass
 from pathlib import Path
 import os
 
+# Calendar slot semantics
+SLOT_ALL = 0          # special slot meaning "all-time"
+SLOT_MIN = 0
+SLOT_MAX = 48         # 12 months × 4 buckets
+
 @dataclass(frozen=True)
 class Config:
     repo_root: Path

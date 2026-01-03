@@ -36,6 +36,7 @@ sys.path.insert(0, str(REPO_ROOT))
 from geomap.cli_paths import apply_path_overrides
 
 from geomap.config import Config
+from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
 from geomap.logging_utils import setup_logger
 from geomap import storage
 from geomap.export_geojson import export_hotmap_geojson
@@ -44,7 +45,7 @@ from geomap.export_csv import export_top_sites_csv
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
     ap.add_argument("--zoom", type=int, default=15)
-    ap.add_argument("--slot", type=int, default=0)
+    ap.add_argument("--slot", type=int, default=SLOT_ALL, help=f"Calendar slot id: {SLOT_ALL}=all-time, 1..{SLOT_MAX}=time buckets")
     ap.add_argument("--n", type=int, default=5)
     ap.add_argument("--alpha", type=float, default=None)
     ap.add_argument("--beta", type=float, default=None)
@@ -73,6 +74,17 @@ def main() -> int:
     zoom = args.zoom
     logger.info("Zoom: %d", zoom)
     slot_id = args.slot
+    if slot_id == SLOT_ALL:
+        logger.info("Slot: %d (all-time aggregate)", slot_id)
+    else:
+        logger.info("Slot: %d (calendar bucket 1..%d)", slot_id, SLOT_MAX)
+    if slot_id < SLOT_MIN or slot_id > SLOT_MAX:
+        logger.error(
+            "slot_id out of range: %d (valid: %d..%d, where %d = all-time)",
+            slot_id, SLOT_MIN, SLOT_MAX, SLOT_ALL
+        )
+        return 2
+
     logger.info("Slot: %d", slot_id)
 
     out_dir = cfg.geomap_lists_dir

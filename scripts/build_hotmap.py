@@ -32,10 +32,10 @@ import os
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 # --------------------------------
-
 from geomap.cli_paths import apply_path_overrides
 
 from geomap.config import Config
+from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
 from geomap.logging_utils import setup_logger
 from geomap import storage
 from geomap.scoring import top_hotspots
@@ -63,7 +63,7 @@ def _parse_zooms(arg: str) -> list[int]:
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
     ap.add_argument("--zooms", "--zoom", dest="zooms", default="15", help="Comma-separated zoom levels.")
-    ap.add_argument("--slot", type=int, default=0, help="calendar slot id (0=all,1-48")
+    ap.add_argument("--slot", type=int, default=SLOT_ALL, help=f"Calendar slot id: {SLOT_ALL}=all-time, 1..{SLOT_MAX}=time buckets")
     ap.add_argument("--n", type=int, default=5, help="Number of taxa (0 = all).")
     ap.add_argument("--alpha", type=float, default=None)
     ap.add_argument("--beta", type=float, default=None)
@@ -131,10 +131,18 @@ def main() -> int:
     zooms = _parse_zooms(args.zooms)
     zoom = int(zooms[0])  # build_hotmap is per-zoom; pipeline passes "--zoom <z>"
     logger.info("Zoom: %d", zoom)
-
-    slot_id = int(args.slot)
-    logger.info("Slot: %d", slot_id)
-
+    slot_id = args.slot
+    if slot_id == SLOT_ALL:
+        logger.info("Slot: %d (all-time aggregate)", slot_id)
+    else:
+        logger.info("Slot: %d (calendar bucket 1..%d)", slot_id, SLOT_MAX)
+    if slot_id < SLOT_MIN or slot_id > SLOT_MAX:
+        logger.error(
+            "slot_id out of range: %d (valid: %d..%d, where %d = all-time)",
+            slot_id, SLOT_MIN, SLOT_MAX, SLOT_ALL
+        )
+        return 2
+    
     n = int(args.n)
 
     alpha = float(args.alpha) if args.alpha is not None else cfg.hotmap_alpha

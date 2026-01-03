@@ -35,6 +35,7 @@ sys.path.insert(0, str(REPO_ROOT))
 # --------------------------------
 
 from geomap.config import Config
+from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
 from geomap.logging_utils import setup_logger
 
 from geomap.cli_paths import apply_path_overrides
@@ -89,7 +90,7 @@ def _default_stage_paths(repo_root: Path) -> tuple[Path, Path]:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     ap = argparse.ArgumentParser(description="Run the full geomap pipeline.")
     ap.add_argument("--n", type=int, default=DEFAULT_N, help="Number of species to use (0 = all).")
-    ap.add_argument("--slot", type=int, default=0, help="Slot id.")
+    ap.add_argument("--slot", type=int, default=SLOT_ALL, help=f"Calendar slot id: {SLOT_ALL}=all-time, 1..{SLOT_MAX}=time buckets")
     ap.add_argument("--alpha", type=float, default=None, help="Override hotmap alpha.")
     ap.add_argument("--beta", type=float, default=None, help="Override hotmap beta.")
     ap.add_argument("--zooms", "--zoom", dest="zooms", default="15",
@@ -136,6 +137,16 @@ def main() -> int:
 
     n = int(args.n)
     slot_id = int(args.slot)
+    if slot_id == SLOT_ALL:
+        logger.info("Slot: %d (all-time aggregate)", slot_id)
+    else:
+        logger.info("Slot: %d (calendar bucket 1..%d)", slot_id, SLOT_MAX)
+    if slot_id < SLOT_MIN or slot_id > SLOT_MAX:
+        logger.error(
+            "slot_id out of range: %d (valid: %d..%d, where %d = all-time)",
+            slot_id, SLOT_MIN, SLOT_MAX, SLOT_ALL
+        )
+        return 2
 
     alpha = float(args.alpha if args.alpha is not None else cfg.hotmap_alpha)
     beta = float(args.beta if args.beta is not None else cfg.hotmap_beta)

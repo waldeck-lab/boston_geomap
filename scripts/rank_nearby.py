@@ -31,7 +31,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 # --------------------------------
-
+from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
 from geomap.config import Config
 from geomap.logging_utils import setup_logger
 from geomap import storage
@@ -66,8 +66,7 @@ def parse_args() -> argparse.Namespace:
 
     ap.add_argument("--zoom", type=int, default=15,
                     help="Geomap zoom level (default: 15)")
-    ap.add_argument("--slot", type=int, default=0,
-                    help="Calendar slot id (0=all, 1–48)")
+    ap.add_argument("--slot", type=int, default=SLOT_ALL, help=f"Calendar slot id: {SLOT_ALL}=all-time, 1..{SLOT_MAX}=time buckets")
 
     ap.add_argument("--limit", type=int, default=20,
                     help="Number of ranked cells to show")
@@ -168,10 +167,17 @@ def main() -> int:
     
     logger.info("Zoom: %d", zoom)
 
-    logger.info("Slot: %d", slot_id)
-    if slot_id < 0 or slot_id > 48:
-        logger.error("slot_id out of range: %d", slot_id)
+    if slot_id == SLOT_ALL:
+        logger.info("Slot: %d (all-time aggregate)", slot_id)
+    else:
+        logger.info("Slot: %d (calendar bucket 1..%d)", slot_id, SLOT_MAX)
+    if slot_id < SLOT_MIN or slot_id > SLOT_MAX:
+        logger.error(
+            "slot_id out of range: %d (valid: %d..%d, where %d = all-time)",
+            slot_id, SLOT_MIN, SLOT_MAX, SLOT_ALL
+        )
         return 2
+
     logger.info("Using position: lat=%.6f lon=%.6f", lat, lon)
     logger.info("Decay: mode=%s d0_km=%.3f gamma=%.3f max_km=%.3f", mode, d0_km, gamma, max_km)
     logger.info("Candidate prefetch limit: %d", candidates)
