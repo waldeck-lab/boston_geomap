@@ -24,23 +24,50 @@ from __future__ import annotations
 
 import csv
 import sys
+
+import argparse
+import os
+
 from pathlib import Path
 # --- make repo root importable ---
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 # --------------------------------
 
+from geomap.cli_paths import apply_path_overrides
+
 from geomap.config import Config
 from geomap.logging_utils import setup_logger
 from geomap.sos_client import SOSClient, stable_gridcells_hash, throttle
 from geomap import storage
 
+from geomap.cli_paths import apply_path_overrides
 
-def _get_arg(name: str, default: str | None = None) -> str | None:
-    if name in sys.argv:
-        return sys.argv[sys.argv.index(name) + 1]
-    return default
 
+def _ove_default_stage_paths(repo_root: Path) -> tuple[Path, Path]:
+    """
+    Defaults: if OVE_BASE_DIR is set, use stage paths.
+    Otherwise fallback to repo-local data dirs.
+    """
+    ove_base = os.getenv("OVE_BASE_DIR")
+    if ove_base:
+        base = Path(ove_base)
+        return base / "stage" / "db", base / "stage" / "lists"
+    return repo_root / "data" / "db", repo_root / "data" / "lists"
+
+def parse_args() -> argparse.Namespace:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--zooms", "--zoom", dest="zooms", default="15", help="Comma-separated zoom levels.")
+    ap.add_argument("--slot", type=int, default=0, help="calendar slot id (0=all,1-48")
+    ap.add_argument("--n", type=int, default=5, help="Number of taxa (0 = all).")
+    ap.add_argument("--alpha", type=float, default=None)
+    ap.add_argument("--beta", type=float, default=None)
+    ap.add_argument("--db-dir", default=None, help="Override DB dir (writes geomap.sqlite there).")
+    ap.add_argument("--lists-dir", default=None, help="Override lists dir (reads missing_species.csv there).")
+    ap.add_argument("--out-dir", default=None)
+    ap.add_argument("--cache-dir", default=None, help="Override cache dir.")
+    ap.add_argument("--logs-dir", default=None, help="Override logs dir.")
+    return ap.parse_args()
 
 def _parse_zooms(arg: str) -> list[int]:
     # accepts "15,14,13" or "15"
@@ -71,18 +98,33 @@ def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
     return taxa
 
 def main() -> int:
+    args = parse_args()
+    
+    apply_path_overrides(
+        db_dir=args.db_dir,
+        lists_dir=args.lists_dir,
+        geomap_lists_dir=args.out_dir,
+        cache_dir=args.cache_dir,
+        logs_dir=args.logs_dir,
+    )
+    
     cfg = Config(repo_root=REPO_ROOT)
-
     logger = setup_logger("fetch_layers", cfg.logs_dir)
-    logger.info("Missing species CSV: %s", cfg.missing_species_csv)
+    
+    logger = setup_logger("fetch_layers", cfg.logs_dir)
+    if not cfg.missing_species_csv.exists():
+        logger.error("Missing species CSV not found: %s", cfg.missing_species_csv)
+        logger.error("Tip: run crossmatch first, or pass --lists-dir pointing to stage/lists.")
+        return 2
+
     logger.info("Geomap DB: %s", cfg.geomap_db_path)
 
-    zooms = _parse_zooms(_get_arg("--zooms", _get_arg("--zoom", "15")))
+    zooms = _parse_zooms(args.zooms)
     base_zoom = zooms[0]
     logger.info("Zooms: %s (base=%d fetched from SOS)", zooms, base_zoom)
     logger.info("Zoom: %d", base_zoom)
     
-    slot_id = int(_get_arg("--slot", "0"))
+    slot_id = int(args.slot)
     logger.info("Slot: %d", slot_id)
     
     if not cfg.subscription_key:
@@ -92,9 +134,7 @@ def main() -> int:
         logger.error("Missing ARTDATABANKEN_AUTHORIZATION")
         return 2
 
-    n = 5
-    if "--n" in sys.argv:
-        n = int(sys.argv[sys.argv.index("--n") + 1])
+    n = int(args.n)
 
     taxon_ids = read_first_n_taxa(cfg.missing_species_csv, n)
     logger.info("Selected taxon ids (n=%d): %s", n, taxon_ids)

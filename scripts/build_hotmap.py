@@ -25,12 +25,15 @@ from __future__ import annotations
 import csv
 import sys
 from pathlib import Path
+import argparse
+import os
 
 # --- make repo root importable ---
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 # --------------------------------
 
+from geomap.cli_paths import apply_path_overrides
 
 from geomap.config import Config
 from geomap.logging_utils import setup_logger
@@ -45,12 +48,32 @@ class TaxonRow:
     taxon_id: int
     scientific_name: str
     swedish_name: str
+    
+def _parse_zooms(arg: str) -> list[int]:
+    zs = []
+    for part in (arg or "").split(","):
+        part = part.strip()
+        if not part:
+            continue
+        zs.append(int(part))
+    if not zs:
+        raise ValueError("empty --zooms/--zoom")
+    return sorted(set(zs), reverse=True)
 
+def parse_args() -> argparse.Namespace:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--zooms", "--zoom", dest="zooms", default="15", help="Comma-separated zoom levels.")
+    ap.add_argument("--slot", type=int, default=0, help="calendar slot id (0=all,1-48")
+    ap.add_argument("--n", type=int, default=5, help="Number of taxa (0 = all).")
+    ap.add_argument("--alpha", type=float, default=None)
+    ap.add_argument("--beta", type=float, default=None)
+    ap.add_argument("--db-dir", default=None, help="Override DB dir (writes geomap.sqlite there).")
+    ap.add_argument("--lists-dir", default=None, help="Override lists dir (reads missing_species.csv there).")
+    ap.add_argument("--out-dir", default=None)
+    ap.add_argument("--cache-dir", default=None, help="Override cache dir.")
+    ap.add_argument("--logs-dir", default=None, help="Override logs dir.")
+    return ap.parse_args()
 
-def _get_arg(name: str, default: str | None = None) -> str | None:
-    if name in sys.argv:
-        return sys.argv[sys.argv.index(name) + 1]
-    return default
     
 def read_first_n_taxa_rows(csv_path: Path, n: int) -> list[TaxonRow]:
     rows: list[TaxonRow] = []
@@ -90,41 +113,49 @@ def read_first_n_taxa(csv_path: Path, n: int) -> list[int]:
 
 
 def main() -> int:
+    args = parse_args()
+
+    # MUST be done before Config() so Config picks up GEOMAP_* env overrides
+    apply_path_overrides(
+        db_dir=args.db_dir,
+        lists_dir=args.lists_dir,
+        geomap_lists_dir=args.out_dir,  # output drop area (stage/lists/geomap)
+        cache_dir=args.cache_dir,
+        logs_dir=args.logs_dir,
+    )
+
     cfg = Config(repo_root=REPO_ROOT)
-    alpha = cfg.hotmap_alpha
-    beta = cfg.hotmap_beta
-    if "--alpha" in sys.argv:
-        alpha = float(sys.argv[sys.argv.index("--alpha") + 1])
-    if "--beta" in sys.argv:
-        beta = float(sys.argv[sys.argv.index("--beta") + 1])
 
     logger = setup_logger("build_hotmap", cfg.logs_dir)
 
-    zoom = int(_get_arg("--zoom", "15"))
+    zooms = _parse_zooms(args.zooms)
+    zoom = int(zooms[0])  # build_hotmap is per-zoom; pipeline passes "--zoom <z>"
     logger.info("Zoom: %d", zoom)
 
-    n = 5
-
-    slot_id = int(_get_arg("--slot", "0"))
+    slot_id = int(args.slot)
     logger.info("Slot: %d", slot_id)
-    
-    if "--n" in sys.argv:
-        n = int(sys.argv[sys.argv.index("--n") + 1])
+
+    n = int(args.n)
+
+    alpha = float(args.alpha) if args.alpha is not None else cfg.hotmap_alpha
+    beta = float(args.beta) if args.beta is not None else cfg.hotmap_beta
+
+    # Hard fail with helpful message (your logger already did something similar)
+    if not cfg.missing_species_csv.exists():
+        logger.error("Missing required CSV: %s", cfg.missing_species_csv)
+        logger.error("Hint: ensure crossmatch project published missing_species.csv into stage/lists/")
+        return 2
 
     taxa = read_first_n_taxa_rows(cfg.missing_species_csv, n)
     taxon_ids = [t.taxon_id for t in taxa]
 
-    logger.info(
-        "Aggregating hotmap for n=%d taxa at zoom=%d",
-        len(taxon_ids), zoom
-    )
+    logger.info("Aggregating hotmap for n=%d taxa at zoom=%d", len(taxon_ids), zoom)
 
     conn = storage.connect(cfg.geomap_db_path)
     try:
         storage.ensure_schema(conn)
         conn.execute("BEGIN;")
 
-        # NEW: populate taxon_dim
         storage.upsert_taxon_dim(
             conn,
             [(t.taxon_id, t.scientific_name, t.swedish_name) for t in taxa],
@@ -158,6 +189,83 @@ def main() -> int:
         return 0
     finally:
         conn.close()
+
+# def main() -> int:
+#     args = parse_args()
+
+#     apply_path_overrides(
+#         db_dir=args.db_dir,
+#         lists_dir=args.lists_dir,
+#         geomap_lists_dir=args.out_dir,
+#         cache_dir=args.cache_dir,
+#         logs_dir=args.logs_dir,
+#     )
+#     cfg = Config(repo_root=REPO_ROOT)
+#     logger = setup_logger("build_hotmap", cfg.logs_dir)
+
+#     alpha = args.alpha if args.alpha is not None else cfg.hotmap_alpha
+#     beta  = args.beta  if args.beta  is not None else cfg.hotmap_beta
+    
+#     logger = setup_logger("build_hotmap", cfg.logs_dir)
+
+#     if not cfg.missing_species_csv.exists():
+#         logger.error("Missing required CSV: %s", cfg.missing_species_csv)
+#         logger.error("Hint: ensure crossmatch project published missing_species.csv into stage/lists/")
+#         return 2
+
+#     zoom = args.zoom
+#     logger.info("Zoom: %d", zoom)
+#     slot_id = args.slot
+#     logger.info("Slot: %d", slot_id)
+#     n = args.n
+
+#     taxa = read_first_n_taxa_rows(cfg.missing_species_csv, n)
+#     taxon_ids = [t.taxon_id for t in taxa]
+
+#     logger.info(
+#         "Aggregating hotmap for n=%d taxa at zoom=%d",
+#         len(taxon_ids), zoom
+#     )
+
+#     conn = storage.connect(cfg.geomap_db_path)
+#     try:
+#         storage.ensure_schema(conn)
+#         conn.execute("BEGIN;")
+
+#         # NEW: populate taxon_dim
+#         storage.upsert_taxon_dim(
+#             conn,
+#             [(t.taxon_id, t.scientific_name, t.swedish_name) for t in taxa],
+#         )
+
+#         storage.rebuild_hotmap(
+#             conn,
+#             zoom,
+#             slot_id,
+#             taxon_ids,
+#             alpha=alpha,
+#             beta=beta,
+#         )
+#         conn.commit()
+
+#         tops = top_hotspots(conn, zoom, slot_id, limit=10)
+#         for i, h in enumerate(tops, 1):
+#             logger.info(
+#                 "Top %d: coverage=%d score=%.3f cell=(%d,%d) bbox=[(%.5f,%.5f)->(%.5f,%.5f)]",
+#                 i,
+#                 h.coverage,
+#                 h.score,
+#                 h.x,
+#                 h.y,
+#                 h.bbox_top_lat,
+#                 h.bbox_left_lon,
+#                 h.bbox_bottom_lat,
+#                 h.bbox_right_lon,
+#             )
+
+#         return 0
+#     finally:
+#         conn.close()
 
 
 if __name__ == "__main__":

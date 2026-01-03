@@ -24,6 +24,9 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import argparse
+import os
+
 from pathlib import Path
 
 # --- make repo root importable ---
@@ -33,6 +36,8 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from geomap.config import Config
 from geomap.logging_utils import setup_logger
+
+from geomap.cli_paths import apply_path_overrides
 
 ZOOM_DEFAULT=15 # 1200 m, see zoom levels below
 
@@ -65,15 +70,38 @@ DEFAULT_N = 5 # Default limit of number of species
 #
 # *) The script pipeline is using the Web Mercator zoom levels
 
-from geomap.config import Config
 
 
-def _get_arg(name: str, default: str | None = None) -> str | None:
-    if name in sys.argv:
-        i = sys.argv.index(name)
-        if i + 1 < len(sys.argv):
-            return sys.argv[i + 1]
-    return default
+def _default_stage_paths(repo_root: Path) -> tuple[Path, Path]:
+    """
+    Return (db_dir, lists_dir) defaults.
+    Prefer OVE stage if available, else fall back to repo-local data dirs.
+    """
+    ove_base = os.getenv("OVE_BASE_DIR")
+    if ove_base:
+        base = Path(ove_base)
+        return base / "stage" / "db", base / "stage" / "lists"
+
+    # non-OVE fallback (keeps script usable outside OVE)
+    return repo_root / "data" / "db", repo_root / "data" / "lists"
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    ap = argparse.ArgumentParser(description="Run the full geomap pipeline.")
+    ap.add_argument("--n", type=int, default=DEFAULT_N, help="Number of species to use (0 = all).")
+    ap.add_argument("--slot", type=int, default=0, help="Slot id.")
+    ap.add_argument("--alpha", type=float, default=None, help="Override hotmap alpha.")
+    ap.add_argument("--beta", type=float, default=None, help="Override hotmap beta.")
+    ap.add_argument("--zooms", "--zoom", dest="zooms", default="15",
+                    help="Comma-separated zoom levels (e.g. 14,15,16).")
+
+    db_def, lists_def = _default_stage_paths(REPO_ROOT)
+    ap.add_argument("--db-dir", default=str(db_def), help=f"DB dir (default: {db_def})")
+    ap.add_argument("--lists-dir", default=str(lists_def), help=f"Lists dir (default: {lists_def})")
+    ap.add_argument("--out-dir", default=None, help=f"stage/lists/geomap (output drop)") 
+    ap.add_argument("--cache-dir", default=None, help=f"local cache for Artdatabanken fetches")
+    ap.add_argument("--logs-dir", default=None, help=f"override log-dir")
+    return ap.parse_args(argv)
 
 def _parse_zooms(arg: str) -> list[int]:
     zs = []
@@ -93,46 +121,73 @@ def run(cmd: list[str]) -> None:
 
 
 def main() -> int:
+    args = parse_args()
+
+    apply_path_overrides(
+        db_dir=args.db_dir,
+        lists_dir=args.lists_dir,
+        geomap_lists_dir=args.out_dir,
+        cache_dir=args.cache_dir,
+        logs_dir=args.logs_dir,
+    )
+    
     cfg = Config(repo_root=REPO_ROOT)
     logger = setup_logger("run_geomap_pipeline", cfg.logs_dir)
 
-    n = int(_get_arg("--n", str(DEFAULT_N)))
-    if n == 0:
-        logger.info("Using ALL species from CSV")
-    else:
-        logger.info("Using first %d species from CSV", n)
+    n = int(args.n)
+    slot_id = int(args.slot)
 
-    slot_id = int(_get_arg("--slot", "0"))
+    alpha = float(args.alpha if args.alpha is not None else cfg.hotmap_alpha)
+    beta = float(args.beta if args.beta is not None else cfg.hotmap_beta)
 
-    alpha = float(_get_arg("--alpha", str(cfg.hotmap_alpha)))
-    beta = float(_get_arg("--beta", str(cfg.hotmap_beta)))
+    zooms = _parse_zooms(args.zooms)
 
-    zooms = _parse_zooms(_get_arg("--zooms", _get_arg("--zoom", "15")))
+    # Normalize optional dirs (args.* may be None)
+    db_dir = Path(args.db_dir).expanduser().resolve() if args.db_dir else None
+    lists_dir = Path(args.lists_dir).expanduser().resolve() if args.lists_dir else None
+    out_dir = Path(args.out_dir).expanduser().resolve() if args.out_dir else None
+    cache_dir = Path(args.cache_dir).expanduser().resolve() if args.cache_dir else None
+    logs_dir = Path(args.logs_dir).expanduser().resolve() if args.logs_dir else None
+
     logger.info("Running pipeline: n=%d slot=%d zooms=%s", n, slot_id, zooms)
-    
+    logger.info("Using db_dir=%s lists_dir=%s out_dir=%s", db_dir, lists_dir, out_dir)
+
     python = sys.executable
 
-    # Always pass slot through the whole chain
+    # Only path overrides here (safe to reuse everywhere)
+    common_paths: list[str] = []
+    if db_dir:
+        common_paths += ["--db-dir", str(db_dir)]
+    if lists_dir:
+        common_paths += ["--lists-dir", str(lists_dir)]
+    if out_dir:
+        common_paths += ["--out-dir", str(out_dir)]
+    if cache_dir:
+        common_paths += ["--cache-dir", str(cache_dir)]
+    if logs_dir:
+        common_paths += ["--logs-dir", str(logs_dir)]
+
     run([python, str(REPO_ROOT / "scripts" / "fetch_layers.py"),
          "--n", str(n),
          "--zooms", ",".join(str(z) for z in zooms),
-         "--slot", str(slot_id)])
-
-    # Re-run all pipeline steps per zoom-level
+         "--slot", str(slot_id),
+         *common_paths])
+    
     for zoom in zooms:
         run([python, str(REPO_ROOT / "scripts" / "build_hotmap.py"),
              "--n", str(n),
              "--zoom", str(zoom),
              "--slot", str(slot_id),
              "--alpha", str(alpha),
-             "--beta", str(beta)])
+             "--beta", str(beta),
+             *common_paths])
 
         run([python, str(REPO_ROOT / "scripts" / "export_hotmap.py"),
              "--zoom", str(zoom),
-             "--slot", str(slot_id)])
+             "--slot", str(slot_id),
+             *common_paths])
 
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

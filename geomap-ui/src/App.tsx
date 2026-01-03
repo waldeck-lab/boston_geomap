@@ -43,7 +43,7 @@ export default function App() {
     return Array.from(new Set(zs)).sort((a, b) => b - a);
   }, [zooms]);
   
-  const baseZoom = useMemo(() => (parsedZooms.length ? parsedZooms[0] : zoom), [parsedZooms, zoom]);
+  /* const baseZoom = useMemo(() => (parsedZooms.length ? parsedZooms[0] : zoom), [parsedZooms, zoom]);*/
   
   const [status, setStatus] = useState<string>("");
 

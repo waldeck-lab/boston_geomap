@@ -215,7 +215,6 @@ def clear_derived_zoom_cache(
 
     return (int(n_grid), int(n_state))
 
-
 def clear_export_files(
     out_dir: Path,
     *,
@@ -224,28 +223,52 @@ def clear_export_files(
 ) -> int:
     """
     Delete exported hotmap files. Returns number of deleted files.
-    Matches your naming: hotmap_zoom{z}_slot{s}.geojson and top_sites_zoom{z}_slot{s}.csv
+
+    Matches exactly:
+      hotmap_zoom{z}_slot{s}.geojson
+      top_sites_zoom{z}_slot{s}.csv
+    and supports filtering by zoom and/or slot_id.
     """
     if not out_dir.exists():
         return 0
 
-    patterns: list[str] = []
-    if zoom is None and slot_id is None:
-        patterns = ["hotmap_zoom", "top_sites_zoom"]
-    elif zoom is not None and slot_id is None:
-        patterns = [f"hotmap_zoom{int(zoom)}_", f"top_sites_zoom{int(zoom)}_"]
-    elif zoom is None and slot_id is not None:
-        patterns = [f"_slot{int(slot_id)}."]
-    else:
-        patterns = [f"zoom{int(zoom)}_slot{int(slot_id)}."]
+    def matches(name: str) -> bool:
+        # Only consider our known exported file prefixes and extensions
+        if name.endswith(".geojson"):
+            prefix = "hotmap_zoom"
+            ext = ".geojson"
+        elif name.endswith(".csv"):
+            prefix = "top_sites_zoom"
+            ext = ".csv"
+        else:
+            return False
+
+        if not name.startswith(prefix):
+            return False
+
+        # Expected core: "<prefix><zoom>_slot<slot><ext>"
+        core = name[len(prefix) : -len(ext)]  # e.g. "15_slot0"
+        if "_slot" not in core:
+            return False
+
+        z_str, s_str = core.split("_slot", 1)
+        if not z_str.isdigit() or not s_str.isdigit():
+            return False
+
+        z = int(z_str)
+        s = int(s_str)
+
+        if zoom is not None and z != int(zoom):
+            return False
+        if slot_id is not None and s != int(slot_id):
+            return False
+        return True
 
     deleted = 0
     for p in out_dir.iterdir():
         if not p.is_file():
             continue
-        name = p.name
-        # crude but safe enough for your naming convention
-        if any(tok in name for tok in patterns) and (name.endswith(".geojson") or name.endswith(".csv")):
+        if matches(p.name):
             try:
                 p.unlink()
                 deleted += 1

@@ -11,4 +11,5 @@ __all__ = [
     "timeslots",
     "sos_filters_ext",
     "tiles",
+    "cli_paths",
 ]

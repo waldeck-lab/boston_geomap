@@ -24,6 +24,8 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+import argparse
+import os
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
@@ -79,7 +81,8 @@ def main() -> int:
         conn.close()
 
     if do_exports:
-        out_dir = cfg.repo_root / "data" / "out"
+        out_dir = cfg.geomap_lists_dir
+        out_dir.mkdir(parents=True, exist_ok=True)
         n_files = storage.clear_export_files(out_dir, zoom=zoom_i, slot_id=slot_i)
         logger.info("Deleted export files: %d", n_files)
 

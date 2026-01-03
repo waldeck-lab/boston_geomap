@@ -25,11 +25,15 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+import argparse
+import os
 
 # --- make repo root importable ---
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 # --------------------------------
+
+from geomap.cli_paths import apply_path_overrides
 
 from geomap.config import Config
 from geomap.logging_utils import setup_logger
@@ -37,22 +41,46 @@ from geomap import storage
 from geomap.export_geojson import export_hotmap_geojson
 from geomap.export_csv import export_top_sites_csv  
 
-def _get_arg(name: str, default: str | None = None) -> str | None:
-    if name in sys.argv:
-        return sys.argv[sys.argv.index(name) + 1]
-    return default
+def parse_args() -> argparse.Namespace:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--zoom", type=int, default=15)
+    ap.add_argument("--slot", type=int, default=0)
+    ap.add_argument("--n", type=int, default=5)
+    ap.add_argument("--alpha", type=float, default=None)
+    ap.add_argument("--beta", type=float, default=None)
+    ap.add_argument("--db-dir", default=None)
+    ap.add_argument("--lists-dir", default=None)
+    ap.add_argument("--out-dir", default=None)
+    ap.add_argument("--cache-dir", default=None)
+    ap.add_argument("--logs-dir", default=None)
+    return ap.parse_args()
+    
 
 def main() -> int:
+    args = parse_args()
+    
+    apply_path_overrides(
+        db_dir=args.db_dir,
+        lists_dir=args.lists_dir,
+        geomap_lists_dir=args.out_dir,
+        cache_dir=args.cache_dir,
+        logs_dir=args.logs_dir,
+    )
+
     cfg = Config(repo_root=REPO_ROOT)
     logger = setup_logger("export_hotmap", cfg.logs_dir)
 
-    slot_id = int(_get_arg("--slot", "0"))
-    zoom = int(_get_arg("--zoom", "15"))
+    zoom = args.zoom
     logger.info("Zoom: %d", zoom)
+    slot_id = args.slot
+    logger.info("Slot: %d", slot_id)
 
-    out_geojson = cfg.repo_root / "data" / "out" / f"hotmap_zoom{zoom}_slot{slot_id}.geojson"
-    out_csv  = cfg.repo_root / "data" / "out" / f"top_sites_zoom{zoom}_slot{slot_id}.csv"
+    out_dir = cfg.geomap_lists_dir
+    out_dir.mkdir(parents=True, exist_ok=True)
 
+    out_geojson = out_dir / f"hotmap_zoom{zoom}_slot{slot_id}.geojson"
+    out_csv = out_dir / f"top_sites_zoom{zoom}_slot{slot_id}.csv"
+    
     logger.info("Exporting slot_id: %d", slot_id)
     logger.info("Exporting hotmap to: %s", out_geojson)
     logger.info("Exporting top sites to: %s", out_csv)

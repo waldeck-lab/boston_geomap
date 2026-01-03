@@ -89,19 +89,20 @@ export function MapView({ apiBase, zoom, slotId, onCellClick }: Props) {
       }
 
       map.on("click", layerIdFill, (e: MapMouseEvent) => {
-        const f = e.features?.[0];
-        if (!f) return;
+       const features = map.queryRenderedFeatures(e.point, { layers: [layerIdFill] });
+       const f = features[0];
+       if (!f) return;
 
-        const p: any = f.properties || {};
-        if (p.x == null || p.y == null) return;
+       const p: any = (f as any).properties || {};
+       if (p.x == null || p.y == null) return;
 
-        onCellClickRef.current({
-          x: Number(p.x),
-          y: Number(p.y),
-          zoom: Number(p.zoom ?? zoomRef.current),
-          slotId: Number(p.slot_id ?? slotIdRef.current),
-        });
+       onCellClickRef.current({
+	x: Number(p.x),
+    	y: Number(p.y),
+    	zoom: Number(p.zoom ?? zoomRef.current),
+    	slotId: Number(p.slot_id ?? slotIdRef.current),
       });
+    });
 
       map.on("mouseenter", layerIdFill, () => {
         map.getCanvas().style.cursor = "pointer";

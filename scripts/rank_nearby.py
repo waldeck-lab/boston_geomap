@@ -23,6 +23,8 @@
 from __future__ import annotations
 
 import sys
+import argparse
+import os
 from pathlib import Path
 
 # --- make repo root importable ---
@@ -40,11 +42,64 @@ from geomap.distance import haversine_km, distance_weight_rational, distance_wei
 DEFAULT_LAT = "55.667"
 DEFAULT_LON = "13.350"
 
+def _path_status(p: Path) -> str:
+    try:
+        if not p.exists():
+            return "missing"
+        if p.is_dir():
+            return "dir"
+        sz = p.stat().st_size
+        return f"file size={sz}"
+    except Exception as e:
+        return f"error({e})"
 
-def _get_arg(name: str, default: str | None = None) -> str | None:
-    if name in sys.argv:
-        return sys.argv[sys.argv.index(name) + 1]
-    return default
+
+def parse_args() -> argparse.Namespace:
+    ap = argparse.ArgumentParser(
+        description="Rank nearby geomap hotspots by distance-weighted score.",
+    )
+
+    ap.add_argument("--lat", type=float, default=float(DEFAULT_LAT),
+                    help="Latitude (default: Dalby, Skåne)")
+    ap.add_argument("--lon", type=float, default=float(DEFAULT_LON),
+                    help="Longitude (default: Dalby, Skåne)")
+
+    ap.add_argument("--zoom", type=int, default=15,
+                    help="Geomap zoom level (default: 15)")
+    ap.add_argument("--slot", type=int, default=0,
+                    help="Calendar slot id (0=all, 1–48)")
+
+    ap.add_argument("--limit", type=int, default=20,
+                    help="Number of ranked cells to show")
+    ap.add_argument("--max-km", type=float, default=250,
+                    help="Ignore cells farther than this distance (km)")
+
+    ap.add_argument("--mode", choices=("rational", "exp"), default="rational",
+                    help="Distance decay model")
+    ap.add_argument("--d0-km", type=float, default=30.0,
+                    help="Characteristic distance for decay (km)")
+    ap.add_argument("--gamma", type=float, default=2.0,
+                    help="Gamma exponent (rational mode only)")
+
+    ap.add_argument("--show-all-taxa", action="store_true",
+                    help="Show all taxa per cell (otherwise top-N)")
+    ap.add_argument("--taxa-top", type=int, default=10,
+                    help="Number of taxa shown when not using --show-all-taxa")
+    ap.add_argument("--candidates", type=int, default=20000,
+                    help="How many hotspot candidates to consider before distance filtering (default: 20000).")
+
+    # Path overrides (OVE-compatible)
+    ove_base = (os.getenv("OVE_BASE_DIR") or "").strip()
+    default_db_dir = str(Path(ove_base) / "stage" / "db") if ove_base else None
+
+    ap.add_argument(
+        "--db-dir",
+        default=default_db_dir,
+        help="Override DB directory (expects geomap.sqlite). Defaults to $OVE_BASE_DIR/stage/db when running in OVE.",
+    )
+    ap.add_argument("--logs-dir", default=None,
+                    help="Override logs directory")
+    return ap.parse_args()
 
 
 def taxa_for_cell(conn, zoom: int, slot_id: int, x: int, y: int) -> list[tuple[int,str,str,int]]:
@@ -70,53 +125,117 @@ def fmt_taxa(taxa: list[tuple[int, str, str, int]], max_items: int = 8) -> str:
 
 
 def main() -> int:
+    args = parse_args()
+    # Apply OVE-style path overrides
+    from geomap.cli_paths import apply_path_overrides
+    apply_path_overrides(
+        db_dir=args.db_dir,
+        logs_dir=args.logs_dir,
+    )
+    
     cfg = Config(repo_root=REPO_ROOT)
     logger = setup_logger("rank_nearby", cfg.logs_dir)
+    logger.info("OVE_BASE_DIR=%s", os.getenv("OVE_BASE_DIR"))
+    logger.info("Resolved geomap_db_path=%s", cfg.geomap_db_path)
+    
 
-    lat = float(_get_arg("--lat", DEFAULT_LAT))   # default: Dalby
-    lon = float(_get_arg("--lon", DEFAULT_LON))
-    limit = int(_get_arg("--limit", "20"))
-    d0_km = float(_get_arg("--d0-km", "30"))    # 30 km characteristic distance
-    mode = (_get_arg("--mode", "rational") or "rational").lower()
-    gamma = float(_get_arg("--gamma", "2.0"))   # only used for rational
-    max_km = float(_get_arg("--max-km", "250")) # ignore very far cells
+    db_path = Path(cfg.geomap_db_path)
+    logger.info("Geomap DB path: %s (%s)", db_path, _path_status(db_path))
 
-    show_all_taxa = "--show-all-taxa" in sys.argv
-    taxa_top_n = int(_get_arg("--taxa-top", "10"))  # used when not showing all
+    if not db_path.exists():
+        logger.error("Geomap DB does not exist: %s", db_path)
+        return 2
+    if db_path.stat().st_size == 0:
+        logger.error("Geomap DB is empty (0 bytes): %s", db_path)
+        return 2
+    ove_base = (os.getenv("OVE_BASE_DIR") or "").strip()
+    if ove_base and str(db_path).startswith(str(Path(ove_base))) and "/stage/" not in str(db_path):
+        logger.warning("DB is not under stage/. Did you mean --db-dir %s ?", Path(ove_base)/"stage"/"db")
+        
+    lat = args.lat
+    lon = args.lon
+    zoom = args.zoom
+    slot_id = args.slot
+    limit = args.limit
+    d0_km = args.d0_km
+    mode = args.mode
+    gamma = args.gamma
+    max_km = args.max_km
+    show_all_taxa = args.show_all_taxa
+    taxa_top_n = args.taxa_top
+    candidates = args.candidates
 
-    slot_id = int(_get_arg("--slot", "0"))
-    zoom = int(_get_arg("--zoom", "15"))
+    
     logger.info("Zoom: %d", zoom)
 
     logger.info("Slot: %d", slot_id)
-    if slot_id < 0 or slot_id > 47:
+    if slot_id < 0 or slot_id > 48:
         logger.error("slot_id out of range: %d", slot_id)
         return 2
     logger.info("Using position: lat=%.6f lon=%.6f", lat, lon)
     logger.info("Decay: mode=%s d0_km=%.3f gamma=%.3f max_km=%.3f", mode, d0_km, gamma, max_km)
+    logger.info("Candidate prefetch limit: %d", candidates)
 
     conn = storage.connect(cfg.geomap_db_path)
+
+    # Extra debug
+    tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;").fetchall()
+    logger.info("DB tables: %s", [t[0] for t in tables])
+    
     try:
         storage.ensure_schema(conn)
+
+        # What slots/zooms exist?
+        try:
+            slots = conn.execute(
+                "SELECT slot_id, COUNT(*) c FROM grid_hotmap_v GROUP BY slot_id ORDER BY slot_id;"
+            ).fetchall()
+            if slots:
+                logger.info("Hotmap rows per slot_id: %s", [(int(r[0]), int(r[1])) for r in slots])
+            else:
+                logger.warning("grid_hotmap_v has 0 rows total (did you run build_hotmap?)")
+        except Exception as e:
+            logger.error("Could not query grid_hotmap_v. Missing view/schema? %s", e)
+            return 2
+
+        try:
+            zc = conn.execute(
+                "SELECT zoom, COUNT(*) c FROM grid_hotmap_v GROUP BY zoom ORDER BY zoom;"
+            ).fetchall()
+            logger.info("Hotmap rows per zoom: %s", [(int(r[0]), int(r[1])) for r in zc])
+        except Exception as e:
+            logger.warning("Could not query zoom distribution: %s", e)
+
+        # For the requested zoom/slot
+        n_zoom_slot = conn.execute(
+            "SELECT COUNT(*) FROM grid_hotmap_v WHERE zoom=? AND slot_id=?;",
+            (zoom, slot_id),
+        ).fetchone()[0]
+        logger.info("Hotmap rows for zoom=%d slot=%d: %d", zoom, slot_id, int(n_zoom_slot))
+
+        if int(n_zoom_slot) == 0:
+            logger.error("No hotmap rows for zoom=%d slot=%d in DB: %s", zoom, slot_id, db_path)
+            logger.error("Hint: run build_hotmap for that zoom/slot (or use --slot 0 if you only built slot 0).")
+            return 2
+        
 
         # Pull a larger candidate set, then distance-rank it.
         # This keeps it fast without needing SQL trig functions.
         candidate_rows = conn.execute(
             """
             SELECT
-              zoom, slot_id, x, y, coverage, score,
-              centroid_lat, centroid_lon,
-              topLeft_lat, topLeft_lon, bottomRight_lat, bottomRight_lon,
-              obs_total,
-              taxa_list
+            zoom, slot_id, x, y, coverage, score,
+            centroid_lat, centroid_lon,
+            topLeft_lat, topLeft_lon, bottomRight_lat, bottomRight_lon,
+            obs_total,
+            taxa_list
             FROM grid_hotmap_v
             WHERE zoom=? AND slot_id=?
             ORDER BY coverage DESC, score DESC
-            LIMIT 2000;
+            LIMIT ?;
             """,
-            (zoom, slot_id),
+            (zoom, slot_id, candidates),
         ).fetchall()
-
 
         if not candidate_rows:
             logger.warning("No hotmap rows at all for zoom=%d", zoom)
@@ -160,7 +279,16 @@ def main() -> int:
         logger.info("Unique cells considered: %d", len(seen))
         logger.info("Scored within max_km: %d", len(scored))
 
-        if not scored:
+        if scored:
+            dists = [d for (_, d, _) in scored]
+            logger.info(
+                "Distance stats within max_km: min=%.1f km p50=%.1f km p90=%.1f km max=%.1f km",
+                min(dists),
+                sorted(dists)[len(dists)//2],
+                sorted(dists)[int(len(dists)*0.9)],
+                max(dists),
+            )
+        else:
             logger.warning(
                 "No hotspots within max_km=%.1f km (zoom=%d). Closest exists, try --max-km 600",
                 max_km, zoom)
