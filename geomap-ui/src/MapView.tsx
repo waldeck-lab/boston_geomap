@@ -1,3 +1,5 @@
+/* File: geomap-ui/src/MapView.tsx */
+
 /*
  * SPDX-License-Identifier: MIT
  *

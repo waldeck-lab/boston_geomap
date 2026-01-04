@@ -53,12 +53,13 @@ class Config:
             return Path(raw).expanduser().resolve()
 
         # Prefer explicit stage root from OVE, else infer from OVE_BASE_DIR's parent.
+
         stage_root = os.getenv("OVE_STAGE_DIR", "").strip()
         if stage_root:
             ove_stage = Path(stage_root).expanduser().resolve()
         else:
             ove_base = os.getenv("OVE_BASE_DIR", "").strip()
-            ove_stage = (Path(ove_base).expanduser().resolve().parent / "stage") if ove_base else None
+            ove_stage = (Path(ove_base).expanduser().resolve() / "stage") if ove_base else None
 
         if ove_stage and ove_stage.exists():
             default_missing_species = ove_stage / "lists" / "missing_species.csv"

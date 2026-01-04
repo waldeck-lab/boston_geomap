@@ -53,10 +53,13 @@ def apply_path_overrides(
         p = _as_dir(db_dir, create=create_dirs, name="db_dir")
         os.environ["GEOMAP_DB"] = str(p / "geomap.sqlite")
 
-        # Only apply these conventions if caller hasn't explicitly configured them
-        os.environ.setdefault("GEOMAP_OBSERVED_DB", str(p / "sos_counts.sqlite"))
-        os.environ.setdefault("GEOMAP_DYNTAXA_DB", str(p / "dyntaxa_lepidoptera.sqlite"))
+        # # Only apply these conventions if caller hasn't explicitly configured them
+        # os.environ.setdefault("GEOMAP_OBSERVED_DB", str(p / "sos_counts.sqlite"))
+        # os.environ.setdefault("GEOMAP_DYNTAXA_DB", str(p / "dyntaxa_lepidoptera.sqlite"))
 
+        # If caller provides db_dir, it must win (OVE stage should override any legacy env)
+        os.environ["GEOMAP_OBSERVED_DB"] = str(p / "sos_counts.sqlite")
+        os.environ["GEOMAP_DYNTAXA_DB"]  = str(p / "dyntaxa_lepidoptera.sqlite")
     if lists_dir:
         p = _as_dir(lists_dir, create=create_dirs, name="lists_dir")
         os.environ["GEOMAP_MISSING_SPECIES_CSV"] = str(p / "missing_species.csv")
@@ -64,9 +67,11 @@ def apply_path_overrides(
     if geomap_lists_dir:
         p = _as_dir(geomap_lists_dir, create=create_dirs, name="geomap_lists_dir")
         os.environ["GEOMAP_LISTS_DIR"] = str(p)
-        # Only keep this if you still use geomap_out_dir / GEOMAP_OUT_DIR
-        os.environ.setdefault("GEOMAP_OUT_DIR", str(p))
+        # # Only keep this if you still use geomap_out_dir / GEOMAP_OUT_DIR
+        # os.environ.setdefault("GEOMAP_OUT_DIR", str(p))
 
+        # Keep in sync (many scripts still read GEOMAP_OUT_DIR)
+        os.environ["GEOMAP_OUT_DIR"] = str(p)
     if cache_dir:
         p = _as_dir(cache_dir, create=create_dirs, name="cache_dir")
         os.environ["GEOMAP_CACHE_DIR"] = str(p)

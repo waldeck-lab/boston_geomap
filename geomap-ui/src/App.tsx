@@ -1,3 +1,5 @@
+/* File: geomap-ui/src/App.tsx */
+
 /*
  * SPDX-License-Identifier: MIT
  *
@@ -15,7 +17,7 @@ type Taxon = {
   observations_count: number;
 };
 
-const API_BASE = "http://localhost:8088";
+const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
 export default function App() {
   const [slotId, setSlotId] = useState(0);
@@ -28,7 +30,8 @@ export default function App() {
 
   const [clicked, setClicked] = useState<{ x: number; y: number } | null>(null);
   const [taxa, setTaxa] = useState<Taxon[]>([]);
-
+  const apiUrl = (path: string) => (API_BASE ? `${API_BASE}${path}` : path);
+       
   const parsedZooms = useMemo(() => {
     const zs = zooms
       .split(",")
@@ -61,7 +64,7 @@ export default function App() {
         throw new Error("No valid zooms. Example: 15,14,13");
       }
   
-      const res = await fetch(`${API_BASE}/api/pipeline/build`, {
+      const res = await fetch(apiUrl("/api/pipeline/build"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -94,7 +97,7 @@ export default function App() {
       setTaxaLoading(true);
   
       try {
-        const u = new URL(`${API_BASE}/api/cell/taxa`);
+        const u = new URL(apiUrl("/api/cell/taxa"), window.location.origin);
         u.searchParams.set("zoom", String(p.zoom));
         u.searchParams.set("slot_id", String(p.slotId));
         u.searchParams.set("x", String(p.x));
