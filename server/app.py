@@ -33,6 +33,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 import sys
 import argparse
 
+import sqlite3
+
 sys.path.insert(0, str(REPO_ROOT))
 
 from geomap.config import Config
@@ -41,9 +43,11 @@ from geomap.sos_client import SOSClient, stable_gridcells_hash, throttle
 from geomap.distance import haversine_km, distance_weight_rational, distance_weight_exp
 
 
+import threading
+BUILD_LOCK = threading.Lock()
+
 import logging
 logger = logging.getLogger("geomap-server")
-
 
 ZOOM_DEFAULT = 15  # server default if client doesn't send zooms
 
@@ -200,102 +204,105 @@ def make_app() -> Flask:
 
     @app.post("/api/pipeline/build")
     def pipeline_build():
-        body = request.get_json(force=True) or {}
-        slot_id = parse_slot_id(body.get("slot_id", SLOT_ALL))
-        zooms = parse_zooms(body.get("zooms",[ZOOM_DEFAULT])) 
-        base_zoom = zooms[0]
-        n = int(body.get("n", 5))
-        alpha = float(body.get("alpha", cfg.hotmap_alpha))
-        beta = float(body.get("beta", cfg.hotmap_beta))
-        force = bool(body.get("force", False))
+        if not BUILD_LOCK.acquire(blocking=False):
+            return jsonify({"ok": False, "code": "busy", "error": "Build already running"}), 409
+        try:         
+            body = request.get_json(force=True) or {}
+            slot_id = parse_slot_id(body.get("slot_id", SLOT_ALL))
+            zooms = parse_zooms(body.get("zooms",[ZOOM_DEFAULT])) 
+            base_zoom = zooms[0]
+            n = int(body.get("n", 5))
+            alpha = float(body.get("alpha", cfg.hotmap_alpha))
+            beta = float(body.get("beta", cfg.hotmap_beta))
+            force = bool(body.get("force", False))
 
-        if not cfg.subscription_key:
-            return jsonify({"ok": False, "error": "Missing ARTDATABANKEN_SUBSCRIPTION_KEY"}), 500
-        if not cfg.authorization:
-            return jsonify({"ok": False, "error": "Missing ARTDATABANKEN_AUTHORIZATION"}), 500
+            if not cfg.subscription_key:
+                return jsonify({"ok": False, "error": "Missing ARTDATABANKEN_SUBSCRIPTION_KEY"}), 500
+            if not cfg.authorization:
+                return jsonify({"ok": False, "error": "Missing ARTDATABANKEN_AUTHORIZATION"}), 500
 
-        taxa_rows = read_taxa_rows(cfg.missing_species_csv, n)
-        taxon_ids = [t["taxon_id"] for t in taxa_rows]
-        if not taxon_ids:
-            return jsonify({"ok": False, "error": "No taxon ids found in CSV"}), 400
+            taxa_rows = read_taxa_rows(cfg.missing_species_csv, n)
+            taxon_ids = [t["taxon_id"] for t in taxa_rows]
+            if not taxon_ids:
+                return jsonify({"ok": False, "error": "No taxon ids found in CSV"}), 400
 
-        conn = storage.connect(cfg.geomap_db_path)
-        try:
-            storage.ensure_schema(conn)
-
-            # DB sanity check
-            tables = [r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;").fetchall()]
-            logger.info("DB tables: %s", tables)
-
-            # optional, quick counts:
+            conn = storage.connect(cfg.geomap_db_path)
+            conn.isolation_level = None  # autocommit; avoids lingering read txns
             try:
-                c = conn.execute("SELECT COUNT(*) FROM taxon_grid;").fetchone()[0]
-                logger.info("taxon_grid rows: %d", int(c))
-            except Exception:
-                pass
-            
-            throttle_state: dict[str, float] = {}
-            for taxon_id in taxon_ids:
-                throttle(2.0, throttle_state)
+                storage.ensure_schema(conn)
+                logger.info("sqlite isolation_level=%r in_transaction=%s", conn.isolation_level, conn.in_transaction)
 
-                payload = client.geogrid_aggregation([taxon_id], zoom=base_zoom)
-                grid_cells = payload.get("gridCells") or []
-                base_sha = stable_gridcells_hash(payload)
+                # DB sanity check
+                tables = [r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;").fetchall()]
+                logger.info("DB tables: %s", tables)
 
-                prev = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id)
-                unchanged = (prev is not None and prev[1] == base_sha)
-
-                if unchanged and not force:
-                    # still ensure derived zooms exist; simplest: rebuild derived always if you want
+                # optional, quick counts:
+                try:
+                    c = conn.execute("SELECT COUNT(*) FROM taxon_grid;").fetchone()[0]
+                    logger.info("taxon_grid rows: %d", int(c))
+                except Exception:
                     pass
-                else:
-                    conn.execute("BEGIN;")
-                    storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells)
-                    storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells))
-                    conn.commit()
+            
+                throttle_state: dict[str, float] = {}
+                for taxon_id in taxon_ids:
+                    throttle(2.0, throttle_state)
 
-                # Derived zooms: materialize from the closest available source (step-wise)
-                # If you already implemented src_sha tagging, pass it here.
-                src_zoom = base_zoom
-                for dst_zoom in zooms[1:]:
-                    # assumes you implemented: materialize_parent_zoom_from_child(...)
-                    conn.execute("BEGIN;")
-                    storage.materialize_parent_zoom_from_child(
+                    payload = client.geogrid_aggregation([taxon_id], zoom=base_zoom)
+                    grid_cells = payload.get("gridCells") or []
+                    base_sha = stable_gridcells_hash(payload)
+
+                    prev = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id)
+                    unchanged = (prev is not None and prev[1] == base_sha)
+
+                    if unchanged and not force:
+                        # still ensure derived zooms exist; simplest: rebuild derived always if you want
+                        pass
+                    else:
+                        with conn:
+                            storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells)
+                            storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells))
+                    # Derived zooms: materialize from the closest available source (step-wise)
+                    # If you already implemented src_sha tagging, pass it here.
+                    src_zoom = base_zoom
+                    for dst_zoom in zooms[1:]:
+                        # assumes you implemented: materialize_parent_zoom_from_child(...)
+                        with conn:
+                            storage.materialize_parent_zoom_from_child(
+                                conn,
+                                taxon_id=taxon_id,
+                                slot_id=slot_id,
+                                src_zoom=src_zoom,
+                                dst_zoom=dst_zoom,
+                                src_sha=base_sha,
+                            )
+                        src_zoom = dst_zoom
+
+                # upsert taxons for readability
+                with conn:
+                    storage.upsert_taxon_dim(
                         conn,
-                        taxon_id=taxon_id,
-                        slot_id=slot_id,
-                        src_zoom=src_zoom,
-                        dst_zoom=dst_zoom,
-                        src_sha=base_sha,  # optional in your implementation
+                        [(t["taxon_id"], t["scientific_name"], t["swedish_name"]) for t in taxa_rows],
                     )
-                    conn.commit()
-                    src_zoom = dst_zoom
+                # Build hotmaps for each zoom requested
+                for z in zooms:
+                    with conn:
+                        storage.rebuild_hotmap(conn, z, slot_id, taxon_ids, alpha=alpha, beta=beta)
 
-            # upsert taxons for readability
-            storage.upsert_taxon_dim(
-                conn,
-                [(t["taxon_id"], t["scientific_name"], t["swedish_name"]) for t in taxa_rows],
-            )
-                    
-            # Build hotmaps for each zoom requested
-            for z in zooms:
-                conn.execute("BEGIN;")
-                storage.rebuild_hotmap(conn, z, slot_id, taxon_ids, alpha=alpha, beta=beta)
-                conn.commit()
-
-            return jsonify(
-                {
-                    "ok": True,
-                    "slot_id": slot_id,
-                    "zooms": zooms,
-                    "base_zoom": base_zoom,
-                    "n_taxa": len(taxon_ids),
-                    "alpha": alpha,
-                    "beta": beta,
-                }
-            )
+                return jsonify(
+                    {
+                        "ok": True,
+                        "slot_id": slot_id,
+                        "zooms": zooms,
+                        "base_zoom": base_zoom,
+                        "n_taxa": len(taxon_ids),
+                        "alpha": alpha,
+                        "beta": beta,
+                    }
+                )
+            finally:
+                conn.close()
         finally:
-            conn.close()
+            BUILD_LOCK.release()
 
     @app.errorhandler(Exception)
     def handle_any_exception(e: Exception):
@@ -313,22 +320,30 @@ def make_app() -> Flask:
             "status": e.code,
         }), e.code
 
+    @app.errorhandler(sqlite3.OperationalError)
+    def handle_sqlite_operational(e):
+        msg = str(e).lower()
+        if "database is locked" in msg:
+            return jsonify({"ok": False, "code": "db_locked", "error": str(e), "status": 503}), 503
+        return jsonify({"ok": False, "code": "db_error", "error": str(e), "status": 500}), 500
+    
     @app.get("/api/hotmap")
     def hotmap_geojson():
         zoom = int(request.args.get("zoom", "15"))
         slot_id = parse_slot_id(request.args.get("slot_id", SLOT_ALL))
 
         cfg_local = cfg
+        
         conn = storage.connect(cfg_local.geomap_db_path)
-
-        # Make sure an non-empty db is found
-        nrows = conn.execute("SELECT COUNT(*) FROM grid_hotmap WHERE zoom=? AND slot_id=?;", (zoom, slot_id)).fetchone()[0]
-        logger.info("hotmap request zoom=%d slot=%d rows=%d", zoom, slot_id, int(nrows))
+        conn.isolation_level = None  # autocommit; avoids lingering read txns
 
         # Produce geojson
-        try:
-            
+        try:            
             storage.ensure_schema(conn)
+            # Make sure an non-empty db is found
+            nrows = conn.execute("SELECT COUNT(*) FROM grid_hotmap WHERE zoom=? AND slot_id=?;", (zoom, slot_id)).fetchone()[0]
+            logger.info("hotmap request zoom=%d slot=%d rows=%d", zoom, slot_id, int(nrows))
+
             rows = conn.execute(
                 """
                 SELECT slot_id, x, y, coverage, score,
@@ -377,6 +392,7 @@ def make_app() -> Flask:
         limit = int(request.args.get("limit", "200"))
 
         conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None  # autocommit; avoids lingering read txns
         try:
             storage.ensure_schema(conn)
             rows = conn.execute(
@@ -414,8 +430,10 @@ def make_app() -> Flask:
         mode = (request.args.get("mode", "rational") or "rational").lower()
         d0_km = float(request.args.get("d0_km", "30"))
         gamma = float(request.args.get("gamma", "2.0"))
+        limit = int(request.args.get("limit", "20"))
 
         conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None  # autocommit; avoids lingering read txns
         try:
             storage.ensure_schema(conn)
             candidate_rows = conn.execute(

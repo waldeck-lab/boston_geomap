@@ -1,5 +1,3 @@
-/* File: geomap-ui/src/MapView.tsx */
-
 /*
  * SPDX-License-Identifier: MIT
  *
@@ -7,25 +5,34 @@
  */
 
 import { useEffect, useMemo, useRef } from "react";
-import maplibregl, { Map, GeoJSONSource, MapMouseEvent } from "maplibre-gl";
+import maplibregl, { Map, GeoJSONSource, MapMouseEvent, Popup } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 type Props = {
   apiBase: string;
-  zoom: number;
+  zoom: number; // server zoom parameter (grid resolution)
   slotId: number;
+  selected?: { x: number; y: number } | null;
   onCellClick: (p: { x: number; y: number; zoom: number; slotId: number }) => void;
 };
 
-export function MapView({ apiBase, zoom, slotId, onCellClick }: Props) {
+function apiUrl(apiBase: string, path: string) {
+  const base = apiBase && apiBase.length ? apiBase : window.location.origin;
+  return new URL(path, base).toString();
+}
+
+export function MapView({ apiBase, zoom, slotId, selected, onCellClick }: Props) {
   const mapRef = useRef<Map | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // keep latest props for event handlers
   const onCellClickRef = useRef(onCellClick);
   const zoomRef = useRef(zoom);
   const slotIdRef = useRef(slotId);
 
+  const popupRef = useRef<Popup | null>(null);
+  const loadedRef = useRef(false);
+
+  // Keep latest props for event handlers
   useEffect(() => {
     onCellClickRef.current = onCellClick;
   }, [onCellClick]);
@@ -36,101 +43,244 @@ export function MapView({ apiBase, zoom, slotId, onCellClick }: Props) {
   }, [zoom, slotId]);
 
   const sourceId = "hotmap";
-  const layerIdFill = "hotmap-fill";
-  const layerIdLine = "hotmap-line";
+  const layerFill = "hotmap-fill";
+  const layerLine = "hotmap-line";
+  const layerSelected = "hotmap-selected";
 
   const hotmapUrl = useMemo(() => {
-    const u = new URL(`${apiBase}/api/hotmap`);
+    const u = new URL(apiUrl(apiBase, "/api/hotmap"));
     u.searchParams.set("zoom", String(zoom));
     u.searchParams.set("slot_id", String(slotId));
     return u.toString();
   }, [apiBase, zoom, slotId]);
 
-  // Create the map once
+  // Create map once
   useEffect(() => {
-    if (!containerRef.current) return;
+    const el = containerRef.current;
+    if (!el) return;
     if (mapRef.current) return;
 
     const map = new maplibregl.Map({
-      container: containerRef.current,
-      style: "https://demotiles.maplibre.org/style.json",
+      container: el,
+      style: {
+        version: 8,
+        sources: {
+          osm: {
+            type: "raster",
+            tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+            tileSize: 256,
+            attribution: "© OpenStreetMap contributors",
+          },
+        },
+        layers: [{ id: "osm", type: "raster", source: "osm" }],
+      },
       center: [13.35, 55.667],
       zoom: 7,
     });
 
-    map.addControl(new maplibregl.NavigationControl(), "top-right");
+    mapRef.current = map;
+
+    const onResize = () => map.resize();
+    window.addEventListener("resize", onResize);
+
+    map.on("error", (e) => {
+      console.error("MapLibre error:", (e as any)?.error || e);
+    });
 
     map.on("load", () => {
+      loadedRef.current = true;
+
+      map.addControl(new maplibregl.NavigationControl(), "top-right");
+
+      // Add hotmap source
       if (!map.getSource(sourceId)) {
         map.addSource(sourceId, {
           type: "geojson",
-          data: hotmapUrl, // initial
+          data: { type: "FeatureCollection", features: [] },
         });
       }
 
-      if (!map.getLayer(layerIdFill)) {
+      // Fill polygons colored by score
+      if (!map.getLayer(layerFill)) {
         map.addLayer({
-          id: layerIdFill,
+          id: layerFill,
           type: "fill",
           source: sourceId,
           paint: {
-            "fill-opacity": 0.35,
+            "fill-opacity": 0.45,
+            "fill-color": [
+              "interpolate",
+              ["linear"],
+              ["coalesce", ["to-number", ["get", "score"]], 0],
+              0,
+              "#2c7bb6",
+              10,
+              "#abd9e9",
+              30,
+              "#ffffbf",
+              60,
+              "#fdae61",
+              120,
+              "#d7191c",
+            ],
           },
         });
       }
 
-      if (!map.getLayer(layerIdLine)) {
+      // Outline
+      if (!map.getLayer(layerLine)) {
         map.addLayer({
-          id: layerIdLine,
+          id: layerLine,
           type: "line",
           source: sourceId,
           paint: {
             "line-width": 1,
+            "line-opacity": 0.7,
           },
         });
       }
 
-      map.on("click", layerIdFill, (e: MapMouseEvent) => {
-       const features = map.queryRenderedFeatures(e.point, { layers: [layerIdFill] });
-       const f = features[0];
-       if (!f) return;
+      // Selected outline (filter updated by effect below)
+      if (!map.getLayer(layerSelected)) {
+        map.addLayer({
+          id: layerSelected,
+          type: "line",
+          source: sourceId,
+          paint: {
+            "line-width": 3,
+          },
+          filter: ["==", ["get", "x"], -999999],
+        });
+      }
 
-       const p: any = (f as any).properties || {};
-       if (p.x == null || p.y == null) return;
-
-       onCellClickRef.current({
-	x: Number(p.x),
-    	y: Number(p.y),
-    	zoom: Number(p.zoom ?? zoomRef.current),
-    	slotId: Number(p.slot_id ?? slotIdRef.current),
+      // Hover popup
+      popupRef.current = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        offset: 10,
       });
-    });
 
-      map.on("mouseenter", layerIdFill, () => {
+      map.on("mousemove", layerFill, (e: MapMouseEvent) => {
         map.getCanvas().style.cursor = "pointer";
-      });
-      map.on("mouseleave", layerIdFill, () => {
-        map.getCanvas().style.cursor = "";
-      });
-    });
+        const f = e.features?.[0] as any;
+        if (!f || !popupRef.current) return;
 
-    mapRef.current = map;
+        const p = f.properties || {};
+        const coverage = Number(p.coverage ?? 0);
+        const score = Number(p.score ?? 0);
+        const x = Number(p.x);
+        const y = Number(p.y);
+
+        popupRef.current
+          .setLngLat(e.lngLat)
+          .setHTML(
+            `<div style="font-size:12px">
+              <div><b>Cell</b> x=${x} y=${y}</div>
+              <div>coverage: ${coverage}</div>
+              <div>score: ${score.toFixed(2)}</div>
+            </div>`
+          )
+          .addTo(map);
+      });
+
+      map.on("mouseleave", layerFill, () => {
+        map.getCanvas().style.cursor = "";
+        popupRef.current?.remove();
+      });
+
+      // Click → inform App
+      map.on("click", layerFill, (e: MapMouseEvent) => {
+        const f = e.features?.[0] as any;
+        if (!f) return;
+        const p = f.properties || {};
+        if (p.x == null || p.y == null) return;
+
+        onCellClickRef.current({
+          x: Number(p.x),
+          y: Number(p.y),
+          zoom: Number(p.zoom ?? zoomRef.current),
+          slotId: Number(p.slot_id ?? slotIdRef.current),
+        });
+      });
+
+      // Important: fetch hotmap immediately after layers exist
+      // (prevents "nothing shows until I change a control" feeling)
+      void (async () => {
+        try {
+          const res = await fetch(hotmapUrl);
+          const geo = await res.json();
+          if (!res.ok) return;
+          const src = map.getSource(sourceId) as GeoJSONSource | undefined;
+          if (src) src.setData(geo);
+        } catch {
+          // ignore
+        }
+      })();
+
+      // Ensure correct sizing
+      setTimeout(() => map.resize(), 0);
+    });
 
     return () => {
+      window.removeEventListener("resize", onResize);
+      popupRef.current?.remove();
+      popupRef.current = null;
+      loadedRef.current = false;
       map.remove();
       mapRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiBase]); // create once (apiBase should be stable)
+  }, [apiBase, hotmapUrl]);
 
-  // Update data when zoom/slot changes
+  // Refresh hotmap whenever zoom/slot changes
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
+    if (!loadedRef.current) return;
+
     const src = map.getSource(sourceId) as GeoJSONSource | undefined;
     if (!src) return;
-    src.setData(hotmapUrl);
+
+    const ac = new AbortController();
+
+    (async () => {
+      try {
+        const res = await fetch(hotmapUrl, { signal: ac.signal });
+        const geo = await res.json();
+        if (!res.ok) return;
+        src.setData(geo);
+      } catch {
+        // ignore aborts/errors
+      }
+    })();
+
+    return () => ac.abort();
   }, [hotmapUrl]);
 
-  return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />;
+  // Update selected highlight filter
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (!map.getLayer(layerSelected)) return;
+
+    if (!selected) {
+      map.setFilter(layerSelected, ["==", ["get", "x"], -999999]);
+      return;
+    }
+
+    map.setFilter(layerSelected, [
+      "all",
+      ["==", ["to-number", ["get", "x"]], selected.x],
+      ["==", ["to-number", ["get", "y"]], selected.y],
+    ]);
+  }, [selected, zoom, slotId]);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    />
+  );
 }
