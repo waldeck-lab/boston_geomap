@@ -59,6 +59,40 @@ SLOT_ALL = 0
 
 from werkzeug.exceptions import BadRequest, HTTPException
 
+def parse_slot_ids_arg(value: Any, *, name: str = "slot_ids") -> list[int]:
+    """
+    Accepts:
+      - "1,2,3" (string)
+      - [1,2,3] (list)
+      - single int
+    Returns sorted unique slot ids (each validated with parse_slot_id),
+    excluding SLOT_ALL unless it's the only value.
+    """
+    if value is None:
+        raise BadRequest(description=f"{name} is required")
+
+    if isinstance(value, str):
+        parts = [p.strip() for p in value.split(",") if p.strip()]
+        vals = parts
+    elif isinstance(value, (list, tuple)):
+        vals = list(value)
+    else:
+        vals = [value]
+
+    out: list[int] = []
+    for v in vals:
+        s = parse_slot_id(v, name=name)
+        out.append(s)
+
+    # unique + stable order
+    out = sorted(set(out))
+
+    # If SLOT_ALL is included along with others, it's ambiguous; reject.
+    if SLOT_ALL in out and len(out) > 1:
+        raise BadRequest(description=f"{name} cannot include 0 (all-time) together with specific slots")
+
+    return out
+
 def parse_slot_id(value: Any, *, name: str = "slot_id") -> int:
     try:
         slot = int(value)
@@ -383,6 +417,62 @@ def make_app() -> Flask:
         finally:
             conn.close()
 
+    @app.get("/api/hotmap_window")
+    def hotmap_window_geojson():
+        zoom = int(request.args.get("zoom", "15"))
+        slot_ids = parse_slot_ids_arg(request.args.get("slot_ids", None), name="slot_ids")
+
+        conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None  # autocommit; avoids lingering read txns
+        try:
+            storage.ensure_schema(conn)
+
+            if not slot_ids:
+                return jsonify({"type": "FeatureCollection", "features": []})
+
+            placeholders = ",".join(["?"] * len(slot_ids))
+
+            rows = conn.execute(
+                f"""
+                SELECT slot_id, x, y, coverage, score,
+                       bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
+                FROM grid_hotmap
+                WHERE zoom=? AND slot_id IN ({placeholders})
+                ORDER BY slot_id ASC, coverage DESC, score DESC;
+                """,
+                (zoom, *slot_ids),
+            ).fetchall()
+
+            logger.info("hotmap_window request zoom=%d slots=%s rows=%d", zoom, ",".join(map(str, slot_ids)), len(rows))
+
+            features = []
+            for (slot_id_db, x, y, coverage, score, top_lat, left_lon, bottom_lat, right_lon) in rows:
+                poly = [
+                    [float(left_lon), float(top_lat)],
+                    [float(right_lon), float(top_lat)],
+                    [float(right_lon), float(bottom_lat)],
+                    [float(left_lon), float(bottom_lat)],
+                    [float(left_lon), float(top_lat)],
+                ]
+                features.append(
+                    {
+                        "type": "Feature",
+                        "properties": {
+                            "zoom": int(zoom),
+                            "slot_id": int(slot_id_db),
+                            "x": int(x),
+                            "y": int(y),
+                            "coverage": int(coverage),
+                            "score": float(score),
+                        },
+                        "geometry": {"type": "Polygon", "coordinates": [poly]},
+                    }
+                )
+
+            return jsonify({"type": "FeatureCollection", "features": features})
+        finally:
+            conn.close()
+            
     @app.get("/api/cell/taxa")
     def cell_taxa():
         zoom = int(request.args.get("zoom", "15"))
@@ -442,6 +532,62 @@ def make_app() -> Flask:
         finally:
             conn.close()
 
+    @app.get("/api/cell/taxa_window")
+    def cell_taxa_window():
+        zoom = int(request.args.get("zoom", "15"))
+        slot_ids = parse_slot_ids_arg(request.args.get("slot_ids", None), name="slot_ids")
+        x = int(request.args["x"])
+        y = int(request.args["y"])
+        limit = int(request.args.get("limit", "200"))
+
+        conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None  # autocommit; avoids lingering read txns
+        try:
+            storage.ensure_schema(conn)
+
+            if not slot_ids:
+                return jsonify([])
+
+            placeholders = ",".join(["?"] * len(slot_ids))
+
+            # NOTE:
+            # We aggregate from the view you already use (grid_hotmap_taxa_names_v),
+            # but across multiple slot_id values.
+            rows = conn.execute(
+                f"""
+                SELECT
+                  taxon_id,
+                  COALESCE(MAX(scientific_name), '') AS scientific_name,
+                  COALESCE(MAX(swedish_name), '') AS swedish_name,
+                  SUM(observations_count) AS observations_count
+                FROM grid_hotmap_taxa_names_v
+                WHERE zoom=? AND x=? AND y=? AND slot_id IN ({placeholders})
+                GROUP BY taxon_id
+                ORDER BY observations_count DESC, taxon_id
+                LIMIT ?;
+                """,
+                (zoom, x, y, *slot_ids, limit),
+            ).fetchall()
+
+            logger.info(
+                "cell_taxa_window zoom=%d x=%d y=%d slots=%s rows=%d",
+                zoom, x, y, ",".join(map(str, slot_ids)), len(rows),
+            )
+
+            out = []
+            for r in rows:
+                out.append(
+                    {
+                        "taxon_id": int(r[0]),
+                        "scientific_name": r[1] or "",
+                        "swedish_name": r[2] or "",
+                        "observations_count": int(r[3] or 0),
+                    }
+                )
+            return jsonify(out)
+        finally:
+            conn.close()
+            
     @app.get("/api/rank_nearby")
     def rank_nearby():
         lat = float(request.args.get("lat", "55.667"))
