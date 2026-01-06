@@ -395,6 +395,28 @@ def make_app() -> Flask:
         conn.isolation_level = None  # autocommit; avoids lingering read txns
         try:
             storage.ensure_schema(conn)
+
+
+            # Debug: do we even have any per-taxon rows for this cell?
+            try:
+                c1 = conn.execute(
+                    "SELECT COUNT(*) FROM grid_hotmap_taxa WHERE zoom=? AND slot_id=? AND x=? AND y=?;",
+                    (zoom, slot_id, x, y),
+                ).fetchone()[0]
+            except Exception:
+                c1 = None
+
+            try:
+                c2 = conn.execute(
+                    "SELECT COUNT(*) FROM taxon_grid WHERE zoom=? AND slot_id=? AND x=? AND y=?;",
+                    (zoom, slot_id, x, y),
+                ).fetchone()[0]
+            except Exception:
+                c2 = None
+
+            logger.info("cell_taxa debug zoom=%d slot=%d x=%d y=%d cnt_hotmap_taxa=%s cnt_taxon_grid=%s",
+                        zoom, slot_id, x, y, str(c1), str(c2))
+            
             rows = conn.execute(
                 """
                 SELECT taxon_id, scientific_name, swedish_name, observations_count

@@ -91,6 +91,22 @@ CREATE TABLE IF NOT EXISTS taxon_dim (
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
+def _tile_bounds_wgs84(z: int, x: int, y: int):
+    """
+    Slippy tile bounds in WGS84.
+    Returns: top_lat, left_lon, bottom_lat, right_lon
+    """
+    n = 2.0 ** z
+    left_lon = x / n * 360.0 - 180.0
+    right_lon = (x + 1) / n * 360.0 - 180.0
+
+    def lat_from_y(yy: int):
+        lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * yy / n)))
+        return math.degrees(lat_rad)
+
+    top_lat = lat_from_y(y)
+    bottom_lat = lat_from_y(y + 1)
+    return top_lat, left_lon, bottom_lat, right_lon
 
 def _tile_bbox_latlon(z: int, x: int, y: int) -> Tuple[float, float, float, float]:
     """
@@ -276,6 +292,7 @@ def clear_export_files(
                 pass
     return deleted
 
+
 def materialize_parent_zoom_from_child(
     conn: sqlite3.Connection,
     *,
@@ -298,20 +315,15 @@ def materialize_parent_zoom_from_child(
     factor = 2 ** (src_zoom - dst_zoom)
     now = _utc_now_iso()
 
-    # Aggregate child tiles into parent tiles.
+    # IMPORTANT:
+    # Use integer division to compute parent tile coords deterministically.
     rows = conn.execute(
         """
         SELECT
-          (x / ?) AS px,
-          (y / ?) AS py,
-
+          CAST(x / ? AS INTEGER) AS px,
+          CAST(y / ? AS INTEGER) AS py,
           SUM(observations_count) AS obs_sum,
-          MAX(taxa_count) AS taxa_count_max,
-
-          MAX(bbox_top_lat) AS top_lat,
-          MIN(bbox_left_lon) AS left_lon,
-          MIN(bbox_bottom_lat) AS bottom_lat,
-          MAX(bbox_right_lon) AS right_lon
+          MAX(taxa_count) AS taxa_count_max
         FROM taxon_grid
         WHERE taxon_id=? AND zoom=? AND slot_id=?
         GROUP BY px, py
@@ -328,9 +340,12 @@ def materialize_parent_zoom_from_child(
 
     out = []
     for r in rows:
-        px = int(r[0]); py = int(r[1])
+        px = int(r[0])
+        py = int(r[1])
         obs_sum = int(r[2] or 0)
         taxa_count_max = int(r[3] or 0)
+
+        top_lat, left_lon, bottom_lat, right_lon = _tile_bounds_wgs84(dst_zoom, px, py)
 
         out.append(
             (
@@ -341,10 +356,10 @@ def materialize_parent_zoom_from_child(
                 py,
                 obs_sum,
                 taxa_count_max,
-                float(r[4]),
-                float(r[5]),
-                float(r[6]),
-                float(r[7]),
+                float(top_lat),
+                float(left_lon),
+                float(bottom_lat),
+                float(right_lon),
                 now,
             )
         )
@@ -362,7 +377,7 @@ def materialize_parent_zoom_from_child(
             out,
         )
 
-    # Mark derived state (this is the “validity token”)
+    # Mark derived state (validity token)
     marker = local_from_marker(src_zoom, src_sha)
     upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, marker, len(out))
 

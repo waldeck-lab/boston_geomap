@@ -20,7 +20,6 @@ type Taxon = {
 const API_BASE = import.meta.env.VITE_API_BASE ?? "";
 
 export default function App() {
-    console.log("App rendered");
     const [slotId, setSlotId] = useState(0);
     const [zooms, setZooms] = useState("15,14,13");
     const [zoom, setZoom] = useState(15);
@@ -28,6 +27,9 @@ export default function App() {
     const [alpha, setAlpha] = useState(2.0);
     const [beta, setBeta] = useState(0.5);
     const [busy, setBusy] = useState(false);
+    const [forceRebuild, setForceRebuild] = useState(false);
+    const [autoFit, setAutoFit] = useState(true);
+    const [fitRequestId, setFitRequestId] = useState(0);
     
     const [clicked, setClicked] = useState<{ x: number; y: number } | null>(null);
     const [taxa, setTaxa] = useState<Taxon[]>([]);
@@ -74,7 +76,7 @@ export default function App() {
 		    n,
 		    alpha,
 		    beta,
-		    force: false,
+		    force: forceRebuild,
 		}),
 	    });
 	    
@@ -82,18 +84,24 @@ export default function App() {
 	    if (!res.ok || !j.ok) throw new Error(j.error || `HTTP ${res.status}`);
 	    
 	    setZoom(parsedZooms[0]); // highest zoom
-	    setStatus(`OK. Built slot ${slotId}, zooms ${parsedZooms.join(",")}`);
+	    setStatus(
+		`OK. Built slot ${slotId}, zooms ${parsedZooms.join(",")}${forceRebuild ? " (forced)" : ""}`
+	    );	    
+	    // Trigger a fit request AFTER the zoom is set
+	    if (autoFit) setFitRequestId((v) => v + 1);
 	} catch (e: any) {
 	    setStatus(`Error: ${e?.message || String(e)}`);
 	} finally {
 	    setBusy(false);
 	}
-    }, [alpha, beta, n, parsedZooms, slotId]);
-    
 
-    const onCellClick = useCallback(
-	async (p: { x: number; y: number; zoom: number; slotId: number }) => {
-	    setClicked({ x: p.x, y: p.y });
+    }, [alpha, beta, n, parsedZooms, slotId, forceRebuild, autoFit]);
+
+
+
+const onCellClick = useCallback(
+    async (p: { x: number; y: number; zoom: number; slotId: number }) => {
+	setClicked({ x: p.x, y: p.y });
 	    setTaxa([]);
 	    setTaxaLoading(true);
 	    
@@ -123,109 +131,153 @@ export default function App() {
 	[]
     );
     
-
-
-
     return (
 	<div
-	    style={{
-		display: "grid",
-		gridTemplateColumns: "360px minmax(0, 1fr)",
-		height: "100vh",
-		width: "100vw",
-		// overflow: "hidden", // optional; keep if you like the behavior
-	    }}
+	style={{
+	    display: "grid",
+	    gridTemplateColumns: "360px minmax(0, 1fr)",
+	    height: "100vh",
+	    width: "100vw",
+	}}
 	>
-	    <div style={{ padding: 12, borderRight: "1px solid #ddd", overflow: "auto" }}>
-		<h2>Geomap</h2>
+	<div style={{ padding: 12, borderRight: "1px solid #ddd", overflow: "auto" }}>
+	    <h2>Geomap</h2>
 
-		<div>
-		    <label>Slot</label>
-		    <input
-			type="number"
-			value={slotId}
-			min={0}
-			max={47}
-			onChange={(e) => setSlotId(Number(e.target.value))}
-		    />
-		</div>
-
-		<div>
-		    <label>Zooms</label>
-		    <input value={zooms} onChange={(e) => setZooms(e.target.value)} />
-		    <div style={{ fontSize: 12, opacity: 0.7 }}>Example: 15,14,13</div>
-		</div>
-
-		<div>
-		    <label>N species (0 = all)</label>
-		    <input type="number" value={n} min={0} onChange={(e) => setN(Number(e.target.value))} />
-		</div>
-
-		<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-		    <div>
-			<label>alpha</label>
-			<input type="number" value={alpha} onChange={(e) => setAlpha(Number(e.target.value))} />
-		    </div>
-		    <div>
-			<label>beta</label>
-			<input type="number" value={beta} onChange={(e) => setBeta(Number(e.target.value))} />
-		    </div>
-		</div>
-
-		{status && <div style={{ marginTop: 8, fontSize: 12, whiteSpace: "pre-wrap" }}>{status}</div>}
-
-		<button disabled={busy} onClick={build} style={{ marginTop: 10 }}>
-		    {busy ? "Building…" : "Build / Refresh"}
-		</button>
-
-		<hr />
-
-		<div>
-		    <label>View zoom</label>
-		    <input type="number" value={zoom} onChange={(e) => setZoom(Number(e.target.value))} />
-		</div>
-
-		<hr />
-
-		<h3>Clicked cell</h3>
-
-		{!clicked && <div style={{ opacity: 0.7 }}>Click a cell on the map</div>}
-
-		{clicked && (
-		    <div>
-			<div>
-			    x={clicked.x} y={clicked.y}
-			</div>
-
-			<div style={{ marginTop: 8 }}>
-			    {taxaLoading && <div style={{ opacity: 0.7 }}>Loading taxa…</div>}
-
-			    {!taxaLoading && taxa.length === 0 && <div style={{ opacity: 0.7 }}>No taxa</div>}
-
-			    {!taxaLoading && taxa.length > 0 && (
-				<ul style={{ paddingLeft: 18 }}>
-				    {taxa.slice(0, 80).map((t) => (
-					<li key={t.taxon_id}>
-					    <b>{t.swedish_name || t.scientific_name || t.taxon_id}</b> ({t.observations_count})
-					</li>
-				    ))}
-				</ul>
-			    )}
-			</div>
-		    </div>
-		)}
-	    </div>
-
-	    <div style={{ position: "relative", height: "100%", minWidth: 0 }}>
-		<MapView
-		    apiBase={API_BASE}
-			    zoom={zoom}
-			    slotId={slotId}
-			    selected={clicked}
-			    onCellClick={onCellClick}
+	    <div>
+		<label>Slot</label>
+		<input
+		    type="number"
+			  value={slotId}
+			  min={0}
+			  max={47}
+			  onChange={(e) => setSlotId(Number(e.target.value))}
 		/>
 	    </div>
+
+	    <div>
+		<label>Zooms</label>
+		<input value={zooms} onChange={(e) => setZooms(e.target.value)} />
+		<div style={{ fontSize: 12, opacity: 0.7 }}>Example: 15,14,13</div>
+	    </div>
+
+	    <div>
+		<label>N species (0 = all)</label>
+		<input type="number" value={n} min={0} onChange={(e) => setN(Number(e.target.value))} />
+	    </div>
+
+	    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+		<div>
+		    <label>alpha</label>
+		    <input type="number" value={alpha} onChange={(e) => setAlpha(Number(e.target.value))} />
+		</div>
+		<div>
+		    <label>beta</label>
+		    <input type="number" value={beta} onChange={(e) => setBeta(Number(e.target.value))} />
+		</div>
+	    </div>
+
+	    {status && (
+		<div style={{ marginTop: 8, fontSize: 12, whiteSpace: "pre-wrap" }}>
+		    {status}
+		</div>
+	    )}
+
+	    {/* Checkbox: Auto-fit after build */}
+	    <div style={{ marginTop: 8 }}>
+		<label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+		    <input
+			type="checkbox"
+			checked={autoFit}
+			onChange={(e) => setAutoFit(e.target.checked)}
+		    />
+		    Auto-fit to hotmap after build
+		</label>
+		<div style={{ fontSize: 12, opacity: 0.7 }}>
+		    After building, pan/zoom the map to the generated hotmap.
+		</div>
+	    </div>
+
+	    {/* Checkbox: Force rebuild */}
+	    <div style={{ marginTop: 8 }}>
+		<label style={{ display: "flex", alignItems: "center", gap: 8 }}>
+		    <input
+			type="checkbox"
+			checked={forceRebuild}
+			onChange={(e) => setForceRebuild(e.target.checked)}
+		    />
+		    Force rebuild
+		</label>
+		<div style={{ fontSize: 12, opacity: 0.7 }}>
+		    Rebuild even if layer state hash is unchanged (useful during development).
+		</div>
+	    </div>
+
+	    {/* Buttons: Fit now + Build/Refresh */}
+	    <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+		<button
+		    type="button"
+			  onClick={() => setFitRequestId((v) => v + 1)}
+			  style={{ flex: 1 }}
+		>
+		    Fit now
+		</button>
+
+		<button disabled={busy} onClick={build} style={{ flex: 1 }}>
+		    {busy ? "Building…" : "Build / Refresh"}
+		</button>
+	    </div>
+
+	    <hr />
+
+	    <div>
+		<label>View zoom</label>
+		<input type="number" value={zoom} onChange={(e) => setZoom(Number(e.target.value))} />
+	    </div>
+
+	    <hr />
+
+	    <h3>Clicked cell</h3>
+
+	    {!clicked && <div style={{ opacity: 0.7 }}>Click a cell on the map</div>}
+
+	    {clicked && (
+		<div>
+		    <div>
+			x={clicked.x} y={clicked.y}
+		    </div>
+
+		    <div style={{ marginTop: 8 }}>
+			{taxaLoading && <div style={{ opacity: 0.7 }}>Loading taxa…</div>}
+
+			{!taxaLoading && taxa.length === 0 && <div style={{ opacity: 0.7 }}>No taxa</div>}
+
+			{!taxaLoading && taxa.length > 0 && (
+			    <ul style={{ paddingLeft: 18 }}>
+				{taxa.slice(0, 80).map((t) => (
+				    <li key={t.taxon_id}>
+					<b>{t.swedish_name || t.scientific_name || t.taxon_id}</b> ({t.observations_count})
+				    </li>
+				))}
+			    </ul>
+			)}
+		    </div>
+		</div>
+	    )}
+	</div>
+
+	<div style={{ position: "relative", height: "100%", minWidth: 0 }}>
+	    <MapView
+		apiBase={API_BASE}
+		zoom={zoom}
+		slotId={slotId}
+		selected={clicked}
+		fitRequestId={fitRequestId}
+		onCellClick={onCellClick}
+	    />
+	</div>
 	</div>
     );
+
+
     
-  }
+}
