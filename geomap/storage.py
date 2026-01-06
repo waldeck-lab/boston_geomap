@@ -610,7 +610,7 @@ def build_taxon_grid_derived_zoom(
         """,
         out,
     )
-    
+
 def replace_taxon_grid(
     conn: sqlite3.Connection,
     taxon_id: int,
@@ -639,10 +639,10 @@ def replace_taxon_grid(
                 int(c["y"]),
                 int(c.get("observationsCount") or 0),
                 int(c.get("taxaCount") or 0),
-                float(tl["latitude"]),
-                float(tl["longitude"]),
-                float(br["latitude"]),
-                float(br["longitude"]),
+                float(tl.get("latitude", 0.0)),
+                float(tl.get("longitude", 0.0)),
+                float(br.get("latitude", 0.0)),
+                float(br.get("longitude", 0.0)),
                 now,
             )
         )
