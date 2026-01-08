@@ -240,15 +240,48 @@ def make_app() -> Flask:
     def pipeline_build():
         if not BUILD_LOCK.acquire(blocking=False):
             return jsonify({"ok": False, "code": "busy", "error": "Build already running"}), 409
-        try:         
+
+        try:
+            from datetime import datetime, timezone
+            from geomap.timeslots import slot_bounds
+
             body = request.get_json(force=True) or {}
-            slot_id = parse_slot_id(body.get("slot_id", SLOT_ALL))
-            zooms = parse_zooms(body.get("zooms",[ZOOM_DEFAULT])) 
+
+            # Backwards compatible inputs
+            slot_id = parse_slot_id(body.get("slot_id", SLOT_ALL))  # single slot (0..48)
+
+            # New input: list of slots to build (preferred when you want all 1..48)
+            slot_ids_raw = body.get("slot_ids", None)
+            if slot_ids_raw is None:
+                slots_to_build = [slot_id]
+            else:
+                # Accept list or "1,2,3" string
+                if isinstance(slot_ids_raw, str):
+                    parts = [p.strip() for p in slot_ids_raw.split(",") if p.strip()]
+                    slots_to_build = [parse_slot_id(p, name="slot_ids") for p in parts]
+                elif isinstance(slot_ids_raw, (list, tuple)):
+                    slots_to_build = [parse_slot_id(s, name="slot_ids") for s in slot_ids_raw]
+                else:
+                    slots_to_build = [parse_slot_id(slot_ids_raw, name="slot_ids")]
+
+                # unique + sorted (0 first if present)
+                slots_to_build = sorted(set(slots_to_build), key=lambda s: (s != 0, s))
+
+            zooms = parse_zooms(body.get("zooms", [ZOOM_DEFAULT]))
             base_zoom = zooms[0]
+
             n = int(body.get("n", 5))
             alpha = float(body.get("alpha", cfg.hotmap_alpha))
             beta = float(body.get("beta", cfg.hotmap_beta))
             force = bool(body.get("force", False))
+
+            # Seasonal build settings (for slots 1..48)
+            # “All years but seasonal window” by default
+            this_year = datetime.now(timezone.utc).year
+            year_from = int(body.get("year_from", 2000))
+            year_to = int(body.get("year_to", this_year))
+            if year_to < year_from:
+                year_from, year_to = year_to, year_from
 
             if not cfg.subscription_key:
                 return jsonify({"ok": False, "error": "Missing ARTDATABANKEN_SUBSCRIPTION_KEY"}), 500
@@ -260,84 +293,192 @@ def make_app() -> Flask:
             if not taxon_ids:
                 return jsonify({"ok": False, "error": "No taxon ids found in CSV"}), 400
 
+            def _iso_local_day_bounds(year: int, month: int, start_day: int, end_day: int) -> tuple[str, str]:
+                # Use ISO date-time strings; SOS says “If no timezone is specified, GMT+1 (CEST) is assumed”.
+                # We’ll include explicit UTC "Z" to be deterministic.
+                start = datetime(year, month, start_day, 0, 0, 0, tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
+                end = datetime(year, month, end_day, 23, 59, 59, tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
+                return start, end
+
+            def _extra_filter_for_slot_year(slot: int, year: int) -> dict[str, Any]:
+                # slot 0 = all-time, no filter
+                if slot == SLOT_ALL:
+                    return {}
+
+                m, q = ((slot - 1) // 4 + 1), ((slot - 1) % 4 + 1)
+                ts = slot_bounds(m, q, year_for_days=year)  # correct month-length (Feb leap years, etc.)
+                start_iso, end_iso = _iso_local_day_bounds(year, m, ts.start_day, ts.end_day)
+
+                return {
+                    "date": {
+                        "startDate": start_iso,
+                        "endDate": end_iso,
+                        "dateFilterType": "BetweenStartDateAndEndDate",
+                    }
+                }
+
+            def _merge_payloads_gridcells(payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:
+                """
+                Merge multiple GeoGridAggregation payloads by (x,y,zoom).
+                - observationsCount: sum
+                - taxaCount: max (safe-ish; SOS taxaCount meaning can vary; max avoids under-reporting)
+                - boundingBox: union (min/max)
+                """
+                acc: dict[tuple[int, int, int], dict[str, Any]] = {}
+
+                for p in payloads:
+                    for c in (p.get("gridCells") or []):
+                        x = int(c.get("x"))
+                        y = int(c.get("y"))
+                        z = int(c.get("zoom"))
+                        key = (x, y, z)
+
+                        obs = int(c.get("observationsCount") or 0)
+                        taxa = int(c.get("taxaCount") or 0)
+
+                        bb = c.get("boundingBox") or {}
+                        tl = bb.get("topLeft") or {}
+                        br = bb.get("bottomRight") or {}
+
+                        top_lat = float(tl.get("latitude"))
+                        left_lon = float(tl.get("longitude"))
+                        bot_lat = float(br.get("latitude"))
+                        right_lon = float(br.get("longitude"))
+
+                        if key not in acc:
+                            acc[key] = {
+                                "x": x,
+                                "y": y,
+                                "zoom": z,
+                                "observationsCount": obs,
+                                "taxaCount": taxa,
+                                "boundingBox": {
+                                    "topLeft": {"latitude": top_lat, "longitude": left_lon},
+                                    "bottomRight": {"latitude": bot_lat, "longitude": right_lon},
+                                },
+                            }
+                        else:
+                            a = acc[key]
+                            a["observationsCount"] = int(a.get("observationsCount") or 0) + obs
+                            a["taxaCount"] = max(int(a.get("taxaCount") or 0), taxa)
+
+                            abb = a.get("boundingBox") or {}
+                            atl = abb.get("topLeft") or {}
+                            abr = abb.get("bottomRight") or {}
+
+                            atl_lat = float(atl.get("latitude"))
+                            atl_lon = float(atl.get("longitude"))
+                            abr_lat = float(abr.get("latitude"))
+                            abr_lon = float(abr.get("longitude"))
+
+                            # Union of bounds
+                            new_top_lat = max(atl_lat, top_lat)
+                            new_left_lon = min(atl_lon, left_lon)
+                            new_bot_lat = min(abr_lat, bot_lat)
+                            new_right_lon = max(abr_lon, right_lon)
+
+                            a["boundingBox"] = {
+                                "topLeft": {"latitude": new_top_lat, "longitude": new_left_lon},
+                                "bottomRight": {"latitude": new_bot_lat, "longitude": new_right_lon},
+                            }
+
+                # stable ordering
+                out = list(acc.values())
+                out.sort(key=lambda c: (int(c["x"]), int(c["y"])))
+                return out
+
             conn = storage.connect(cfg.geomap_db_path)
             conn.isolation_level = None  # autocommit; avoids lingering read txns
+
             try:
                 storage.ensure_schema(conn)
-                logger.info("sqlite isolation_level=%r in_transaction=%s", conn.isolation_level, conn.in_transaction)
+                logger.info(
+                    "pipeline_build slots=%s zooms=%s base_zoom=%d years=%d..%d force=%s",
+                    ",".join(map(str, slots_to_build)),
+                    ",".join(map(str, zooms)),
+                    base_zoom,
+                    year_from,
+                    year_to,
+                    str(force),
+                )
 
-                # DB sanity check
-                tables = [r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;").fetchall()]
-                logger.info("DB tables: %s", tables)
-
-                # optional, quick counts:
-                try:
-                    c = conn.execute("SELECT COUNT(*) FROM taxon_grid;").fetchone()[0]
-                    logger.info("taxon_grid rows: %d", int(c))
-                except Exception:
-                    pass
-            
                 throttle_state: dict[str, float] = {}
-                for taxon_id in taxon_ids:
-                    throttle(2.0, throttle_state)
 
-                    payload = client.geogrid_aggregation([taxon_id], zoom=base_zoom)
-                    grid_cells = payload.get("gridCells") or []
-                    base_sha = stable_gridcells_hash(payload)
+                # Build each requested slot
+                for s in slots_to_build:
+                    # For each slot, we will rebuild taxon_grid + layer_state per taxon,
+                    # then rebuild hotmap for that slot.
+                    for taxon_id in taxon_ids:
+                        throttle(2.0, throttle_state)
 
-                    prev = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id)
-                    unchanged = (prev is not None and prev[1] == base_sha)
+                        if s == SLOT_ALL:
+                            payload = client.geogrid_aggregation([taxon_id], zoom=base_zoom)
+                            grid_cells = payload.get("gridCells") or []
+                            base_sha = stable_gridcells_hash(payload)
+                        else:
+                            payloads: list[dict[str, Any]] = []
+                            for yr in range(year_from, year_to + 1):
+                                extra = _extra_filter_for_slot_year(s, yr)
+                                payload_y = client.geogrid_aggregation([taxon_id], zoom=base_zoom, extra_filter=extra)
+                                payloads.append(payload_y)
 
-                    if unchanged and not force:
-                        # still ensure derived zooms exist; simplest: rebuild derived always if you want
-                        pass
-                    else:
-                        with conn:
-                            storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells)
-                            storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells))
-                    # Derived zooms: materialize from the closest available source (step-wise)
-                    # If you already implemented src_sha tagging, pass it here.
-                    src_zoom = base_zoom
-                    for dst_zoom in zooms[1:]:
-                        # assumes you implemented: materialize_parent_zoom_from_child(...)
-                        with conn:
-                            storage.materialize_parent_zoom_from_child(
-                                conn,
-                                taxon_id=taxon_id,
-                                slot_id=slot_id,
-                                src_zoom=src_zoom,
-                                dst_zoom=dst_zoom,
-                                src_sha=base_sha,
-                            )
-                        src_zoom = dst_zoom
+                            grid_cells = _merge_payloads_gridcells(payloads)
+                            base_sha = stable_gridcells_hash({"gridCells": grid_cells})
 
-                # upsert taxons for readability
-                with conn:
-                    storage.upsert_taxon_dim(
-                        conn,
-                        [(t["taxon_id"], t["scientific_name"], t["swedish_name"]) for t in taxa_rows],
-                    )
-                # Build hotmaps for each zoom requested
-                for z in zooms:
+                        prev = storage.get_layer_state(conn, taxon_id, base_zoom, s)
+                        unchanged = (prev is not None and prev[1] == base_sha)
+
+                        if not unchanged or force:
+                            with conn:
+                                storage.replace_taxon_grid(conn, taxon_id, base_zoom, s, grid_cells)
+                                storage.upsert_layer_state(conn, taxon_id, base_zoom, s, base_sha, len(grid_cells))
+
+                        # Derived zooms for this slot (step-wise)
+                        src_zoom = base_zoom
+                        for dst_zoom in zooms[1:]:
+                            with conn:
+                                storage.materialize_parent_zoom_from_child(
+                                    conn,
+                                    taxon_id=taxon_id,
+                                    slot_id=s,
+                                    src_zoom=src_zoom,
+                                    dst_zoom=dst_zoom,
+                                    src_sha=base_sha,
+                                )
+                            src_zoom = dst_zoom
+
+                    # Upsert taxon dim once per build (cheap; ok to repeat, but do it once per slot loop end)
                     with conn:
-                        storage.rebuild_hotmap(conn, z, slot_id, taxon_ids, alpha=alpha, beta=beta)
+                        storage.upsert_taxon_dim(
+                            conn,
+                            [(t["taxon_id"], t["scientific_name"], t["swedish_name"]) for t in taxa_rows],
+                        )
+
+                    # Build hotmaps for each zoom for this slot
+                    for z in zooms:
+                        with conn:
+                            storage.rebuild_hotmap(conn, z, s, taxon_ids, alpha=alpha, beta=beta)
 
                 return jsonify(
                     {
                         "ok": True,
-                        "slot_id": slot_id,
+                        "slots_built": slots_to_build,
                         "zooms": zooms,
                         "base_zoom": base_zoom,
                         "n_taxa": len(taxon_ids),
                         "alpha": alpha,
                         "beta": beta,
+                        "year_from": year_from,
+                        "year_to": year_to,
                     }
                 )
+
             finally:
                 conn.close()
+
         finally:
             BUILD_LOCK.release()
-
+    
     @app.errorhandler(Exception)
     def handle_any_exception(e: Exception):
         logger.exception("Unhandled exception: %s", e)

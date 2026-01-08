@@ -14,7 +14,9 @@ type Taxon = {
     observations_count: number;
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE ?? "";
+// In dev: prefer proxy (/api -> vite proxy -> backend)
+// Only set VITE_API_BASE if you explicitly want direct mode.
+const API_BASE = import.meta.env.VITE_API_BASE ? String(import.meta.env.VITE_API_BASE) : "";
 
 function normalizeSlot(s: number) {
     // slots 1..48 wrap
@@ -35,7 +37,7 @@ export default function App() {
     const [slotId, setSlotId] = useState(0);
     const [zooms, setZooms] = useState("15,14,13");
     const [zoom, setZoom] = useState(15);
-    const [n, setN] = useState(100);
+    const [n, setN] = useState(5);
     const [alpha, setAlpha] = useState(2.0);
     const [beta, setBeta] = useState(0.5);
     const [busy, setBusy] = useState(false);
@@ -62,18 +64,25 @@ export default function App() {
 	[]
     );
 
+
     // Default slot on first page load: today's month.quartile
     useEffect(() => {
+	// Initialize seasonal view on first load.
+	// Today in Stockholm: Jan 6 => month=1, day=6 => q1 => slot 1.
 	const now = new Date();
 	const month = now.getMonth() + 1; // 1..12
-	const day = now.getDate(); // 1..31
+	const day = now.getDate();        // 1..31
 	const q = day <= 7 ? 1 : day <= 14 ? 2 : day <= 21 ? 3 : 4;
 	const todaySlot = (month - 1) * 4 + q; // 1..48
-
-	setSlotId(todaySlot);
+	
 	setSlotCenter(todaySlot);
+	setSlotRadius(1);
+	setUseWindow(true);
+	
+	// Keep legacy single-slot controls consistent (optional but recommended)
+	setSlotId(todaySlot);
     }, []);
-
+    
     const slotIdsForView = useMemo(() => {
 	if (!useWindow) return [slotCenter];
 	return makeWindow(slotCenter, slotRadius);
@@ -103,21 +112,30 @@ export default function App() {
 		throw new Error("No valid zooms. Example: 15,14,13");
 	    }
 
+	    const allSlots = [0, ...Array.from({ length: 48 }, (_, i) => i + 1)];
 	    const res = await fetch(apiUrl("/api/pipeline/build"), {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
+		headers: { "Content-Type": "application/json" },		
 		body: JSON.stringify({
-		    slot_id: slotId,
+		    slot_ids: allSlots,           // <— build everything
 		    zooms: parsedZooms,
-		    n,
+		    n,                            // keep default n=5 in UI state
 		    alpha,
 		    beta,
 		    force: forceRebuild,
+		    year_from: 2000,
+		    year_to: new Date().getFullYear(),
 		}),
 	    });
-
-	    const j = await res.json().catch(() => ({} as any));
-	    if (!res.ok || !j.ok) throw new Error(j.error || `HTTP ${res.status}`);
+	    
+	    const text = await res.text();
+	    let j: any = {};
+	    try { j = JSON.parse(text); } catch {}
+	    
+	    if (!res.ok || !j.ok) {
+		console.error("Build failed", { status: res.status, body: text });
+		throw new Error(j?.error || `HTTP ${res.status}: ${text.slice(0, 200)}`);
+	    }
 
 	    setZoom(parsedZooms[0]); // highest zoom
 	    setStatus(
@@ -140,18 +158,19 @@ export default function App() {
 	    setTaxaLoading(true);
 
 	    try {
-		const useSlotWindow = Array.isArray(slotIdsForView) && slotIdsForView.length > 1;
+		const usingWindow = Array.isArray(slotIdsForView) && slotIdsForView.length > 0 && !slotIdsForView.includes(0);
 
-		const path = useSlotWindow ? "/api/cell/taxa_window" : "/api/cell/taxa";
-		const u = new URL(apiUrl(path), window.location.origin);
+		const u = new URL(
+		    apiUrl(usingWindow ? "/api/cell/taxa_window" : "/api/cell/taxa"),
+		    window.location.origin
+		);
 
 		u.searchParams.set("zoom", String(p.zoom));
 		u.searchParams.set("x", String(p.x));
 		u.searchParams.set("y", String(p.y));
 		u.searchParams.set("limit", "200");
 
-		if (useSlotWindow) {
-		    // pass the *view window*, not only the clicked feature slot
+		if (usingWindow) {
 		    u.searchParams.set("slot_ids", slotIdsForView.join(","));
 		} else {
 		    u.searchParams.set("slot_id", String(p.slotId));
@@ -160,10 +179,7 @@ export default function App() {
 		const res = await fetch(u.toString());
 		const j = await res.json();
 
-		if (!res.ok) {
-		    throw new Error(j?.error || `HTTP ${res.status}`);
-		}
-
+		if (!res.ok) throw new Error(j?.error || `HTTP ${res.status}`);
 		setTaxa(j as Taxon[]);
 	    } catch (err) {
 		console.error("Failed to fetch taxa", err);
@@ -175,7 +191,6 @@ export default function App() {
 	[apiUrl, slotIdsForView]
     );
     
-
     return (
 	<div
 	style={{
@@ -321,6 +336,39 @@ export default function App() {
             </button>
         </div>
 
+	<hr />
+
+	<h3>Time window</h3>
+
+	<div>
+	    <label>Center slot (1..48, 0=all-year)</label>
+	    <input
+		type="number"
+		value={slotCenter}
+		min={0}
+		max={48}
+		onChange={(e) => setSlotCenter(Number(e.target.value))}
+	    />
+	    <div style={{ fontSize: 12, opacity: 0.7 }}>
+		20–30 ≈ May.q4..Aug.q2 (try center 25, radius 5)
+	    </div>
+	</div>
+
+	<div>
+	    <label>Radius (± quartiles)</label>
+	    <input
+		type="number"
+		value={slotRadius}
+		min={0}
+		max={24}
+		onChange={(e) => setSlotRadius(Number(e.target.value))}
+	    />
+	</div>
+
+	<div style={{ marginTop: 6, fontSize: 12, opacity: 0.7 }}>
+	    Window slots: {slotIdsForView.join(",")}
+	</div>
+	
         <hr />
 
         <div>

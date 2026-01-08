@@ -2,6 +2,9 @@
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
 
 Build and explore biodiversity “hotmaps” from Artportalen / Artdatabanken SOS GeoGridAggregation data.
 

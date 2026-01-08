@@ -12,13 +12,13 @@ type Props = {
   apiBase: string;
   zoom: number; // server zoom parameter (grid resolution)
 
-  // Keep single-slot support (current backend endpoints)
+  // Single-slot (legacy)
   slotId: number;
 
-  // Window support (new backend endpoints). If provided and length > 0, MapView should prefer this.
+  // Window support. If provided and length > 0, MapView prefers this.
   slotIds?: number[];
 
-  // UI features from upstream
+  // UI features
   selected?: { x: number; y: number } | null;
   fitRequestId: number;
 
@@ -28,14 +28,6 @@ type Props = {
 function apiUrl(apiBase: string, path: string) {
   const base = apiBase && apiBase.length ? apiBase : window.location.origin;
   return new URL(path, base).toString();
-}
-
-function csvSlots(slotIds?: number[]) {
-  if (!slotIds || slotIds.length === 0) return "";
-  // de-dup + sort for stable URLs
-  const uniq = Array.from(new Set(slotIds.map((x) => Number(x)).filter((x) => Number.isFinite(x))));
-  uniq.sort((a, b) => a - b);
-  return uniq.join(",");
 }
 
 export function MapView({
@@ -93,7 +85,6 @@ export function MapView({
     );
   }
 
-  // Keep latest props for event handlers
   useEffect(() => {
     onCellClickRef.current = onCellClick;
   }, [onCellClick]);
@@ -108,22 +99,21 @@ export function MapView({
   const layerLine = "hotmap-line";
   const layerSelected = "hotmap-selected";
 
+  // IMPORTANT: choose the correct endpoint (window vs single slot)
   const hotmapUrl = useMemo(() => {
-    // Prefer window endpoint if slotIds provided and non-empty (and not just [slotId])
-    const slotsCsv = csvSlots(slotIds);
-    const useWindow = !!slotsCsv && !(slotIds?.length === 1 && Number(slotIds[0]) === Number(slotId));
+    const hasWindow = Array.isArray(slotIds) && slotIds.length > 0;
 
-    if (useWindow) {
+    if (hasWindow) {
       const u = new URL(apiUrl(apiBase, "/api/hotmap_window"));
       u.searchParams.set("zoom", String(zoom));
-      u.searchParams.set("slot_ids", slotsCsv);
+      u.searchParams.set("slot_ids", slotIds!.join(","));
+      return u.toString();
+    } else {
+      const u = new URL(apiUrl(apiBase, "/api/hotmap"));
+      u.searchParams.set("zoom", String(zoom));
+      u.searchParams.set("slot_id", String(slotId));
       return u.toString();
     }
-
-    const u = new URL(apiUrl(apiBase, "/api/hotmap"));
-    u.searchParams.set("zoom", String(zoom));
-    u.searchParams.set("slot_id", String(slotId));
-    return u.toString();
   }, [apiBase, zoom, slotId, slotIds]);
 
   // Create map once
@@ -164,7 +154,6 @@ export function MapView({
 
       map.addControl(new maplibregl.NavigationControl(), "top-right");
 
-      // Add hotmap source
       if (!map.getSource(sourceId)) {
         map.addSource(sourceId, {
           type: "geojson",
@@ -172,7 +161,6 @@ export function MapView({
         });
       }
 
-      // Fill polygons colored by score
       if (!map.getLayer(layerFill)) {
         map.addLayer({
           id: layerFill,
@@ -199,7 +187,6 @@ export function MapView({
         });
       }
 
-      // Outline
       if (!map.getLayer(layerLine)) {
         map.addLayer({
           id: layerLine,
@@ -212,7 +199,6 @@ export function MapView({
         });
       }
 
-      // Selected outline (filter updated by effect below)
       if (!map.getLayer(layerSelected)) {
         map.addLayer({
           id: layerSelected,
@@ -225,7 +211,6 @@ export function MapView({
         });
       }
 
-      // Hover popup
       popupRef.current = new maplibregl.Popup({
         closeButton: false,
         closeOnClick: false,
@@ -242,14 +227,12 @@ export function MapView({
         const score = Number(p.score ?? 0);
         const x = Number(p.x);
         const y = Number(p.y);
-        const sid = Number(p.slot_id ?? slotIdRef.current);
 
         popupRef.current
           .setLngLat(e.lngLat)
           .setHTML(
             `<div style="font-size:12px">
               <div><b>Cell</b> x=${x} y=${y}</div>
-              <div>slot: ${sid}</div>
               <div>coverage: ${coverage}</div>
               <div>score: ${score.toFixed(2)}</div>
             </div>`
@@ -262,23 +245,23 @@ export function MapView({
         popupRef.current?.remove();
       });
 
-      // Click → inform App
       map.on("click", layerFill, (e: MapMouseEvent) => {
         const f = e.features?.[0] as any;
         if (!f) return;
         const p = f.properties || {};
         if (p.x == null || p.y == null) return;
 
+        // NOTE: for window responses, slot_id in properties might be 0 or missing.
+        // We still pass through something stable to App; App can decide which taxa endpoint to use.
         onCellClickRef.current({
           x: Number(p.x),
           y: Number(p.y),
           zoom: Number(p.zoom ?? zoomRef.current),
-          // IMPORTANT: if we're viewing a window, each feature has its own slot_id
           slotId: Number(p.slot_id ?? slotIdRef.current),
         });
       });
 
-      // Important: fetch hotmap immediately after layers exist
+      // Fetch once immediately
       void (async () => {
         try {
           const res = await fetch(hotmapUrl);
@@ -292,7 +275,6 @@ export function MapView({
         }
       })();
 
-      // Ensure correct sizing
       setTimeout(() => map.resize(), 0);
     });
 
@@ -306,7 +288,7 @@ export function MapView({
     };
   }, [apiBase, hotmapUrl]);
 
-  // Refresh hotmap whenever zoom/slot changes (or window changes)
+  // Refresh hotmap whenever url changes
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -324,16 +306,9 @@ export function MapView({
         if (!res.ok) return;
         src.setData(geo);
         lastGeoRef.current = geo;
-
-        console.log("Hotmap loaded", {
-          zoom,
-          slotId,
-          slotIds: slotIds ?? null,
-          features: geo?.features?.length,
-          url: hotmapUrl,
-        });
+        console.log("Hotmap loaded", { zoom, slotId, slotIds, features: geo?.features?.length });
       } catch {
-        // ignore aborts/errors
+        // ignore
       }
     })();
 
@@ -351,22 +326,19 @@ export function MapView({
       return;
     }
 
-    // If viewing a window, also include slot_id in selection filter when possible.
-    // We don't have selected.slot_id in the UI state today, so keep it x/y only.
     map.setFilter(layerSelected, [
       "all",
       ["==", ["to-number", ["get", "x"]], selected.x],
       ["==", ["to-number", ["get", "y"]], selected.y],
     ]);
-  }, [selected, zoom, slotId, slotIds]);
+  }, [selected]);
 
-  // Fit map when reference changes
+  // Fit map when requested
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
     const geo = lastGeoRef.current;
     if (!geo) return;
-
     fitToGeoJson(map, geo);
   }, [fitRequestId]);
 
