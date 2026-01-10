@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-# script:fetch_layers.py 
-
 # MIT License
 #
 # Copyright (c) 2026 Jonas Waldeck
@@ -19,6 +17,9 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
 # -*- coding: utf-8 -*-
+
+# script:fetch_layers.py 
+
 
 from __future__ import annotations
 

@@ -1,5 +1,3 @@
-# geomap:storage.py
-
 # MIT License
 #
 # Copyright (c) 2026 Jonas Waldeck
@@ -15,6 +13,9 @@
 # copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
+
+# geomap:storage.py
+
 
 from __future__ import annotations
 
