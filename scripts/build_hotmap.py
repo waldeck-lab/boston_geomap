@@ -39,6 +39,7 @@ from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
 from geomap.logging_utils import setup_logger
 from geomap import storage
 from geomap.scoring import top_hotspots
+from geomap.storage import YEAR_ALL
 
 
 from dataclasses import dataclass
@@ -72,6 +73,7 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--out-dir", default=None)
     ap.add_argument("--cache-dir", default=None, help="Override cache dir.")
     ap.add_argument("--logs-dir", default=None, help="Override logs dir.")
+    ap.add_argument("--year", type=int, default=YEAR_ALL, help="Year bucket. 0 = all-years aggregate.")
     return ap.parse_args()
 
     
@@ -142,6 +144,16 @@ def main() -> int:
             slot_id, SLOT_MIN, SLOT_MAX, SLOT_ALL
         )
         return 2
+
+
+    YEAR_MIN = 1800
+    YEAR_MAX = 2100
+    
+    year = int(args.year)
+    if year != YEAR_ALL and (year < YEAR_MIN or year > YEAR_MAX):
+        logger.error("year out of range: %d (valid: %d..%d, or %d=all-years)", year, YEAR_MIN, YEAR_MAX, YEAR_ALL)
+        return 2
+    logger.info("Year: %d", year)
     
     n = int(args.n)
 
@@ -162,23 +174,28 @@ def main() -> int:
     conn = storage.connect(cfg.geomap_db_path)
     try:
         storage.ensure_schema(conn)
-        conn.execute("BEGIN;")
+        conn.execute("BEGIN;")        
+        try:
+            storage.upsert_taxon_dim(
+                conn,
+                [(t.taxon_id, t.scientific_name, t.swedish_name) for t in taxa],
+            )
 
-        storage.upsert_taxon_dim(
-            conn,
-            [(t.taxon_id, t.scientific_name, t.swedish_name) for t in taxa],
-        )
+            storage.rebuild_hotmap(
+                conn,
+                zoom,
+                slot_id,
+                taxon_ids,
+                alpha=alpha,
+                beta=beta,
+                year=year,
+            )
 
-        storage.rebuild_hotmap(
-            conn,
-            zoom,
-            slot_id,
-            taxon_ids,
-            alpha=alpha,
-            beta=beta,
-        )
-        conn.commit()
-
+            conn.commit()
+        except Exception:
+            conn.rollback()
+            raise
+        #TODO: tops = top_hotspots(conn, zoom, slot_id, year=year, limit=10)
         tops = top_hotspots(conn, zoom, slot_id, limit=10)
         for i, h in enumerate(tops, 1):
             logger.info(
@@ -198,82 +215,6 @@ def main() -> int:
     finally:
         conn.close()
 
-# def main() -> int:
-#     args = parse_args()
-
-#     apply_path_overrides(
-#         db_dir=args.db_dir,
-#         lists_dir=args.lists_dir,
-#         geomap_lists_dir=args.out_dir,
-#         cache_dir=args.cache_dir,
-#         logs_dir=args.logs_dir,
-#     )
-#     cfg = Config(repo_root=REPO_ROOT)
-#     logger = setup_logger("build_hotmap", cfg.logs_dir)
-
-#     alpha = args.alpha if args.alpha is not None else cfg.hotmap_alpha
-#     beta  = args.beta  if args.beta  is not None else cfg.hotmap_beta
-    
-#     logger = setup_logger("build_hotmap", cfg.logs_dir)
-
-#     if not cfg.missing_species_csv.exists():
-#         logger.error("Missing required CSV: %s", cfg.missing_species_csv)
-#         logger.error("Hint: ensure crossmatch project published missing_species.csv into stage/lists/")
-#         return 2
-
-#     zoom = args.zoom
-#     logger.info("Zoom: %d", zoom)
-#     slot_id = args.slot
-#     logger.info("Slot: %d", slot_id)
-#     n = args.n
-
-#     taxa = read_first_n_taxa_rows(cfg.missing_species_csv, n)
-#     taxon_ids = [t.taxon_id for t in taxa]
-
-#     logger.info(
-#         "Aggregating hotmap for n=%d taxa at zoom=%d",
-#         len(taxon_ids), zoom
-#     )
-
-#     conn = storage.connect(cfg.geomap_db_path)
-#     try:
-#         storage.ensure_schema(conn)
-#         conn.execute("BEGIN;")
-
-#         # NEW: populate taxon_dim
-#         storage.upsert_taxon_dim(
-#             conn,
-#             [(t.taxon_id, t.scientific_name, t.swedish_name) for t in taxa],
-#         )
-
-#         storage.rebuild_hotmap(
-#             conn,
-#             zoom,
-#             slot_id,
-#             taxon_ids,
-#             alpha=alpha,
-#             beta=beta,
-#         )
-#         conn.commit()
-
-#         tops = top_hotspots(conn, zoom, slot_id, limit=10)
-#         for i, h in enumerate(tops, 1):
-#             logger.info(
-#                 "Top %d: coverage=%d score=%.3f cell=(%d,%d) bbox=[(%.5f,%.5f)->(%.5f,%.5f)]",
-#                 i,
-#                 h.coverage,
-#                 h.score,
-#                 h.x,
-#                 h.y,
-#                 h.bbox_top_lat,
-#                 h.bbox_left_lon,
-#                 h.bbox_bottom_lat,
-#                 h.bbox_right_lon,
-#             )
-
-#         return 0
-#     finally:
-#         conn.close()
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2025 Jonas Waldeck
+# Copyright (c) 2026 Jonas Waldeck
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,62 +31,8 @@ import math
 
 from geomap.tiles import tile_bbox_latlon
 
-DDL = """
-CREATE TABLE IF NOT EXISTS taxon_grid (
-  taxon_id INTEGER NOT NULL,
-  zoom INTEGER NOT NULL,
-  slot_id INTEGER NOT NULL,
-  x INTEGER NOT NULL,
-  y INTEGER NOT NULL,
-  observations_count INTEGER NOT NULL,
-  taxa_count INTEGER NOT NULL,
-  bbox_top_lat REAL NOT NULL,
-  bbox_left_lon REAL NOT NULL,
-  bbox_bottom_lat REAL NOT NULL,
-  bbox_right_lon REAL NOT NULL,
-  fetched_at_utc TEXT NOT NULL,
-  PRIMARY KEY (taxon_id, zoom, slot_id, x, y)
-);
+YEAR_ALL = 0  # all-years aggregate
 
-CREATE TABLE IF NOT EXISTS taxon_layer_state (
-  taxon_id INTEGER NOT NULL,
-  zoom INTEGER NOT NULL,
-  slot_id INTEGER NOT NULL,
-  last_fetch_utc TEXT NOT NULL,
-  payload_sha256 TEXT NOT NULL,
-  grid_cell_count INTEGER NOT NULL,
-  PRIMARY KEY (taxon_id, zoom, slot_id)
-);
-
-CREATE TABLE IF NOT EXISTS grid_hotmap (
-  zoom INTEGER NOT NULL,
-  slot_id INTEGER NOT NULL,
-  x INTEGER NOT NULL,
-  y INTEGER NOT NULL,
-  coverage INTEGER NOT NULL,
-  score REAL NOT NULL,
-  bbox_top_lat REAL NOT NULL,
-  bbox_left_lon REAL NOT NULL,
-  bbox_bottom_lat REAL NOT NULL,
-  bbox_right_lon REAL NOT NULL,
-  updated_at_utc TEXT NOT NULL,
-  PRIMARY KEY (zoom, slot_id, x, y)
-);
-
-CREATE TABLE IF NOT EXISTS hotmap_taxa_set (
-  zoom INTEGER NOT NULL,
-  slot_id INTEGER NOT NULL,
-  taxon_id INTEGER NOT NULL,
-  PRIMARY KEY (zoom, slot_id, taxon_id)
-);
-
-CREATE TABLE IF NOT EXISTS taxon_dim (
-  taxon_id INTEGER PRIMARY KEY,
-  scientific_name TEXT,
-  swedish_name TEXT,
-  updated_at_utc TEXT NOT NULL
-);
-"""
 
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -146,10 +92,10 @@ def is_valid_local_from(payload_sha: str | None, src_zoom: int, src_sha: str) ->
         return False
     return payload_sha == local_from_marker(src_zoom, src_sha)
 
-def has_any_taxon_grid(conn, taxon_id: int, zoom: int, slot_id: int) -> bool:
+def has_any_taxon_grid(conn, taxon_id: int, zoom: int, slot_id: int, *, year: int = YEAR_ALL) -> bool:
     r = conn.execute(
-        "SELECT 1 FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=? LIMIT 1;",
-        (taxon_id, zoom, slot_id),
+        "SELECT 1 FROM taxon_grid WHERE taxon_id=? AND zoom=? AND year=? AND slot_id=? LIMIT 1;",
+        (taxon_id, zoom, int(year), slot_id),
     ).fetchone()
     return r is not None
 
@@ -157,6 +103,7 @@ def clear_hotmap(
     conn: sqlite3.Connection,
     *,
     zoom: int | None = None,
+    year: int | None = None,
     slot_id: int | None = None,
 ) -> tuple[int, int]:
     """
@@ -168,6 +115,8 @@ def clear_hotmap(
     if zoom is not None:
         where.append("zoom=?")
         args.append(int(zoom))
+    if year is not None:
+        where.append("year=?"); args.append(int(year))
     if slot_id is not None:
         where.append("slot_id=?")
         args.append(int(slot_id))
@@ -188,8 +137,10 @@ def clear_derived_zoom_cache(
     conn: sqlite3.Connection,
     *,
     keep_zoom: int,
+    year: int | None = None,
     slot_id: int | None = None,
 ) -> tuple[int, int]:
+        
     """
     Delete locally-derived zoom layers (taxon_grid + taxon_layer_state) for zoom != keep_zoom,
     identified via payload_sha256 like 'LOCAL_FROM_%' OR zoom != keep_zoom.
@@ -202,6 +153,9 @@ def clear_derived_zoom_cache(
     if slot_id is not None:
         slot_clause = " AND slot_id=?"
         args.append(int(slot_id))
+    if year is not None:
+        slot_clause += " AND year=?"
+        args.append(int(year))
 
     cur = conn.cursor()
 
@@ -292,7 +246,6 @@ def clear_export_files(
                 pass
     return deleted
 
-
 def materialize_parent_zoom_from_child(
     conn: sqlite3.Connection,
     *,
@@ -301,22 +254,14 @@ def materialize_parent_zoom_from_child(
     src_zoom: int,
     dst_zoom: int,
     src_sha: str,
+    year: int = YEAR_ALL,
 ) -> None:
-    """
-    Build dst_zoom rows by aggregating existing taxon_grid rows at src_zoom.
-    Assumes src_zoom > dst_zoom.
-    Writes:
-      - taxon_grid at dst_zoom for this taxon_id+slot_id
-      - taxon_layer_state at dst_zoom with payload_sha256 = LOCAL_FROM_srcZoom:srcSha
-    """
     if dst_zoom >= src_zoom:
         raise ValueError(f"dst_zoom must be < src_zoom (got src={src_zoom} dst={dst_zoom})")
 
     factor = 2 ** (src_zoom - dst_zoom)
     now = _utc_now_iso()
 
-    # IMPORTANT:
-    # Use integer division to compute parent tile coords deterministically.
     rows = conn.execute(
         """
         SELECT
@@ -325,41 +270,29 @@ def materialize_parent_zoom_from_child(
           SUM(observations_count) AS obs_sum,
           MAX(taxa_count) AS taxa_count_max
         FROM taxon_grid
-        WHERE taxon_id=? AND zoom=? AND slot_id=?
+        WHERE taxon_id=? AND zoom=? AND slot_id=? AND year=?
         GROUP BY px, py
         ORDER BY px, py;
         """,
-        (factor, factor, taxon_id, src_zoom, slot_id),
+        (factor, factor, taxon_id, src_zoom, slot_id, int(year)),
     ).fetchall()
 
-    # Replace destination zoom rows for this taxon+slot
     conn.execute(
-        "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
-        (taxon_id, dst_zoom, slot_id),
+        "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=? AND year=?;",
+        (taxon_id, dst_zoom, slot_id, int(year)),
     )
 
     out = []
     for r in rows:
-        px = int(r[0])
-        py = int(r[1])
+        px = int(r[0]); py = int(r[1])
         obs_sum = int(r[2] or 0)
         taxa_count_max = int(r[3] or 0)
-
         top_lat, left_lon, bottom_lat, right_lon = _tile_bounds_wgs84(dst_zoom, px, py)
-
         out.append(
             (
-                taxon_id,
-                int(dst_zoom),
-                int(slot_id),
-                px,
-                py,
-                obs_sum,
-                taxa_count_max,
-                float(top_lat),
-                float(left_lon),
-                float(bottom_lat),
-                float(right_lon),
+                taxon_id, int(dst_zoom), int(year), int(slot_id),
+                px, py, obs_sum, taxa_count_max,
+                float(top_lat), float(left_lon), float(bottom_lat), float(right_lon),
                 now,
             )
         )
@@ -368,18 +301,19 @@ def materialize_parent_zoom_from_child(
         conn.executemany(
             """
             INSERT INTO taxon_grid(
-              taxon_id, zoom, slot_id, x, y,
+              taxon_id, zoom, year, slot_id, x, y,
               observations_count, taxa_count,
               bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
               fetched_at_utc
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
             """,
             out,
         )
 
-    # Mark derived state (validity token)
     marker = local_from_marker(src_zoom, src_sha)
     upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, marker, len(out))
+
+
 
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -400,102 +334,33 @@ def connect(db_path: Path) -> sqlite3.Connection:
         conn.isolation_level = old
 
     return conn
-    
+
 def ensure_schema(conn: sqlite3.Connection) -> None:
-    cur = conn.cursor()
-
-    # Ensure tables etc. (DDL should be IF NOT EXISTS inside DDL)
-    cur.executescript(DDL)
-
-    # Indexes
-    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell ON taxon_grid(zoom, slot_id, x, y);")
-    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_taxon ON taxon_grid(taxon_id, zoom, slot_id);")
-    cur.execute("CREATE INDEX IF NOT EXISTS idx_grid_hotmap_slot ON grid_hotmap(zoom, slot_id, coverage, score);")
-    cur.execute("CREATE INDEX IF NOT EXISTS idx_hotmap_taxa_set_slot ON hotmap_taxa_set(zoom, slot_id, taxon_id);")
-    cur.execute("CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell_obs ON taxon_grid(zoom, slot_id, x, y, observations_count DESC);")
-
-    # Views: create once; don’t drop on every request
-    cur.execute("""
-    CREATE VIEW IF NOT EXISTS grid_taxa_v AS
-    SELECT
-      tg.zoom, tg.slot_id, tg.x, tg.y, tg.taxon_id,
-      COALESCE(td.scientific_name, '') AS scientific_name,
-      COALESCE(td.swedish_name, '') AS swedish_name,
-      tg.observations_count
-    FROM taxon_grid tg
-    LEFT JOIN taxon_dim td ON td.taxon_id = tg.taxon_id;
-    """)
-
-    cur.execute("""
-    CREATE VIEW IF NOT EXISTS grid_hotspot_taxa_v AS
-    SELECT
-      gh.zoom, gh.slot_id, gh.x, gh.y,
-      gh.coverage, gh.score,
-      gh.bbox_top_lat, gh.bbox_left_lon, gh.bbox_bottom_lat, gh.bbox_right_lon,
-      gt.taxon_id, gt.scientific_name, gt.swedish_name, gt.observations_count,
-      gh.updated_at_utc
-    FROM grid_hotmap gh
-    JOIN grid_taxa_v gt
-      ON gt.zoom=gh.zoom AND gt.slot_id=gh.slot_id AND gt.x=gh.x AND gt.y=gh.y;
-    """)
-
-    cur.execute("""
-    CREATE VIEW IF NOT EXISTS grid_hotmap_v AS
-    SELECT
-      h.zoom, h.slot_id, h.x, h.y, h.coverage, h.score,
-      h.bbox_top_lat    AS topLeft_lat,
-      h.bbox_left_lon   AS topLeft_lon,
-      h.bbox_bottom_lat AS bottomRight_lat,
-      h.bbox_right_lon  AS bottomRight_lon,
-      (h.bbox_top_lat + h.bbox_bottom_lat) / 2.0 AS centroid_lat,
-      (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
-      COALESCE(SUM(CASE WHEN s.taxon_id IS NOT NULL THEN t.observations_count ELSE 0 END), 0) AS obs_total,
-      GROUP_CONCAT(CASE WHEN s.taxon_id IS NOT NULL THEN CAST(t.taxon_id AS TEXT) END, ';') AS taxa_list,
-      h.updated_at_utc
-    FROM grid_hotmap h
-    LEFT JOIN taxon_grid t
-      ON t.zoom=h.zoom AND t.slot_id=h.slot_id AND t.x=h.x AND t.y=h.y
-    LEFT JOIN hotmap_taxa_set s
-      ON s.zoom=t.zoom AND s.slot_id=t.slot_id AND s.taxon_id=t.taxon_id
-    GROUP BY
-      h.zoom, h.slot_id, h.x, h.y, h.coverage, h.score,
-      h.bbox_top_lat, h.bbox_left_lon,
-      h.bbox_bottom_lat, h.bbox_right_lon,
-      h.updated_at_utc;
-    """)
-
-    cur.execute("""
-    CREATE VIEW IF NOT EXISTS grid_hotmap_taxa_names_v AS
-    SELECT
-      h.zoom, h.slot_id, h.x, h.y,
-      t.taxon_id,
-      COALESCE(d.scientific_name,'') AS scientific_name,
-      COALESCE(d.swedish_name,'')    AS swedish_name,
-      t.observations_count
-    FROM grid_hotmap h
-    JOIN taxon_grid t
-      ON t.zoom=h.zoom AND t.slot_id=h.slot_id AND t.x=h.x AND t.y=h.y
-    JOIN hotmap_taxa_set s
-      ON s.zoom=t.zoom AND s.slot_id=t.slot_id AND s.taxon_id=t.taxon_id
-    LEFT JOIN taxon_dim d
-      ON d.taxon_id=t.taxon_id;
-    """)
-
-    # No commit here
-
-def get_layer_state(conn: sqlite3.Connection, taxon_id: int, zoom: int, slot_id: int) -> Optional[Tuple[str, str, int]]:
+    schema_path = Path(__file__).resolve().parents[1] / "sql" / "schema.sql"
+    sql = schema_path.read_text(encoding="utf-8")
+    conn.executescript(sql)
+    
+def get_layer_state(
+    conn: sqlite3.Connection,
+    taxon_id: int,
+    zoom: int,
+    slot_id: int,
+    *,
+    year: int = YEAR_ALL,
+) -> Optional[Tuple[str, str, int]]:
     row = conn.execute(
         """
         SELECT last_fetch_utc, payload_sha256, grid_cell_count
         FROM taxon_layer_state
-        WHERE taxon_id=? AND zoom=? AND slot_id=?;
+        WHERE taxon_id=? AND zoom=? AND year=? AND slot_id=?;
         """,
-        (taxon_id, zoom, slot_id),
+        (taxon_id, zoom, int(year), slot_id),
     ).fetchone()
     if not row:
         return None
     return (row[0], row[1], int(row[2]))
 
+    
 def upsert_taxon_dim(
     conn: sqlite3.Connection,
     taxa: list[tuple[int, str, str]],
@@ -513,34 +378,36 @@ def upsert_taxon_dim(
         """,
         [(tid, sci, swe, now) for tid, sci, swe in taxa],
     )
-
 def upsert_layer_state(
     conn: sqlite3.Connection,
     taxon_id: int,
     zoom: int,
     slot_id: int,
     payload_sha256: str,
-    grid_cell_count: int
+    grid_cell_count: int,
+    *,
+    year: int = YEAR_ALL,
 ) -> None:
     now = _utc_now_iso()
     conn.execute(
         """
-        INSERT INTO taxon_layer_state(taxon_id, zoom, slot_id, last_fetch_utc, payload_sha256, grid_cell_count)
-        VALUES(?,?,?,?,?,?)
-        ON CONFLICT(taxon_id, zoom, slot_id) DO UPDATE SET
+        INSERT INTO taxon_layer_state(taxon_id, zoom, year, slot_id, last_fetch_utc, payload_sha256, grid_cell_count)
+        VALUES(?,?,?,?,?,?,?)
+        ON CONFLICT(taxon_id, zoom, year, slot_id) DO UPDATE SET
           last_fetch_utc=excluded.last_fetch_utc,
           payload_sha256=excluded.payload_sha256,
           grid_cell_count=excluded.grid_cell_count;
         """,
-        (taxon_id, zoom, slot_id, now, payload_sha256, int(grid_cell_count)),
+        (taxon_id, zoom, int(year), slot_id, now, payload_sha256, int(grid_cell_count)),
     )
-
+    
 def build_taxon_grid_derived_zoom(
     conn: sqlite3.Connection,
     *,
     slot_id: int,
     src_zoom: int,
     dst_zoom: int,
+    year: int = YEAR_ALL
 ) -> None:
     """
     Build coarser zoom taxon_grid rows locally by aggregating from src_zoom.
@@ -556,8 +423,8 @@ def build_taxon_grid_derived_zoom(
     now = _utc_now_iso()
 
     # Remove old derived rows at dst_zoom for this slot (optional but keeps it clean)
-    conn.execute("DELETE FROM taxon_grid WHERE zoom=? AND slot_id=?;", (dst_zoom, slot_id))
-
+    conn.execute("DELETE FROM taxon_grid WHERE zoom=? AND slot_id=? AND year=?;",(dst_zoom, slot_id, int(year)),
+    )
     # Group in SQL (fast), then compute bbox in Python (simple + exact)
     rows = conn.execute(
         """
@@ -567,10 +434,10 @@ def build_taxon_grid_derived_zoom(
           (y >> ?) AS py,
           SUM(observations_count) AS obs_sum
         FROM taxon_grid
-        WHERE zoom=? AND slot_id=?
+        WHERE zoom=? AND slot_id=? AND year=?
         GROUP BY taxon_id, px, py;
         """,
-        (shift, shift, src_zoom, slot_id),
+        (shift, shift, src_zoom, slot_id, int(year)),
     ).fetchall()
 
     out = []
@@ -586,7 +453,8 @@ def build_taxon_grid_derived_zoom(
             (
                 taxon_id,
                 dst_zoom,
-                slot_id,
+                int(year),
+                slot_id, 
                 px,
                 py,
                 obs_sum,
@@ -602,11 +470,11 @@ def build_taxon_grid_derived_zoom(
     conn.executemany(
         """
         INSERT INTO taxon_grid(
-          taxon_id, zoom, slot_id, x, y,
+          taxon_id, zoom, year, slot_id, x, y,
           observations_count, taxa_count,
           bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
           fetched_at_utc
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?);
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
         """,
         out,
     )
@@ -616,13 +484,15 @@ def replace_taxon_grid(
     taxon_id: int,
     zoom: int,
     slot_id: int,
-    grid_cells: Iterable[Dict[str, Any]]
+    grid_cells: Iterable[Dict[str, Any]],
+    *,
+    year: int = YEAR_ALL,
 ) -> None:
     now = _utc_now_iso()
 
     conn.execute(
-        "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
-        (taxon_id, zoom, slot_id),
+        "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND year=? AND slot_id=?;",
+        (taxon_id, zoom, int(year), slot_id),
     )
 
     rows = []
@@ -634,6 +504,7 @@ def replace_taxon_grid(
             (
                 taxon_id,
                 zoom,
+                int(year),
                 slot_id,
                 int(c["x"]),
                 int(c["y"]),
@@ -650,10 +521,11 @@ def replace_taxon_grid(
     conn.executemany(
         """
         INSERT INTO taxon_grid(
-          taxon_id, zoom, slot_id, x, y, observations_count, taxa_count,
+          taxon_id, zoom, year, slot_id, x, y,
+          observations_count, taxa_count,
           bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
           fetched_at_utc
-        ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
+        ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);
         """,
         rows,
     )
@@ -666,28 +538,28 @@ def rebuild_hotmap(
     *,
     alpha: float = 2.0,
     beta: float = 0.5,
+    year: int = YEAR_ALL,
 ) -> None:
     if not taxon_ids:
         return
 
     now = _utc_now_iso()
 
-    # Clear previous hotmap for this zoom+slot
-    conn.execute("DELETE FROM grid_hotmap WHERE zoom=? AND slot_id=?;", (zoom, slot_id))
+    conn.execute("DELETE FROM grid_hotmap WHERE zoom=? AND year=? AND slot_id=?;", (zoom, int(year), slot_id))
 
     placeholders = ",".join(["?"] * len(taxon_ids))
 
-    # Replace active taxa set for this zoom+slot
-    conn.execute("DELETE FROM hotmap_taxa_set WHERE zoom=? AND slot_id=?;", (zoom, slot_id))
+    conn.execute("DELETE FROM hotmap_taxa_set WHERE zoom=? AND year=? AND slot_id=?;", (zoom, int(year), slot_id))
     conn.executemany(
-        "INSERT OR IGNORE INTO hotmap_taxa_set(zoom, slot_id, taxon_id) VALUES (?, ?, ?);",
-        [(zoom, slot_id, tid) for tid in taxon_ids],
+        "INSERT OR IGNORE INTO hotmap_taxa_set(zoom, year, slot_id, taxon_id) VALUES (?, ?, ?, ?);",
+        [(zoom, int(year), slot_id, tid) for tid in taxon_ids],
     )
 
     rows = conn.execute(
         f"""
         SELECT
             zoom,
+            year,
             slot_id,
             x,
             y,
@@ -695,20 +567,20 @@ def rebuild_hotmap(
             SUM(observations_count) AS obs_total,
             bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
         FROM taxon_grid
-        WHERE zoom=? AND slot_id=? AND taxon_id IN ({placeholders})
-        GROUP BY zoom, slot_id, x, y;
+        WHERE zoom=? AND year=? AND slot_id=? AND taxon_id IN ({placeholders})
+        GROUP BY zoom, year, slot_id, x, y;
         """,
-        [zoom, slot_id, *taxon_ids],
+        [zoom, int(year), slot_id, *taxon_ids],
     ).fetchall()
 
     conn.executemany(
         """
         INSERT INTO grid_hotmap(
-            zoom, slot_id, x, y, coverage, score,
+            zoom, year, slot_id, x, y, coverage, score,
             bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
             updated_at_utc
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """,
         [
             (
@@ -717,13 +589,15 @@ def rebuild_hotmap(
                 int(r[2]),
                 int(r[3]),
                 int(r[4]),
-                (float(r[4]) ** float(alpha)) / ((float(r[5] or 0) + 1.0) ** float(beta)),
-                float(r[6]),
+                int(r[5]),
+                (float(r[5]) ** float(alpha)) / ((float(r[6] or 0) + 1.0) ** float(beta)),
                 float(r[7]),
                 float(r[8]),
                 float(r[9]),
+                float(r[10]),
                 now,
             )
             for r in rows
         ],
     )
+    

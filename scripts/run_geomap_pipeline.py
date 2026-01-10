@@ -124,6 +124,8 @@ def run(cmd: list[str]) -> None:
 def main() -> int:
     args = parse_args()
 
+    year = 0
+    
     apply_path_overrides(
         db_dir=args.db_dir,
         lists_dir=args.lists_dir,
@@ -182,6 +184,7 @@ def main() -> int:
          "--n", str(n),
          "--zooms", ",".join(str(z) for z in zooms),
          "--slot", str(slot_id),
+         "--year", str(year),
          *common_paths])
     
     for zoom in zooms:
@@ -189,6 +192,7 @@ def main() -> int:
              "--n", str(n),
              "--zoom", str(zoom),
              "--slot", str(slot_id),
+             "--year", str(year),
              "--alpha", str(alpha),
              "--beta", str(beta),
              *common_paths])
@@ -196,6 +200,7 @@ def main() -> int:
         run([python, str(REPO_ROOT / "scripts" / "export_hotmap.py"),
              "--zoom", str(zoom),
              "--slot", str(slot_id),
+             "--year", str(year),
              *common_paths])
 
     return 0
