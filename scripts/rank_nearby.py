@@ -103,8 +103,6 @@ def parse_args() -> argparse.Namespace:
                     help="Override logs directory")
     return ap.parse_args()
 
-
-
 def taxa_for_cell(conn, zoom: int, year: int, slot_id: int, x: int, y: int) -> list[tuple[int,str,str,int]]:
     rows = conn.execute(
         """
@@ -113,7 +111,7 @@ def taxa_for_cell(conn, zoom: int, year: int, slot_id: int, x: int, y: int) -> l
         WHERE zoom=? AND year=? AND slot_id=? AND x=? AND y=?
         ORDER BY observations_count DESC, taxon_id;
         """,
-        (int(zoom), int(year), int(slot_id), int(x), int(y)),
+        (zoom, int(year), int(slot_id), int(x), int(y)),
     ).fetchall()
     return [(int(r[0]), r[1], r[2], int(r[3])) for r in rows]
 
@@ -241,15 +239,18 @@ def main() -> int:
             """
             SELECT
             zoom, year, slot_id, x, y, coverage, score,
-            bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
-            FROM grid_hotmap
+            centroid_lat, centroid_lon,
+            topLeft_lat, topLeft_lon, bottomRight_lat, bottomRight_lon,
+            obs_total,
+            taxa_list
+            FROM grid_hotmap_v
             WHERE zoom=? AND year=? AND slot_id=?
             ORDER BY coverage DESC, score DESC
             LIMIT ?;
             """,
-            (int(zoom), int(year), int(slot_id), int(candidates)),
+            (zoom, year, slot_id, candidates),
         ).fetchall()
-
+        
         if not candidate_rows:
             logger.warning("No hotmap rows at all for zoom=%d", zoom)
             return 0
@@ -260,20 +261,17 @@ def main() -> int:
         logger.info("Candidates fetched: %d", len(candidate_rows))
 
         for row in candidate_rows:
-            key = (int(row["zoom"]), int(row["slot_id"]), int(row["x"]), int(row["y"]))
+            key = (int(row["zoom"]), int(row["year"]), int(row["slot_id"]), int(row["x"]), int(row["y"]))
             if key in seen:
                 continue
             seen.add(key)
 
             base_score = float(row["score"])
 
-            top_lat = float(row["bbox_top_lat"])
-            left_lon = float(row["bbox_left_lon"])
-            bottom_lat = float(row["bbox_bottom_lat"])
-            right_lon = float(row["bbox_right_lon"])
+            # grid_hotmap_v exposes centroid_lat/centroid_lon (and aliases for bbox)
+            c_lat = float(row["centroid_lat"])
+            c_lon = float(row["centroid_lon"])
             
-            c_lat = (top_lat + bottom_lat) / 2.0
-            c_lon = (left_lon + right_lon) / 2.0
             
             d_km = haversine_km(lat, lon, c_lat, c_lon)
 

@@ -23,7 +23,6 @@ import sqlite3
 
 from geomap.storage import YEAR_ALL
 
-
 @dataclass(frozen=True)
 class Hotspot:
     zoom: int
@@ -38,7 +37,6 @@ class Hotspot:
     bbox_bottom_lat: float
     bbox_right_lon: float
 
-
 def top_hotspots(
     conn: sqlite3.Connection,
     zoom: int,
@@ -49,9 +47,8 @@ def top_hotspots(
 ) -> list[Hotspot]:
     rows = conn.execute(
         """
-        SELECT
-          zoom, year, slot_id, x, y, coverage, score,
-          bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
+        SELECT x, y, coverage, score,
+               bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
         FROM grid_hotmap
         WHERE zoom=? AND year=? AND slot_id=?
         ORDER BY coverage DESC, score DESC
@@ -60,21 +57,19 @@ def top_hotspots(
         (int(zoom), int(year), int(slot_id), int(limit)),
     ).fetchall()
 
-    out: list[Hotspot] = []
-    for r in rows:
-        out.append(
-            Hotspot(
-                zoom=int(r[0]),
-                year=int(r[1]),
-                slot_id=int(r[2]),
-                x=int(r[3]),
-                y=int(r[4]),
-                coverage=int(r[5]),
-                score=float(r[6]),
-                bbox_top_lat=float(r[7]),
-                bbox_left_lon=float(r[8]),
-                bbox_bottom_lat=float(r[9]),
-                bbox_right_lon=float(r[10]),
-            )
+    return [
+        Hotspot(
+            zoom=int(zoom),
+            year=int(year),
+            slot_id=int(slot_id),
+            x=int(r[0]),
+            y=int(r[1]),
+            coverage=int(r[2]),
+            score=float(r[3]),
+            bbox_top_lat=float(r[4]),
+            bbox_left_lon=float(r[5]),
+            bbox_bottom_lat=float(r[6]),
+            bbox_right_lon=float(r[7]),
         )
-    return out
+        for r in rows
+    ]
