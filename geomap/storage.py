@@ -155,60 +155,97 @@ def clear_export_files(
     *,
     zoom: int | None = None,
     slot_id: int | None = None,
+    year: int | None = None,   # year=0 normal, year=-1 wildcard (all), None = ignore year
 ) -> int:
     """
     Delete exported hotmap files. Returns number of deleted files.
 
-    Matches exactly:
+    Supports both:
+      hotmap_zoom{z}_year{y}_slot{s}.geojson
+      top_sites_zoom{z}_year{y}_slot{s}.csv
+
+    And legacy:
       hotmap_zoom{z}_slot{s}.geojson
       top_sites_zoom{z}_slot{s}.csv
-    and supports filtering by zoom and/or slot_id.
     """
     if not out_dir.exists():
         return 0
 
-    def matches(name: str) -> bool:
-        # Only consider our known exported file prefixes and extensions
+    YEAR_WILDCARD = -1
+
+    def parse_name(name: str):
+        # returns (kind, z, y_or_none, s) or None
         if name.endswith(".geojson"):
+            kind = "hotmap"
             prefix = "hotmap_zoom"
             ext = ".geojson"
         elif name.endswith(".csv"):
+            kind = "topsites"
             prefix = "top_sites_zoom"
             ext = ".csv"
         else:
-            return False
+            return None
 
         if not name.startswith(prefix):
-            return False
+            return None
 
-        # Expected core: "<prefix><zoom>_slot<slot><ext>"
-        core = name[len(prefix) : -len(ext)]  # e.g. "15_slot0"
+        core = name[len(prefix) : -len(ext)]  # e.g. "15_year0_slot0" or "15_slot0"
         if "_slot" not in core:
-            return False
+            return None
 
-        z_str, s_str = core.split("_slot", 1)
-        if not z_str.isdigit() or not s_str.isdigit():
-            return False
-
-        z = int(z_str)
+        left, s_str = core.split("_slot", 1)
+        if not s_str.isdigit():
+            return None
         s = int(s_str)
 
-        if zoom is not None and z != int(zoom):
-            return False
-        if slot_id is not None and s != int(slot_id):
-            return False
-        return True
+        # year-aware?
+        if "_year" in left:
+            z_str, y_str = left.split("_year", 1)
+            if not z_str.isdigit() or not y_str.isdigit():
+                return None
+            z = int(z_str)
+            y = int(y_str)
+            return (kind, z, y, s)
+
+        # legacy
+        if not left.isdigit():
+            return None
+        z = int(left)
+        return (kind, z, None, s)
 
     deleted = 0
     for p in out_dir.iterdir():
         if not p.is_file():
             continue
-        if matches(p.name):
-            try:
-                p.unlink()
-                deleted += 1
-            except OSError:
-                pass
+        info = parse_name(p.name)
+        if not info:
+            continue
+
+        _, z, y, s = info
+
+        if zoom is not None and z != int(zoom):
+            continue
+        if slot_id is not None and s != int(slot_id):
+            continue
+
+        if year is None:
+            pass
+        elif int(year) == YEAR_WILDCARD:
+            # delete any year-aware file AND legacy ones
+            pass
+        else:
+            # year filter only applies to year-aware names; legacy names treated as "no year"
+            if y is None:
+                continue
+            if y != int(year):
+                continue
+
+        try:
+            p.unlink()
+            deleted += 1
+        except OSError:
+            pass
+
     return deleted
 
 def materialize_parent_zoom_from_child(

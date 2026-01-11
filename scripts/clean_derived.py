@@ -20,8 +20,9 @@
 
 # -*- coding: utf-8 -*-
 
-#!/usr/bin/env python3
+
 # script:clean_derived.py
+
 # Desc.: Remove derived files/rows that can be re-generated locally
 
 from __future__ import annotations
