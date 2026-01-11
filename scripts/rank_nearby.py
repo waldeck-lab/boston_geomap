@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 
-# script:rank_nearby.py 
-
 # MIT License
 #
-# Copyright (c) 2025 Jonas Waldeck
+# Copyright (c) 2026 Jonas Waldeck
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +18,8 @@
 
 # -*- coding: utf-8 -*-
 
+# script:rank_nearby.py 
+
 from __future__ import annotations
 
 import sys
@@ -32,6 +32,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 # --------------------------------
 from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
+from geomap.storage import YEAR_MAX, YEAR_MIN, YEAR_ALL
 from geomap.config import Config
 from geomap.logging_utils import setup_logger
 from geomap import storage
@@ -86,6 +87,8 @@ def parse_args() -> argparse.Namespace:
                     help="Number of taxa shown when not using --show-all-taxa")
     ap.add_argument("--candidates", type=int, default=20000,
                     help="How many hotspot candidates to consider before distance filtering (default: 20000).")
+    ap.add_argument("--year", type=int, default=YEAR_ALL, help="Year bucket. 0 = all-years aggregate.")
+
 
     # Path overrides (OVE-compatible)
     ove_base = (os.getenv("OVE_BASE_DIR") or "").strip()
@@ -101,15 +104,16 @@ def parse_args() -> argparse.Namespace:
     return ap.parse_args()
 
 
-def taxa_for_cell(conn, zoom: int, slot_id: int, x: int, y: int) -> list[tuple[int,str,str,int]]:
+
+def taxa_for_cell(conn, zoom: int, year: int, slot_id: int, x: int, y: int) -> list[tuple[int,str,str,int]]:
     rows = conn.execute(
         """
         SELECT taxon_id, scientific_name, swedish_name, observations_count
         FROM grid_hotmap_taxa_names_v
-        WHERE zoom=? AND slot_id=? AND x=? AND y=?
+        WHERE zoom=? AND year=? AND slot_id=? AND x=? AND y=?
         ORDER BY observations_count DESC, taxon_id;
         """,
-        (zoom, slot_id, x, y),
+        (int(zoom), int(year), int(slot_id), int(x), int(y)),
     ).fetchall()
     return [(int(r[0]), r[1], r[2], int(r[3])) for r in rows]
 
@@ -178,6 +182,9 @@ def main() -> int:
         )
         return 2
 
+    year = int(args.year)
+    logger.info("Year: %d", year)
+    
     logger.info("Using position: lat=%.6f lon=%.6f", lat, lon)
     logger.info("Decay: mode=%s d0_km=%.3f gamma=%.3f max_km=%.3f", mode, d0_km, gamma, max_km)
     logger.info("Candidate prefetch limit: %d", candidates)
@@ -194,7 +201,8 @@ def main() -> int:
         # What slots/zooms exist?
         try:
             slots = conn.execute(
-                "SELECT slot_id, COUNT(*) c FROM grid_hotmap_v GROUP BY slot_id ORDER BY slot_id;"
+                "SELECT slot_id, COUNT(*) c FROM grid_hotmap WHERE year=? GROUP BY slot_id ORDER BY slot_id;",
+                (int(year),),
             ).fetchall()
             if slots:
                 logger.info("Hotmap rows per slot_id: %s", [(int(r[0]), int(r[1])) for r in slots])
@@ -206,7 +214,8 @@ def main() -> int:
 
         try:
             zc = conn.execute(
-                "SELECT zoom, COUNT(*) c FROM grid_hotmap_v GROUP BY zoom ORDER BY zoom;"
+                "SELECT zoom, COUNT(*) c FROM grid_hotmap WHERE year=? GROUP BY zoom ORDER BY zoom;",
+                (int(year),),
             ).fetchall()
             logger.info("Hotmap rows per zoom: %s", [(int(r[0]), int(r[1])) for r in zc])
         except Exception as e:
@@ -214,8 +223,8 @@ def main() -> int:
 
         # For the requested zoom/slot
         n_zoom_slot = conn.execute(
-            "SELECT COUNT(*) FROM grid_hotmap_v WHERE zoom=? AND slot_id=?;",
-            (zoom, slot_id),
+            "SELECT COUNT(*) FROM grid_hotmap WHERE zoom=? AND year=? AND slot_id=?;",
+            (int(zoom), int(year), int(slot_id)),
         ).fetchone()[0]
         logger.info("Hotmap rows for zoom=%d slot=%d: %d", zoom, slot_id, int(n_zoom_slot))
 
@@ -227,20 +236,18 @@ def main() -> int:
 
         # Pull a larger candidate set, then distance-rank it.
         # This keeps it fast without needing SQL trig functions.
+
         candidate_rows = conn.execute(
             """
             SELECT
-            zoom, slot_id, x, y, coverage, score,
-            centroid_lat, centroid_lon,
-            topLeft_lat, topLeft_lon, bottomRight_lat, bottomRight_lon,
-            obs_total,
-            taxa_list
-            FROM grid_hotmap_v
-            WHERE zoom=? AND slot_id=?
+            zoom, year, slot_id, x, y, coverage, score,
+            bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
+            FROM grid_hotmap
+            WHERE zoom=? AND year=? AND slot_id=?
             ORDER BY coverage DESC, score DESC
             LIMIT ?;
             """,
-            (zoom, slot_id, candidates),
+            (int(zoom), int(year), int(slot_id), int(candidates)),
         ).fetchall()
 
         if not candidate_rows:
@@ -259,9 +266,15 @@ def main() -> int:
             seen.add(key)
 
             base_score = float(row["score"])
-            c_lat = float(row["centroid_lat"])
-            c_lon = float(row["centroid_lon"])
-        
+
+            top_lat = float(row["bbox_top_lat"])
+            left_lon = float(row["bbox_left_lon"])
+            bottom_lat = float(row["bbox_bottom_lat"])
+            right_lon = float(row["bbox_right_lon"])
+            
+            c_lat = (top_lat + bottom_lat) / 2.0
+            c_lon = (left_lon + right_lon) / 2.0
+            
             d_km = haversine_km(lat, lon, c_lat, c_lon)
 
             # Debug a few rows
@@ -318,7 +331,7 @@ def main() -> int:
             base_score = float(r["score"])
 
 
-            taxa = taxa_for_cell(conn, zoom, slot_id, x, y)
+            taxa = taxa_for_cell(conn, zoom, year, slot_id, x, y)
             taxa_named = fmt_taxa(taxa, max_items=8)
 
             logger.info(

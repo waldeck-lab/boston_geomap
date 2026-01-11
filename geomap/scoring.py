@@ -60,19 +60,21 @@ def top_hotspots(
         (int(zoom), int(year), int(slot_id), int(limit)),
     ).fetchall()
 
-    return [
-        Hotspot(
-            zoom=int(r[0]),
-            year=int(r[1]),
-            slot_id=int(r[2]),
-            x=int(r[3]),
-            y=int(r[4]),
-            coverage=int(r[5]),
-            score=float(r[6]),
-            bbox_top_lat=float(r[7]),
-            bbox_left_lon=float(r[8]),
-            bbox_bottom_lat=float(r[9]),
-            bbox_right_lon=float(r[10]),
+    out: list[Hotspot] = []
+    for r in rows:
+        out.append(
+            Hotspot(
+                zoom=int(r[0]),
+                year=int(r[1]),
+                slot_id=int(r[2]),
+                x=int(r[3]),
+                y=int(r[4]),
+                coverage=int(r[5]),
+                score=float(r[6]),
+                bbox_top_lat=float(r[7]),
+                bbox_left_lon=float(r[8]),
+                bbox_bottom_lat=float(r[9]),
+                bbox_right_lon=float(r[10]),
+            )
         )
-        for r in rows
-    ]
+    return out
