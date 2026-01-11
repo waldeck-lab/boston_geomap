@@ -179,55 +179,32 @@ def main() -> int:
             grid_cells = payload.get("gridCells") or []
             base_sha = stable_gridcells_hash(payload)
 
-            prev_base = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id, year=YEAR_ALL)
+            prev_base = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id, year=year)
             base_changed = (not prev_base) or (prev_base[1] != base_sha)
-            
+
             conn.execute("BEGIN;")
             try:
                 if base_changed:
-                    logger.info(
-                        "Updating BASE layer for taxon_id=%d zoom=%d slot=%d: gridCells=%d (changed=%s)",
-                        taxon_id, base_zoom, slot_id, len(grid_cells),
-                        "new" if not prev_base else "yes",
-                    )
-                    storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells, year=YEAR_ALL)
-                    storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells), year=YEAR_ALL)
-
+                    storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells, year=year)
+                    storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells), year=year)
                 else:
-                    # keep last_fetch fresh even if unchanged
-                    logger.info("No change for BASE taxon_id=%d (sha256 match). gridCells=%d", taxon_id, len(grid_cells))
-                    storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells), year=YEAR_ALL)
+                    storage.upsert_layer_state(conn, taxon_id, base_zoom, slot_id, base_sha, len(grid_cells), year=year)
 
-
-                # Ensure derived zooms exist and are valid relative to current base_sha
-
-
-                # Ensure derived zooms exist and are valid relative to current base_sha
                 for z in zooms[1:]:
-                    prev_z = storage.get_layer_state(conn, taxon_id, z, slot_id, year=YEAR_ALL)
+                    prev_z = storage.get_layer_state(conn, taxon_id, z, slot_id, year=year)
 
                     valid = False
                     if prev_z:
                         valid = storage.is_valid_local_from(prev_z[1], base_zoom, base_sha)
-                        
-                    if valid and storage.has_any_taxon_grid(conn, taxon_id=taxon_id, zoom=z, slot_id=slot_id, year=YEAR_ALL):
-                        logger.info(
-                            "Derived zoom=%d OK for taxon_id=%d slot=%d (cache valid)",
-                            z, taxon_id, slot_id
-                        )
+
+                    if valid and storage.has_any_taxon_grid(conn, taxon_id=taxon_id, zoom=z, slot_id=slot_id, year=year):
                         continue
 
-                    # Verbose info
                     reason = "stale"
                     if not prev_z:
                         reason = "missing state"
-                    elif not storage.has_any_taxon_grid(conn, taxon_id=taxon_id, zoom=z, slot_id=slot_id, year=YEAR_ALL):
+                    elif not storage.has_any_taxon_grid(conn, taxon_id=taxon_id, zoom=z, slot_id=slot_id, year=year):
                         reason = "missing rows"
-                    logger.info(
-                        "Rebuilding derived zoom=%d from base_zoom=%d for taxon_id=%d slot=%d (reason=%s)",
-                        z, base_zoom, taxon_id, slot_id,
-                        str(reason),
-                    )
 
                     storage.materialize_parent_zoom_from_child(
                         conn,
@@ -236,8 +213,9 @@ def main() -> int:
                         src_zoom=base_zoom,
                         dst_zoom=z,
                         src_sha=base_sha,
-                        year=YEAR_ALL,
+                        year=year,
                     )
+                    
                 conn.commit()
             except Exception:
                 conn.rollback()

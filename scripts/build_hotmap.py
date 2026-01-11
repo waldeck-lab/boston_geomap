@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-# script:build_hotmap.py 
-
 # MIT License
 #
 # Copyright (c) 2025 Jonas Waldeck
@@ -19,6 +17,8 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
 # -*- coding: utf-8 -*-
+
+# script:build_hotmap.py 
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
 from geomap.logging_utils import setup_logger
 from geomap import storage
 from geomap.scoring import top_hotspots
-from geomap.storage import YEAR_ALL
+from geomap.storage import YEAR_MAX, YEAR_MIN, YEAR_ALL
 
 
 from dataclasses import dataclass
@@ -145,9 +145,6 @@ def main() -> int:
         )
         return 2
 
-
-    YEAR_MIN = 1800
-    YEAR_MAX = 2100
     
     year = int(args.year)
     if year != YEAR_ALL and (year < YEAR_MIN or year > YEAR_MAX):
@@ -195,8 +192,7 @@ def main() -> int:
         except Exception:
             conn.rollback()
             raise
-        #TODO: tops = top_hotspots(conn, zoom, slot_id, year=year, limit=10)
-        tops = top_hotspots(conn, zoom, slot_id, limit=10)
+        tops = top_hotspots(conn, zoom, slot_id, year=year, limit=10)
         for i, h in enumerate(tops, 1):
             logger.info(
                 "Top %d: coverage=%d score=%.3f cell=(%d,%d) bbox=[(%.5f,%.5f)->(%.5f,%.5f)]",

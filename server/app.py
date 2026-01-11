@@ -42,6 +42,8 @@ from geomap.config import Config
 from geomap import storage
 from geomap.sos_client import SOSClient, stable_gridcells_hash, throttle
 from geomap.distance import haversine_km, distance_weight_rational, distance_weight_exp
+from geomap.storage import YEAR_MAX, YEAR_MIN, YEAR_ALL
+from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
 
 
 import threading
@@ -51,17 +53,6 @@ import logging
 logger = logging.getLogger("geomap-server")
 
 ZOOM_DEFAULT = 15  # server default if client doesn't send zooms
-
-# Consolidate with ./geomap/config.py, import from geomap later.
-#from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
-SLOT_MIN = 0
-SLOT_MAX = 48
-SLOT_ALL = 0
-
-YEAR_ALL = 0
-YEAR_MIN = 1800
-YEAR_MAX = 2100
-
 
 from werkzeug.exceptions import BadRequest, HTTPException
 

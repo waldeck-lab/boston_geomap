@@ -33,47 +33,11 @@ import math
 from geomap.tiles import tile_bbox_latlon
 
 YEAR_ALL = 0  # all-years aggregate
-
+YEAR_MIN = 1900 # Lower year boundary
+YEAR_MAX = 2050 # Higher year boundary
 
 def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-
-def _tile_bounds_wgs84(z: int, x: int, y: int):
-    """
-    Slippy tile bounds in WGS84.
-    Returns: top_lat, left_lon, bottom_lat, right_lon
-    """
-    n = 2.0 ** z
-    left_lon = x / n * 360.0 - 180.0
-    right_lon = (x + 1) / n * 360.0 - 180.0
-
-    def lat_from_y(yy: int):
-        lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * yy / n)))
-        return math.degrees(lat_rad)
-
-    top_lat = lat_from_y(y)
-    bottom_lat = lat_from_y(y + 1)
-    return top_lat, left_lon, bottom_lat, right_lon
-
-def _tile_bbox_latlon(z: int, x: int, y: int) -> Tuple[float, float, float, float]:
-    """
-    Returns (topLeft_lat, topLeft_lon, bottomRight_lat, bottomRight_lon)
-    for slippy-map tiles in Web Mercator (EPSG:3857).
-    """
-    n = 2 ** z
-
-    lon_left = x / n * 360.0 - 180.0
-    lon_right = (x + 1) / n * 360.0 - 180.0
-
-    def lat_from_ytile(yy: int) -> float:
-        lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * yy / n)))
-        return lat_rad * 180.0 / math.pi
-
-    lat_top = lat_from_ytile(y)
-    lat_bottom = lat_from_ytile(y + 1)
-
-    return (lat_top, lon_left, lat_bottom, lon_right)
-
 
 def _stable_agg_hash(rows: Iterable[tuple[int, int, int]]) -> str:
     """
@@ -288,7 +252,7 @@ def materialize_parent_zoom_from_child(
         px = int(r[0]); py = int(r[1])
         obs_sum = int(r[2] or 0)
         taxa_count_max = int(r[3] or 0)
-        top_lat, left_lon, bottom_lat, right_lon = _tile_bounds_wgs84(dst_zoom, px, py)
+        top_lat, left_lon, bottom_lat, right_lon = tile_bbox_latlon(px, py, dst_zoom)
         out.append(
             (
                 taxon_id, int(dst_zoom), int(year), int(slot_id),
@@ -312,7 +276,8 @@ def materialize_parent_zoom_from_child(
         )
 
     marker = local_from_marker(src_zoom, src_sha)
-    upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, marker, len(out))
+    upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, marker, len(out), year=year)
+
 
 
 
