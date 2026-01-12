@@ -111,10 +111,23 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--logs-dir", default=None, help="Override logs dir")
     return ap.parse_args()
 
+def _try_exec(conn, sql: str, args=()) -> int:
+    try:
+        cur = conn.execute(sql, args)
+        return cur.rowcount if cur.rowcount is not None else 0
+    except sqlite3.OperationalError:
+        return 0
+
+def _try_exec_many(conn, sqls: list[tuple[str, tuple]]) -> int:
+    total = 0
+    for sql, args in sqls:
+        total += _try_exec(conn, sql, args)
+    return total
+
 def _delete_exports(out_dir: Path, zoom: int | None, slot: int | None, year: int | None) -> int:
     if not out_dir.exists():
         return 0
-
+    
     deleted = 0
     for p in out_dir.iterdir():
         if not p.is_file():
@@ -173,13 +186,19 @@ def _delete_exports(out_dir: Path, zoom: int | None, slot: int | None, year: int
             continue
         if slot is not None and s_file != slot:
             continue
-        # If caller specifies a year filter, only delete year-tagged files that match.
-        # For old files without year, treat y_file as None and only delete them when year filter is None.
+
+        # Year filtering:
+        # year=None => delete any year + legacy
+        # year=0    => delete year0 + legacy (legacy treated as year0)
+        # year>0    => delete that year only (not legacy)
         if year is not None:
             if y_file is None:
-                continue
-            if y_file != year:
-                continue
+                # legacy file
+                if year != 0:
+                    continue
+                else:
+                    if y_file != year:
+                        continue
 
         try:
             p.unlink()
@@ -221,44 +240,66 @@ def main() -> int:
     slot_i = args.slot
     keep_zoom = int(args.keep_zoom)
 
-        
+    
     if do_hotmap or do_derived:
-        #
-        cfg = Config(repo_root=REPO_ROOT)
-        logger = setup_logger("clean_derived", cfg.logs_dir)
-
-        # Ensure schema (or recreate DB if it's an old incompatible file)
-        _ensure_schema_or_nuke_db(cfg, logger)
-
-        conn = storage.connect(cfg.geomap_db_path)        
+        conn = storage.connect(cfg.geomap_db_path)
         try:
-            storage.ensure_schema(conn)
             conn.execute("BEGIN;")
-            try:
-                if do_hotmap:
-                    n_hotmap, n_set = storage.clear_hotmap(
-                        conn,
-                        zoom=zoom_i,
-                        year=year_filter,
-                        slot_id=slot_i,
-                    )
-                    logger.info("Deleted grid_hotmap rows: %d", n_hotmap)
-                    logger.info("Deleted hotmap_taxa_set rows: %d", n_set)
 
-                if do_derived:
-                    n_grid, n_state = storage.clear_derived_zoom_cache(
-                        conn,
-                        keep_zoom=keep_zoom,
-                        year=year_filter,
-                        slot_id=slot_i,
-                    )
-                    logger.info("Deleted derived taxon_grid rows: %d", n_grid)
-                    logger.info("Deleted derived taxon_layer_state rows: %d", n_state)
+            # ---------------- HOTMAP ----------------
+            if do_hotmap:
+                where = []
+                args = []
 
-                conn.commit()
-            except Exception:
-                conn.rollback()
-                raise
+                if zoom_i is not None:
+                    where.append("zoom=?")
+                    args.append(zoom_i)
+                if slot_i is not None:
+                    where.append("slot_id=?")
+                    args.append(slot_i)
+                if year_filter is not None:
+                    where.append("year=?")
+                    args.append(year_filter)
+
+                w = " AND ".join(where)
+                if w:
+                    w = "WHERE " + w
+
+                n_hotmap = _try_exec(conn, f"DELETE FROM grid_hotmap {w};", tuple(args))
+                n_set = _try_exec(conn, f"DELETE FROM hotmap_taxa_set {w};", tuple(args))
+
+                logger.info("Deleted grid_hotmap rows: %d", n_hotmap)
+                logger.info("Deleted hotmap_taxa_set rows: %d", n_set)
+
+            # ------------- DERIVED ZOOMS -------------
+            if do_derived:
+                where = []
+                args = []
+
+                # Keep base zoom
+                where.append("zoom!=?")
+                args.append(keep_zoom)
+
+                if slot_i is not None:
+                    where.append("slot_id=?")
+                    args.append(slot_i)
+
+                if year_filter is not None:
+                    where.append("year=?")
+                    args.append(year_filter)
+
+                w = " AND ".join(where)
+                if w:
+                    w = "WHERE " + w
+
+                n_grid = _try_exec(conn, f"DELETE FROM taxon_grid {w};", tuple(args))
+                n_state = _try_exec(conn, f"DELETE FROM taxon_layer_state {w};", tuple(args))
+
+                logger.info("Deleted derived taxon_grid rows: %d", n_grid)
+                logger.info("Deleted derived taxon_layer_state rows: %d", n_state)
+
+            conn.commit()
+            
         finally:
             conn.close()
 
