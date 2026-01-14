@@ -466,7 +466,7 @@ def make_app() -> Flask:
                                 # Slot 1..48: seasonal bounds for that year
                                 extra = _extra_filter_for_slot_year(s, yr)
 
-                            payload_y = client.geogrid_aggregation([taxon_id], zoom=base_zoom, extra_filter=extra)
+                            payload_y = client.geogrid_aggregation_resilient([taxon_id], zoom=base_zoom,extra_filter=extra)
                             grid_cells_y = payload_y.get("gridCells") or []
                             sha_y = stable_gridcells_hash(payload_y)
                             

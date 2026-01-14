@@ -174,7 +174,17 @@ def main() -> int:
 
 
             logger.info("Fetching GeoGridAggregation: taxon_id=%d zoom=%d", taxon_id, base_zoom)
-            payload = client.geogrid_aggregation([taxon_id], zoom=base_zoom)
+
+            sweden_bbox = {
+                "geographics": {
+                    "boundingBox": {
+                    "topLeft": {"latitude": 69.2, "longitude": 10.0},
+                        "bottomRight": {"latitude": 55.0, "longitude": 25.0},
+                    }
+                }
+            }
+            payload = client.geogrid_aggregation_resilient([taxon_id], zoom=base_zoom, extra_filter=sweden_bbox)
+
             
             grid_cells = payload.get("gridCells") or []
             base_sha = stable_gridcells_hash(payload)
