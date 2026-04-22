@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useMemo, useRef } from "react";
-import maplibregl, { Map, GeoJSONSource, MapMouseEvent, Popup } from "maplibre-gl";
+import maplibregl, { GeoJSONSource, Map, MapMouseEvent, Popup } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 type Props = {
@@ -30,15 +30,7 @@ function apiUrl(apiBase: string, path: string) {
   return new URL(path, base).toString();
 }
 
-export function MapView({
-  apiBase,
-  zoom,
-  slotId,
-  slotIds,
-  selected,
-  fitRequestId,
-  onCellClick,
-}: Props) {
+export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId, onCellClick }: Props) {
   const mapRef = useRef<Map | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -54,10 +46,10 @@ export function MapView({
     const features = geo?.features;
     if (!Array.isArray(features) || features.length === 0) return;
 
-    let minLon = Infinity,
-      minLat = Infinity,
-      maxLon = -Infinity,
-      maxLat = -Infinity;
+    let minLon = Infinity;
+    let minLat = Infinity;
+    let maxLon = -Infinity;
+    let maxLat = -Infinity;
 
     for (const f of features) {
       const ring = f?.geometry?.coordinates?.[0];
@@ -99,24 +91,22 @@ export function MapView({
   const layerLine = "hotmap-line";
   const layerSelected = "hotmap-selected";
 
-  // IMPORTANT: choose the correct endpoint (window vs single slot)
   const hotmapUrl = useMemo(() => {
     const hasWindow = Array.isArray(slotIds) && slotIds.length > 0;
 
     if (hasWindow) {
       const u = new URL(apiUrl(apiBase, "/api/hotmap_window"));
       u.searchParams.set("zoom", String(zoom));
-      u.searchParams.set("slot_ids", slotIds!.join(","));
-      return u.toString();
-    } else {
-      const u = new URL(apiUrl(apiBase, "/api/hotmap"));
-      u.searchParams.set("zoom", String(zoom));
-      u.searchParams.set("slot_id", String(slotId));
+      u.searchParams.set("slot_ids", slotIds.join(","));
       return u.toString();
     }
+
+    const u = new URL(apiUrl(apiBase, "/api/hotmap"));
+    u.searchParams.set("zoom", String(zoom));
+    u.searchParams.set("slot_id", String(slotId));
+    return u.toString();
   }, [apiBase, zoom, slotId, slotIds]);
 
-  // Create map once
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -251,8 +241,6 @@ export function MapView({
         const p = f.properties || {};
         if (p.x == null || p.y == null) return;
 
-        // NOTE: for window responses, slot_id in properties might be 0 or missing.
-        // We still pass through something stable to App; App can decide which taxa endpoint to use.
         onCellClickRef.current({
           x: Number(p.x),
           y: Number(p.y),
@@ -261,17 +249,19 @@ export function MapView({
         });
       });
 
-      // Fetch once immediately
       void (async () => {
         try {
           const res = await fetch(hotmapUrl);
-          const geo = await res.json();
-          if (!res.ok) return;
+          const text = await res.text();
+          if (!res.ok) {
+            throw new Error(`Hotmap HTTP ${res.status}: ${text.slice(0, 300)}`);
+          }
+          const geo = JSON.parse(text);
           const src = map.getSource(sourceId) as GeoJSONSource | undefined;
           if (src) src.setData(geo);
           lastGeoRef.current = geo;
-        } catch {
-          // ignore
+        } catch (err) {
+          console.error("Failed to load initial hotmap", err);
         }
       })();
 
@@ -288,7 +278,6 @@ export function MapView({
     };
   }, [apiBase, hotmapUrl]);
 
-  // Refresh hotmap whenever url changes
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -302,20 +291,24 @@ export function MapView({
     (async () => {
       try {
         const res = await fetch(hotmapUrl, { signal: ac.signal });
-        const geo = await res.json();
-        if (!res.ok) return;
+        const text = await res.text();
+        if (!res.ok) {
+          throw new Error(`Hotmap HTTP ${res.status}: ${text.slice(0, 300)}`);
+        }
+        const geo = JSON.parse(text);
         src.setData(geo);
         lastGeoRef.current = geo;
         console.log("Hotmap loaded", { zoom, slotId, slotIds, features: geo?.features?.length });
-      } catch {
-        // ignore
+      } catch (err) {
+        if (!ac.signal.aborted) {
+          console.error("Failed to load hotmap", err);
+        }
       }
     })();
 
     return () => ac.abort();
   }, [hotmapUrl, zoom, slotId, slotIds]);
 
-  // Update selected highlight filter
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -333,7 +326,6 @@ export function MapView({
     ]);
   }, [selected]);
 
-  // Fit map when requested
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;

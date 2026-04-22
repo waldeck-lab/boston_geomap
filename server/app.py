@@ -24,6 +24,14 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from typing import Any
+from pathlib import Path                                                                                                 
+from typing import Any, Callable, Optional                                                                               
+from dataclasses import dataclass, field                                                                                 
+from copy import deepcopy                                                                                                
+from datetime import datetime, timezone                                                                                  
+import time                                                                                                              
+import uuid                                                                                                              
+import traceback
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -45,16 +53,353 @@ from geomap.distance import haversine_km, distance_weight_rational, distance_wei
 from geomap.storage import YEAR_MAX, YEAR_MIN, YEAR_ALL
 from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
 
-
-import threading
-BUILD_LOCK = threading.Lock()
-
+import threading                                                                                                         
 import logging
 logger = logging.getLogger("geomap-server")
 
 ZOOM_DEFAULT = 15  # server default if client doesn't send zooms
 
 from werkzeug.exceptions import BadRequest, HTTPException
+
+class CancelledJobError(RuntimeError):
+    pass
+
+
+def _utc_now_ts() -> float:
+    return time.time()
+
+
+def _utc_now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _iso_or_none(ts: Optional[float]) -> Optional[str]:
+    if ts is None:
+        return None
+    return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+@dataclass
+class JobState:
+    job_id: str
+    kind: str
+    status: str = "queued"  # queued|running|done|failed|cancelled
+    phase: str = "planning"
+    current_step: str = ""
+    total_steps: int = 0
+    completed_steps: int = 0
+    created_at: float = field(default_factory=_utc_now_ts)
+    started_at: Optional[float] = None
+    finished_at: Optional[float] = None
+    updated_at: float = field(default_factory=_utc_now_ts)
+    error: Optional[str] = None
+    traceback_text: Optional[str] = None
+    warnings: list[str] = field(default_factory=list)
+    summary: dict[str, Any] = field(default_factory=dict)
+    spec: dict[str, Any] = field(default_factory=dict)
+    cancel_requested: bool = False
+
+class JobManager:
+    def __init__(self) -> None:
+        self._state_lock = threading.RLock()
+        self._write_lock = threading.Lock()
+        self._jobs: dict[str, JobState] = {}
+        self._current_job_id: Optional[str] = None
+        self._last_finished_job_id: Optional[str] = None
+
+    def busy(self) -> bool:
+        with self._state_lock:
+            return self._current_job_id is not None
+
+    def current_job_id(self) -> Optional[str]:
+        with self._state_lock:
+            return self._current_job_id
+
+    def _snapshot(self, job: JobState) -> dict[str, Any]:
+        eta_seconds: Optional[int] = None
+        progress_pct = 0.0
+
+        if job.total_steps > 0:
+            progress_pct = round((job.completed_steps / job.total_steps) * 100.0, 2)
+
+        if job.started_at and job.completed_steps > 0 and job.status == "running":
+            elapsed = max(_utc_now_ts() - job.started_at, 0.001)
+            sec_per_step = elapsed / max(job.completed_steps, 1)
+            remaining = max(job.total_steps - job.completed_steps, 0)
+            eta_seconds = int(sec_per_step * remaining)
+
+        return {
+            "job_id": job.job_id,
+            "kind": job.kind,
+            "status": job.status,
+            "phase": job.phase,
+            "current_step": job.current_step,
+            "total_steps": job.total_steps,
+            "completed_steps": job.completed_steps,
+            "progress_pct": progress_pct,
+            "eta_seconds": eta_seconds,
+            "created_at": _iso_or_none(job.created_at),
+            "started_at": _iso_or_none(job.started_at),
+            "finished_at": _iso_or_none(job.finished_at),
+            "updated_at": _iso_or_none(job.updated_at),
+            "error": job.error,
+            "warnings": list(job.warnings),
+            "summary": deepcopy(job.summary),
+            "spec": deepcopy(job.spec),
+            "cancel_requested": bool(job.cancel_requested),
+            "traceback_text": job.traceback_text,
+        }
+
+    def get_job(self, job_id: str) -> Optional[dict[str, Any]]:
+        with self._state_lock:
+            job = self._jobs.get(job_id)
+            return None if job is None else self._snapshot(job)
+
+    def get_status(self) -> dict[str, Any]:
+        with self._state_lock:
+            current = self._jobs.get(self._current_job_id) if self._current_job_id else None
+            last_finished = self._jobs.get(self._last_finished_job_id) if self._last_finished_job_id else None
+            return {
+                "ok": True,
+                "busy": current is not None,
+                "current_job": None if current is None else self._snapshot(current),
+                "last_job": None if last_finished is None else self._snapshot(last_finished),
+            }
+
+    def start_job(self, *, kind: str, spec: dict[str, Any], target: Callable[[str], dict[str, Any]]) -> JobState:
+        if not self._write_lock.acquire(blocking=False):
+            raise RuntimeError("busy")
+
+        job = JobState(
+            job_id=f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}",
+            kind=kind,
+            spec=deepcopy(spec),
+        )
+
+        with self._state_lock:
+            self._jobs[job.job_id] = job
+            self._current_job_id = job.job_id
+
+        logger.info(
+            "job %s queued kind=%s spec=%s",
+            job.job_id,
+            job.kind,
+            _job_log_spec_summary(job.spec),
+        )
+
+        def runner() -> None:
+            self.mark_running(job.job_id)
+            try:
+                summary = target(job.job_id)
+                self.mark_done(job.job_id, summary=summary)
+            except CancelledJobError:
+                self.mark_cancelled(job.job_id)
+            except Exception as exc:
+                self.mark_failed(job.job_id, exc)
+            finally:
+                with self._state_lock:
+                    if self._current_job_id == job.job_id:
+                        self._current_job_id = None
+                    self._last_finished_job_id = job.job_id
+                self._write_lock.release()
+
+        t = threading.Thread(target=runner, name=f"geomap-job-{job.job_id}", daemon=True)
+        t.start()
+        return job
+
+    def mark_running(self, job_id: str) -> None:
+        with self._state_lock:
+            job = self._jobs[job_id]
+            now = _utc_now_ts()
+            job.status = "running"
+            job.started_at = now
+            job.updated_at = now
+
+        logger.info(
+            "job %s started kind=%s spec=%s",
+            job_id,
+            job.kind,
+            _job_log_spec_summary(job.spec),
+        )
+
+    def set_total_steps(self, job_id: str, total_steps: int) -> None:
+        with self._state_lock:
+            job = self._jobs[job_id]
+            job.total_steps = max(int(total_steps), 0)
+            job.updated_at = _utc_now_ts()
+
+    def set_phase(self, job_id: str, phase: str, current_step: str = "") -> None:
+        with self._state_lock:
+            job = self._jobs[job_id]
+            phase_changed = (job.phase != phase)
+            step_changed = bool(current_step and current_step != job.current_step)
+
+            job.phase = phase
+            if current_step:
+                job.current_step = current_step
+            job.updated_at = _utc_now_ts()
+
+            completed_steps = job.completed_steps
+            total_steps = job.total_steps
+            step_value = job.current_step
+
+        if phase_changed:
+            logger.info(
+                "job %s phase=%s completed=%d/%d",
+                job_id,
+                phase,
+                completed_steps,
+                total_steps,
+            )
+
+        if step_changed:
+            logger.info("job %s step=%s", job_id, step_value)
+
+    def advance(self, job_id: str, *, phase: str, current_step: str, inc: int = 1) -> None:
+        with self._state_lock:
+            job = self._jobs[job_id]
+            phase_changed = (job.phase != phase)
+            step_changed = bool(current_step and current_step != job.current_step)
+
+            job.phase = phase
+            job.current_step = current_step
+            job.completed_steps = min(job.total_steps, job.completed_steps + max(int(inc), 0))
+            job.updated_at = _utc_now_ts()
+
+            completed_steps = job.completed_steps
+            total_steps = job.total_steps
+
+        if phase_changed:
+            logger.info(
+                "job %s phase=%s completed=%d/%d",
+                job_id,
+                phase,
+                completed_steps,
+                total_steps,
+            )
+
+        if step_changed:
+            logger.info("job %s step=%s", job_id, current_step)
+
+    def append_warning(self, job_id: str, warning: str) -> None:
+        with self._state_lock:
+            job = self._jobs[job_id]
+            job.warnings.append(warning)
+            job.updated_at = _utc_now_ts()
+
+        logger.warning("job %s warning=%s", job_id, warning)
+
+    def mark_done(self, job_id: str, *, summary: dict[str, Any]) -> None:
+        with self._state_lock:
+            job = self._jobs[job_id]
+            now = _utc_now_ts()
+            job.status = "done"
+            job.phase = "done"
+            job.current_step = "completed"
+            job.summary = deepcopy(summary)
+            job.finished_at = now
+            job.updated_at = now
+            if job.total_steps > 0:
+                job.completed_steps = job.total_steps
+
+            completed_steps = job.completed_steps
+            total_steps = job.total_steps
+
+        logger.info(
+            "job %s finished status=done completed=%d/%d summary=%s",
+            job_id,
+            completed_steps,
+            total_steps,
+            summary,
+        )
+
+    def mark_failed(self, job_id: str, exc: Exception) -> None:
+        tb = traceback.format_exc()
+        with self._state_lock:
+            job = self._jobs[job_id]
+            now = _utc_now_ts()
+            job.status = "failed"
+            job.error = str(exc)
+            job.traceback_text = tb
+            job.finished_at = now
+            job.updated_at = now
+
+            phase = job.phase
+            current_step = job.current_step
+            completed_steps = job.completed_steps
+            total_steps = job.total_steps
+            spec = deepcopy(job.spec)
+
+        logger.exception(
+            "job %s failed kind=%s phase=%s step=%s completed=%d/%d spec=%s",
+            job_id,
+            job.kind,
+            phase,
+            current_step,
+            completed_steps,
+            total_steps,
+            _job_log_spec_summary(spec),
+        )
+
+    def mark_cancelled(self, job_id: str) -> None:
+        with self._state_lock:
+            job = self._jobs[job_id]
+            now = _utc_now_ts()
+            job.status = "cancelled"
+            job.finished_at = now
+            job.updated_at = now
+
+            phase = job.phase
+            current_step = job.current_step
+            completed_steps = job.completed_steps
+            total_steps = job.total_steps
+
+        logger.warning(
+            "job %s cancelled phase=%s step=%s completed=%d/%d",
+            job_id,
+            phase,
+            current_step,
+            completed_steps,
+            total_steps,
+        )
+
+    def cancel(self, job_id: str) -> bool:
+        with self._state_lock:
+            job = self._jobs.get(job_id)
+            if job is None:
+                return False
+            if job.status not in {"queued", "running"}:
+                return False
+            job.cancel_requested = True
+            job.updated_at = _utc_now_ts()
+
+        logger.warning("job %s cancel requested", job_id)
+        return True
+
+    def ensure_not_cancelled(self, job_id: str) -> None:
+        with self._state_lock:
+            job = self._jobs[job_id]
+            if job.cancel_requested:
+                raise CancelledJobError(f"Job {job_id} cancelled")
+
+JOB_MANAGER = JobManager()
+
+
+def _job_log_spec_summary(spec: dict) -> dict:
+    return {
+        "year_from": spec.get("year_from"),
+        "year_to": spec.get("year_to"),
+        "fetch_slots": spec.get("fetch_slots") or spec.get("slot_ids"),
+        "final_slots": spec.get("final_slots"),
+        "zooms": spec.get("zooms"),
+        "force": spec.get("force"),
+        "include_slot0": spec.get("include_slot0"),
+        "include_all_years": spec.get("include_all_years"),
+        "n": spec.get("n"),
+        "alpha": spec.get("alpha"),
+        "beta": spec.get("beta"),
+    }
+
 
 def parse_year(value: Any, *, name: str) -> int:
     try:
@@ -95,6 +440,29 @@ def parse_year_range_args(args) -> tuple[int, int]:
     if yf_i > yt_i:
         yf_i, yt_i = yt_i, yf_i
     return (yf_i, yt_i)
+
+
+
+def parse_year_range_body(body: dict[str, Any], *, default_from: Optional[int] = None, default_to: Optional[int] = None) -> tuple[int, int]:
+    yf = body.get("year_from", default_from)
+    yt = body.get("year_to", default_to)
+
+    if yf is None and yt is None:
+        return (YEAR_ALL, YEAR_ALL)
+    if yf is None:
+        yf = yt
+    if yt is None:
+        yt = yf
+
+    yf_i = parse_year(yf, name="year_from")
+    yt_i = parse_year(yt, name="year_to")
+
+    if yf_i == YEAR_ALL or yt_i == YEAR_ALL:
+        return (YEAR_ALL, YEAR_ALL)
+    if yf_i > yt_i:
+        yf_i, yt_i = yt_i, yf_i
+    return (yf_i, yt_i)
+
 
 def parse_slot_ids_arg(value: Any, *, name: str = "slot_ids") -> list[int]:
     """
@@ -237,7 +605,6 @@ def make_app() -> Flask:
     CORS(app)  # keep it simple for local dev
 
     cfg = Config(repo_root=REPO_ROOT)
-
     logger.info("OVE_BASE_DIR=%s", os.getenv("OVE_BASE_DIR", ""))
     logger.info("OVE_STAGE_DIR=%s", os.getenv("OVE_STAGE_DIR", ""))
     logger.info("Resolved logs_dir=%s", cfg.logs_dir)
@@ -272,291 +639,392 @@ def make_app() -> Flask:
     def health():
         return jsonify({"ok": True})
 
-    @app.post("/api/pipeline/build")
-    def pipeline_build():
-        if not BUILD_LOCK.acquire(blocking=False):
-            return jsonify({"ok": False, "code": "busy", "error": "Build already running"}), 409
+    from geomap.timeslots import slot_bounds
 
-        try:
-            from datetime import datetime, timezone
-            from geomap.timeslots import slot_bounds
+    def _iso_local_day_bounds(year: int, month: int, start_day: int, end_day: int) -> tuple[str, str]:
+        start = datetime(year, month, start_day, 0, 0, 0, tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
+        end = datetime(year, month, end_day, 23, 59, 59, tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
+        return start, end
 
-            body = request.get_json(force=True) or {}
+    def _extra_filter_for_slot_year(slot: int, year: int) -> dict[str, Any]:
+        m, q = ((slot - 1) // 4 + 1), ((slot - 1) % 4 + 1)
+        ts = slot_bounds(m, q, year_for_days=year)
+        start_iso, end_iso = _iso_local_day_bounds(year, m, ts.start_day, ts.end_day)
+        return {
+            "date": {
+                "startDate": start_iso,
+                "endDate": end_iso,
+                "dateFilterType": "BetweenStartDateAndEndDate",
+            }
+        }
 
-            # Backwards compatible inputs
-            slot_id = parse_slot_id(body.get("slot_id", SLOT_ALL))  # single slot (0..48)
+    def _merge_payloads_gridcells(payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        acc: dict[tuple[int, int, int], dict[str, Any]] = {}
+        for p in payloads:
+            for c in (p.get("gridCells") or []):
+                x = int(c.get("x"))
+                y = int(c.get("y"))
+                z = int(c.get("zoom"))
+                key = (x, y, z)
 
-            # New input: list of slots to build (preferred when you want all 1..48)
-            slot_ids_raw = body.get("slot_ids", None)
-            if slot_ids_raw is None:
-                slots_to_build = [slot_id]
-            else:
-                # Accept list or "1,2,3" string
-                if isinstance(slot_ids_raw, str):
-                    parts = [p.strip() for p in slot_ids_raw.split(",") if p.strip()]
-                    slots_to_build = [parse_slot_id(p, name="slot_ids") for p in parts]
-                elif isinstance(slot_ids_raw, (list, tuple)):
-                    slots_to_build = [parse_slot_id(s, name="slot_ids") for s in slot_ids_raw]
-                else:
-                    slots_to_build = [parse_slot_id(slot_ids_raw, name="slot_ids")]
+                obs = int(c.get("observationsCount") or 0)
+                taxa = int(c.get("taxaCount") or 0)
+                bb = c.get("boundingBox") or {}
+                tl = bb.get("topLeft") or {}
+                br = bb.get("bottomRight") or {}
 
-                # unique + sorted (0 first if present)
-                slots_to_build = sorted(set(slots_to_build), key=lambda s: (s != 0, s))
+                top_lat = float(tl.get("latitude"))
+                left_lon = float(tl.get("longitude"))
+                bot_lat = float(br.get("latitude"))
+                right_lon = float(br.get("longitude"))
 
-            zooms = parse_zooms(body.get("zooms", [ZOOM_DEFAULT]))
-            base_zoom = zooms[0]
-
-            n = int(body.get("n", 5))
-            alpha = float(body.get("alpha", cfg.hotmap_alpha))
-            beta = float(body.get("beta", cfg.hotmap_beta))
-            force = bool(body.get("force", False))
-
-            # Seasonal build settings (for slots 1..48)
-            # “All years but seasonal window” by default
-            this_year = datetime.now(timezone.utc).year
-            year_from = int(body.get("year_from", 2000))
-            year_to = int(body.get("year_to", this_year))
-            if year_to < year_from:
-                year_from, year_to = year_to, year_from
-
-            if not cfg.subscription_key:
-                return jsonify({"ok": False, "error": "Missing ARTDATABANKEN_SUBSCRIPTION_KEY"}), 500
-            if not cfg.authorization:
-                return jsonify({"ok": False, "error": "Missing ARTDATABANKEN_AUTHORIZATION"}), 500
-
-            taxa_rows = read_taxa_rows(cfg.missing_species_csv, n)
-            taxon_ids = [t["taxon_id"] for t in taxa_rows]
-            if not taxon_ids:
-                return jsonify({"ok": False, "error": "No taxon ids found in CSV"}), 400
-
-            def _iso_local_day_bounds(year: int, month: int, start_day: int, end_day: int) -> tuple[str, str]:
-                # Use ISO date-time strings; SOS says “If no timezone is specified, GMT+1 (CEST) is assumed”.
-                # We’ll include explicit UTC "Z" to be deterministic.
-                start = datetime(year, month, start_day, 0, 0, 0, tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
-                end = datetime(year, month, end_day, 23, 59, 59, tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
-                return start, end
-
-            def _extra_filter_for_slot_year(slot: int, year: int) -> dict[str, Any]:
-                # slot 0 = all-time, no filter
-                if slot == SLOT_ALL:
-                    return {}
-
-                m, q = ((slot - 1) // 4 + 1), ((slot - 1) % 4 + 1)
-                ts = slot_bounds(m, q, year_for_days=year)  # correct month-length (Feb leap years, etc.)
-                start_iso, end_iso = _iso_local_day_bounds(year, m, ts.start_day, ts.end_day)
-
-                return {
-                    "date": {
-                        "startDate": start_iso,
-                        "endDate": end_iso,
-                        "dateFilterType": "BetweenStartDateAndEndDate",
+                if key not in acc:
+                    acc[key] = {
+                        "x": x,
+                        "y": y,
+                        "zoom": z,
+                        "observationsCount": obs,
+                        "taxaCount": taxa,
+                        "boundingBox": {
+                            "topLeft": {"latitude": top_lat, "longitude": left_lon},
+                            "bottomRight": {"latitude": bot_lat, "longitude": right_lon},
+                        },
                     }
+                    continue
+
+                a = acc[key]
+                a["observationsCount"] = int(a.get("observationsCount") or 0) + obs
+                a["taxaCount"] = max(int(a.get("taxaCount") or 0), taxa)
+
+                abb = a.get("boundingBox") or {}
+                atl = abb.get("topLeft") or {}
+                abr = abb.get("bottomRight") or {}
+
+                atl_lat = float(atl.get("latitude"))
+                atl_lon = float(atl.get("longitude"))
+                abr_lat = float(abr.get("latitude"))
+                abr_lon = float(abr.get("longitude"))
+
+                a["boundingBox"] = {
+                    "topLeft": {"latitude": max(atl_lat, top_lat), "longitude": min(atl_lon, left_lon)},
+                    "bottomRight": {"latitude": min(abr_lat, bot_lat), "longitude": max(abr_lon, right_lon)},
                 }
 
-            def _merge_payloads_gridcells(payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:
-                """
-                Merge multiple GeoGridAggregation payloads by (x,y,zoom).
-                - observationsCount: sum
-                - taxaCount: max (safe-ish; SOS taxaCount meaning can vary; max avoids under-reporting)
-                - boundingBox: union (min/max)
-                """
-                acc: dict[tuple[int, int, int], dict[str, Any]] = {}
+        out = list(acc.values())
+        out.sort(key=lambda c: (int(c["x"]), int(c["y"])))
+        return out
 
-                for p in payloads:
-                    for c in (p.get("gridCells") or []):
-                        x = int(c.get("x"))
-                        y = int(c.get("y"))
-                        z = int(c.get("zoom"))
-                        key = (x, y, z)
 
-                        obs = int(c.get("observationsCount") or 0)
-                        taxa = int(c.get("taxaCount") or 0)
-
-                        bb = c.get("boundingBox") or {}
-                        tl = bb.get("topLeft") or {}
-                        br = bb.get("bottomRight") or {}
-
-                        top_lat = float(tl.get("latitude"))
-                        left_lon = float(tl.get("longitude"))
-                        bot_lat = float(br.get("latitude"))
-                        right_lon = float(br.get("longitude"))
-
-                        if key not in acc:
-                            acc[key] = {
-                                "x": x,
-                                "y": y,
-                                "zoom": z,
-                                "observationsCount": obs,
-                                "taxaCount": taxa,
-                                "boundingBox": {
-                                    "topLeft": {"latitude": top_lat, "longitude": left_lon},
-                                    "bottomRight": {"latitude": bot_lat, "longitude": right_lon},
-                                },
-                            }
-                        else:
-                            a = acc[key]
-                            a["observationsCount"] = int(a.get("observationsCount") or 0) + obs
-                            a["taxaCount"] = max(int(a.get("taxaCount") or 0), taxa)
-
-                            abb = a.get("boundingBox") or {}
-                            atl = abb.get("topLeft") or {}
-                            abr = abb.get("bottomRight") or {}
-
-                            atl_lat = float(atl.get("latitude"))
-                            atl_lon = float(atl.get("longitude"))
-                            abr_lat = float(abr.get("latitude"))
-                            abr_lon = float(abr.get("longitude"))
-
-                            # Union of bounds
-                            new_top_lat = max(atl_lat, top_lat)
-                            new_left_lon = min(atl_lon, left_lon)
-                            new_bot_lat = min(abr_lat, bot_lat)
-                            new_right_lon = max(abr_lon, right_lon)
-
-                            a["boundingBox"] = {
-                                "topLeft": {"latitude": new_top_lat, "longitude": new_left_lon},
-                                "bottomRight": {"latitude": new_bot_lat, "longitude": new_right_lon},
-                            }
-
-                # stable ordering
-                out = list(acc.values())
-                out.sort(key=lambda c: (int(c["x"]), int(c["y"])))
-                return out
-
-            conn = storage.connect(cfg.geomap_db_path)
-            conn.isolation_level = None  # autocommit; avoids lingering read txns
-
-            try:
-                storage.ensure_schema(conn)
-                logger.info(
-                    "pipeline_build slots=%s zooms=%s base_zoom=%d years=%d..%d force=%s",
-                    ",".join(map(str, slots_to_build)),
-                    ",".join(map(str, zooms)),
+    def _store_payload(
+            conn: sqlite3.Connection,
+            *,
+            taxon_id: int,
+            zooms: list[int],
+            year: int,
+            slot_id: int,
+            payload: dict[str, Any],
+            force: bool,
+    ) -> None:
+        base_zoom = zooms[0]
+        grid_cells = payload.get("gridCells") or []
+        sha = stable_gridcells_hash(payload)
+        
+        prev = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id, year=year)
+        unchanged = (prev is not None and prev[1] == sha)
+        
+        if (not unchanged) or force:
+            with conn:
+                storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells, year=year)
+                storage.upsert_layer_state(
+                    conn,
+                    taxon_id,
                     base_zoom,
-                    year_from,
-                    year_to,
-                    str(force),
+                    slot_id,
+                    sha,
+                    len(grid_cells),
+                    year=year,
                 )
 
-                throttle_state: dict[str, float] = {}
+        src_zoom = base_zoom
+        src_sha = sha
+        for dst_zoom in zooms[1:]:
+            with conn:
+                storage.materialize_parent_zoom_from_child(
+                    conn,
+                    taxon_id=taxon_id,
+                    slot_id=slot_id,
+                    year=year,
+                    src_zoom=src_zoom,
+                    dst_zoom=dst_zoom,
+                    src_sha=src_sha,
+                )
+            src_zoom = dst_zoom
 
-                # Build each requested slot
-                for s in slots_to_build:
+    def _normalize_rebuild_spec(body: dict[str, Any], *, default_n: int, default_all_slots: bool) -> dict[str, Any]:
+        this_year = datetime.now(timezone.utc).year
+        year_from, year_to = parse_year_range_body(body, default_from=2000, default_to=this_year)
+        if year_from == YEAR_ALL or year_to == YEAR_ALL:
+            raise BadRequest(description="jobs/rebuild requires concrete year_from/year_to, not 0")
 
-                    # For each slot we build:
-                    #  1) year-specific layers for yr in [year_from..year_to]
-                    #  2) an all-years aggregate (year=0) by merging the same year-specific payloads
-                    for taxon_id in taxon_ids:
+        slots_raw = body.get("slot_ids", body.get("slots", None))
+        if slots_raw is None:
+            slot_single = body.get("slot_id", None)
+            if slot_single is None:
+                fetch_slots = list(range(1, SLOT_MAX + 1)) if default_all_slots else [1]
+            else:
+                slot_single = parse_slot_id(slot_single, name="slot_id")
+                fetch_slots = list(range(1, SLOT_MAX + 1)) if slot_single == SLOT_ALL else [slot_single]
+        else:
+            parsed_slots = parse_slot_ids_arg(slots_raw, name="slot_ids")
+            fetch_slots = list(range(1, SLOT_MAX + 1)) if parsed_slots == [SLOT_ALL] else parsed_slots
+
+        if SLOT_ALL in fetch_slots:
+            raise BadRequest(description="slot_id 0 is derived; pass slots 1..48 and set include_slot0=true")
+
+        include_slot0 = bool(body.get("include_slot0", True))
+        include_all_years = bool(body.get("include_all_years", True))
+        zooms = parse_zooms(body.get("zooms", [ZOOM_DEFAULT]))
+
+        spec = {
+            "fetch_slots": sorted(set(fetch_slots)),
+            "final_slots": sorted(set(fetch_slots + ([SLOT_ALL] if include_slot0 else []))),
+            "zooms": zooms,
+            "base_zoom": zooms[0],
+            "n": int(body.get("n", default_n)),
+            "alpha": float(body.get("alpha", cfg.hotmap_alpha)),
+            "beta": float(body.get("beta", cfg.hotmap_beta)),
+            "force": bool(body.get("force", False)),
+            "year_from": int(year_from),
+            "year_to": int(year_to),
+            "include_slot0": include_slot0,
+            "include_all_years": include_all_years,
+        }
+        return spec
+
+    def _run_rebuild_job(job_id: str, spec: dict[str, Any]) -> dict[str, Any]:
+        if not cfg.subscription_key:
+            raise RuntimeError("Missing ARTDATABANKEN_SUBSCRIPTION_KEY")
+        if not cfg.authorization:
+            raise RuntimeError("Missing ARTDATABANKEN_AUTHORIZATION")
+
+        years = list(range(spec["year_from"], spec["year_to"] + 1))
+        fetch_slots = list(spec["fetch_slots"])
+        final_slots = list(spec["final_slots"])
+        zooms = list(spec["zooms"])
+
+        taxa_rows = read_taxa_rows(cfg.missing_species_csv, int(spec["n"]))
+        taxon_ids = [int(t["taxon_id"]) for t in taxa_rows]
+        if not taxon_ids:
+            raise RuntimeError("No taxon ids found in CSV")
+
+        fetch_steps = len(taxon_ids) * len(years) * len(fetch_slots)
+        derive_slot0_steps = len(taxon_ids) * len(years) if spec["include_slot0"] else 0
+        derive_all_years_steps = len(taxon_ids) * len(final_slots) if spec["include_all_years"] else 0
+        rebuild_years = list(years) + ([YEAR_ALL] if spec["include_all_years"] else [])
+        rebuild_steps = len(zooms) * len(rebuild_years) * len(final_slots)
+        total_steps = fetch_steps + derive_slot0_steps + derive_all_years_steps + rebuild_steps
+
+        JOB_MANAGER.set_total_steps(job_id, total_steps)
+        JOB_MANAGER.set_phase(job_id, "planning", current_step=f"taxa={len(taxon_ids)} years={len(years)} slots={len(fetch_slots)}")
+
+        throttle_state: dict[str, float] = {}
+        conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None
+        try:
+            storage.ensure_schema(conn)
+
+            with conn:
+                storage.upsert_taxon_dim(
+                    conn,
+                    [(t["taxon_id"], t["scientific_name"], t["swedish_name"]) for t in taxa_rows],
+                )
+
+            logger.info(
+                "job=%s rebuild start years=%d..%d fetch_slots=%s final_slots=%s zooms=%s taxa=%d force=%s",
+                job_id,
+                spec["year_from"],
+                spec["year_to"],
+                ",".join(map(str, fetch_slots)),
+                ",".join(map(str, final_slots)),
+                ",".join(map(str, zooms)),
+                len(taxon_ids),
+                str(spec["force"]),
+            )
+
+            for taxon_id in taxon_ids:
+                JOB_MANAGER.ensure_not_cancelled(job_id)
+                per_slot_payloads: dict[int, list[dict[str, Any]]] = {s: [] for s in final_slots}
+
+                for yr in years:
+                    JOB_MANAGER.ensure_not_cancelled(job_id)
+                    yearly_slot_payloads: list[dict[str, Any]] = []
+
+                    for slot_id in fetch_slots:
+                        JOB_MANAGER.ensure_not_cancelled(job_id)
                         throttle(2.0, throttle_state)
-
-                        # Fetch per-year payloads and write year buckets
-                        yearly_payloads: list[dict[str, Any]] = []
-                        
-                        for yr in range(year_from, year_to + 1):
-                            if s == SLOT_ALL:
-                                # Slot 0: constrain to that calendar year
-                                extra = {
-                                    "date": {
-                                        "startDate": f"{yr}-01-01T00:00:00Z",
-                                        "endDate": f"{yr}-12-31T23:59:59Z",
-                                        "dateFilterType": "BetweenStartDateAndEndDate",
-                                    }
-                                }
-                            else:
-                                # Slot 1..48: seasonal bounds for that year
-                                extra = _extra_filter_for_slot_year(s, yr)
-
-                            payload_y = client.geogrid_aggregation_resilient([taxon_id], zoom=base_zoom,extra_filter=extra)
-                            grid_cells_y = payload_y.get("gridCells") or []
-                            sha_y = stable_gridcells_hash(payload_y)
-                            
-                            yearly_payloads.append(payload_y)
-                            
-                            prev_y = storage.get_layer_state(conn, taxon_id, base_zoom, yr, s)
-                            unchanged_y = (prev_y is not None and prev_y[1] == sha_y)
-
-                            if (not unchanged_y) or force:
-                                with conn:
-                                    storage.replace_taxon_grid(conn, taxon_id, base_zoom, yr, s, grid_cells_y)
-                                    storage.upsert_layer_state(conn, taxon_id, base_zoom, yr, s, sha_y, len(grid_cells_y))
-
-                            # Derived zooms for this (taxon, slot, year)
-                            src_zoom = base_zoom
-                            src_sha = sha_y
-                            for dst_zoom in zooms[1:]:
-                                with conn:
-                                    storage.materialize_parent_zoom_from_child(
-                                        conn,
-                                        taxon_id=taxon_id,
-                                        slot_id=s,
-                                        year=yr,
-                                        src_zoom=src_zoom,
-                                        dst_zoom=dst_zoom,
-                                        src_sha=src_sha,
-                                    )
-                                    src_zoom = dst_zoom
-
-                        # Build / refresh all-years aggregate bucket year=0
-                        merged_cells = _merge_payloads_gridcells(yearly_payloads)
-                        merged_sha = stable_gridcells_hash({"gridCells": merged_cells})
-
-                        prev_all = storage.get_layer_state(conn, taxon_id, base_zoom, YEAR_ALL, s)
-                        unchanged_all = (prev_all is not None and prev_all[1] == merged_sha)
-
-                        if (not unchanged_all) or force:
-                            with conn:
-                                storage.replace_taxon_grid(conn, taxon_id, base_zoom, YEAR_ALL, s, merged_cells)
-                                storage.upsert_layer_state(conn, taxon_id, base_zoom, YEAR_ALL, s, merged_sha, len(merged_cells))
-
-                        # Derived zooms for (year=0)
-                        src_zoom = base_zoom
-                        src_sha = merged_sha
-                        for dst_zoom in zooms[1:]:
-                            with conn:
-                                storage.materialize_parent_zoom_from_child(
-                                    conn,
-                                    taxon_id=taxon_id,
-                                    slot_id=s,
-                                    year=YEAR_ALL,
-                                    src_zoom=src_zoom,
-                                    dst_zoom=dst_zoom,
-                                    src_sha=src_sha,
-                                )
-                            src_zoom = dst_zoom
-
-                    # Upsert taxon dim once per slot
-                    with conn:
-                        storage.upsert_taxon_dim(
+                        extra = _extra_filter_for_slot_year(slot_id, yr)
+                        payload = client.geogrid_aggregation_resilient([taxon_id], zoom=spec["base_zoom"], extra_filter=extra)
+                        _store_payload(
                             conn,
-                            [(t["taxon_id"], t["scientific_name"], t["swedish_name"]) for t in taxa_rows],
+                            taxon_id=taxon_id,
+                            zooms=zooms,
+                            year=yr,
+                            slot_id=slot_id,
+                            payload=payload,
+                            force=bool(spec["force"]),
+                        )
+                        per_slot_payloads[slot_id].append(payload)
+                        yearly_slot_payloads.append(payload)
+                        JOB_MANAGER.advance(
+                            job_id,
+                            phase="fetch_slots",
+                            current_step=f"taxon={taxon_id} year={yr} slot={slot_id}",
                         )
 
-                    # Rebuild hotmaps for each year bucket + all-years bucket
-                    for yr in list(range(year_from, year_to + 1)) + [YEAR_ALL]:
-                        for z in zooms:
-                            with conn:
-                                storage.rebuild_hotmap(conn, z, yr, s, taxon_ids, alpha=alpha, beta=beta)
-                
-                return jsonify(
-                    {
-                        "ok": True,
-                        "slots_built": slots_to_build,
-                        "zooms": zooms,
-                        "base_zoom": base_zoom,
-                        "n_taxa": len(taxon_ids),
-                        "alpha": alpha,
-                        "beta": beta,
-                        "year_from": year_from,
-                        "year_to": year_to,
-                    }
-                )
+                    if spec["include_slot0"]:
+                        merged_year_payload = {"gridCells": _merge_payloads_gridcells(yearly_slot_payloads)}
+                        _store_payload(
+                            conn,
+                            taxon_id=taxon_id,
+                            zooms=zooms,
+                            year=yr,
+                            slot_id=SLOT_ALL,
+                            payload=merged_year_payload,
+                            force=bool(spec["force"]),
+                        )
+                        per_slot_payloads[SLOT_ALL].append(merged_year_payload)
+                        JOB_MANAGER.advance(
+                            job_id,
+                            phase="derive_slot0_per_year",
+                            current_step=f"taxon={taxon_id} year={yr} slot=0",
+                        )
 
-            finally:
-                conn.close()
+                if spec["include_all_years"]:
+                    for slot_id in final_slots:
+                        JOB_MANAGER.ensure_not_cancelled(job_id)
+                        merged_all_payload = {"gridCells": _merge_payloads_gridcells(per_slot_payloads[slot_id])}
+                        _store_payload(
+                            conn,
+                            taxon_id=taxon_id,
+                            zooms=zooms,
+                            year=YEAR_ALL,
+                            slot_id=slot_id,
+                            payload=merged_all_payload,
+                            force=bool(spec["force"]),
+                        )
+                        JOB_MANAGER.advance(
+                            job_id,
+                            phase="derive_all_years",
+                            current_step=f"taxon={taxon_id} year=0 slot={slot_id}",
+                        )
 
+            for slot_id in final_slots:
+                for yr in rebuild_years:
+                    for z in zooms:
+                        JOB_MANAGER.ensure_not_cancelled(job_id)
+                        with conn:
+                            storage.rebuild_hotmap(conn, z, slot_id, taxon_ids, alpha=spec["alpha"], beta=spec["beta"], year=yr)
+                        JOB_MANAGER.advance(
+                            job_id,
+                            phase="rebuild_hotmaps",
+                            current_step=f"zoom={z} year={yr} slot={slot_id}",
+                        )
+            JOB_MANAGER.set_phase(job_id, "finalizing", current_step="writing summary")
+            summary = {
+                "ok": True,
+                "finished_at": _utc_now_iso(),
+                "n_taxa": len(taxon_ids),
+                "year_from": spec["year_from"],
+                "year_to": spec["year_to"],
+                "fetch_slots": fetch_slots,
+                "final_slots": final_slots,
+                "zooms": zooms,
+                "alpha": spec["alpha"],
+                "beta": spec["beta"],
+                "force": bool(spec["force"]),
+            }
+            logger.info("job=%s rebuild done summary=%s", job_id, summary)
+            return summary
         finally:
-            BUILD_LOCK.release()
+            conn.close()
 
+    @app.get("/api/jobs/status")
+    def jobs_status():
+        return jsonify(JOB_MANAGER.get_status())
+
+    @app.get("/api/jobs/<job_id>")
+    def jobs_get(job_id: str):
+        snap = JOB_MANAGER.get_job(job_id)
+        if snap is None:
+            return jsonify({"ok": False, "code": "not_found", "error": f"Unknown job_id: {job_id}"}), 404
+        return jsonify({"ok": True, "busy": JOB_MANAGER.busy(), "job": snap})
+
+    @app.post("/api/jobs/<job_id>/cancel")
+    def jobs_cancel(job_id: str):
+        ok = JOB_MANAGER.cancel(job_id)
+        if not ok:
+            snap = JOB_MANAGER.get_job(job_id)
+            if snap is None:
+                return jsonify({"ok": False, "code": "not_found", "error": f"Unknown job_id: {job_id}"}), 404
+            return jsonify({"ok": False, "code": "invalid_state", "error": f"Cannot cancel job in state={snap['status']}"}), 409
+        return jsonify({"ok": True, "job_id": job_id, "status": "cancelling"}), 202
+
+    @app.post("/api/jobs/rebuild")
+    def jobs_rebuild():
+        body = request.get_json(force=True) or {}
+        spec = _normalize_rebuild_spec(body, default_n=0, default_all_slots=True)
+        try:
+            job = JOB_MANAGER.start_job(
+                kind="rebuild",
+                spec=spec,
+                target=lambda job_id: _run_rebuild_job(job_id, spec),
+            )
+        except RuntimeError:
+            current = JOB_MANAGER.get_status().get("current_job")
+            return jsonify({
+                "ok": False,
+                "code": "busy",
+                "error": "A write job is already running",
+                "current_job": current,
+            }), 409
+
+        return jsonify({
+            "ok": True,
+            "job_id": job.job_id,
+            "status": "queued",
+            "status_url": f"/api/jobs/{job.job_id}",
+            "busy": True,
+            "spec": spec,
+        }), 202
+
+    @app.post("/api/pipeline/build")
+    def pipeline_build():
+        body = request.get_json(force=True) or {}
+        spec = _normalize_rebuild_spec(body, default_n=5, default_all_slots=True)
+        try:
+            job = JOB_MANAGER.start_job(
+                kind="rebuild",
+                spec=spec,
+                target=lambda job_id: _run_rebuild_job(job_id, spec),
+            )
+        except RuntimeError:
+            current = JOB_MANAGER.get_status().get("current_job")
+            return jsonify({
+                "ok": False,
+                "code": "busy",
+                "error": "A write job is already running",
+                "current_job": current,
+            }), 409
+
+        return jsonify({
+            "ok": True,
+            "job_id": job.job_id,
+            "status": "queued",
+            "status_url": f"/api/jobs/{job.job_id}",
+            "busy": True,
+            "spec": spec,
+        }), 202
+    
     @app.errorhandler(Exception)
     def handle_any_exception(e: Exception):
         logger.exception("Unhandled exception: %s", e)
@@ -1002,10 +1470,14 @@ def make_app() -> Flask:
 
 
 
+
 if __name__ == "__main__":
     import argparse
     import os
     from pathlib import Path
+
+    from geomap.cli_paths import apply_path_overrides
+    from server.logging_utils import setup_server_logger
 
     ap = argparse.ArgumentParser(description="Geomap dev API server (OVE-friendly).")
     ap.add_argument("--host", default=os.environ.get("HOST", "0.0.0.0"))
@@ -1015,36 +1487,26 @@ if __name__ == "__main__":
     ap.add_argument("--logs-dir", default=None, help="Override logs directory (default: stage/logs/server in OVE).")
     args = ap.parse_args()
 
-    # Default logs dir in OVE if not provided
+    # Resolve default logs dir through the shared helper
     if args.logs_dir is None:
-        ove_stage = os.environ.get("OVE_STAGE_DIR", "").strip()
-        ove_base = os.environ.get("OVE_BASE_DIR", "").strip()
-        stage = Path(ove_stage).expanduser().resolve() if ove_stage else (Path(ove_base).expanduser().resolve() / "stage" if ove_base else None)
-        if stage:
-            args.logs_dir = str(stage / "logs" / "server")
+        args.logs_dir = str(_infer_default_server_logs_dir())
 
     # Map CLI dirs into GEOMAP_* env vars so Config sees them
-    from geomap.cli_paths import apply_path_overrides
     apply_path_overrides(
         db_dir=args.db_dir,
         lists_dir=args.lists_dir,
         logs_dir=args.logs_dir,
     )
+
+    log_dir = Path(args.logs_dir).expanduser().resolve() if args.logs_dir else None
+    logger = setup_server_logger(name="geomap-server", log_dir=log_dir)
+
     logger.info("GEOMAP_DB=%s", os.getenv("GEOMAP_DB"))
     logger.info("GEOMAP_OBSERVED_DB=%s", os.getenv("GEOMAP_OBSERVED_DB"))
     logger.info("GEOMAP_DYNTAXA_DB=%s", os.getenv("GEOMAP_DYNTAXA_DB"))
     logger.info("GEOMAP_MISSING_SPECIES_CSV=%s", os.getenv("GEOMAP_MISSING_SPECIES_CSV"))
     logger.info("GEOMAP_LOGS_DIR=%s", os.getenv("GEOMAP_LOGS_DIR"))
-    
-    # Reconfigure the module-level logger to use the final logs dir
-    from server.logging_utils import setup_server_logger
-    setup_server_logger(
-        name="geomap-server",
-        log_dir=Path(args.logs_dir).expanduser().resolve() if args.logs_dir else None,)
-    
-    log_dir = Path(args.logs_dir).expanduser().resolve() if args.logs_dir else None
-    logger = setup_server_logger(name="geomap-server", log_dir=log_dir)
-    
+
     logger.info("Starting server with host=%s port=%d", args.host, args.port)
     if args.db_dir:
         logger.info("DB dir override: %s", args.db_dir)
@@ -1065,3 +1527,4 @@ if __name__ == "__main__":
         use_reloader=use_reloader,
     )
 
+    
