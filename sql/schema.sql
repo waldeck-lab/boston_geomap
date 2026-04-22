@@ -94,6 +94,45 @@ CREATE TABLE IF NOT EXISTS hotmap_taxa_set (
   PRIMARY KEY (zoom, year, slot_id, taxon_id)
 );
 
+
+-- ============================================================
+--  Raw observation storage
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS observations_raw (
+    occurrence_id TEXT PRIMARY KEY,
+
+    taxon_id INTEGER NOT NULL,
+
+    observation_date TEXT NOT NULL,
+    modification_date TEXT,
+
+    year INTEGER NOT NULL,
+    slot_id INTEGER NOT NULL,
+
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+
+    tile_x INTEGER NOT NULL,
+    tile_y INTEGER NOT NULL,
+    zoom INTEGER NOT NULL,
+
+    occurrence_status TEXT,
+    individual_count INTEGER,
+
+    imported_at_utc TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_obs_taxon_year_slot_zoom
+ON observations_raw(taxon_id, year, slot_id, zoom);
+
+CREATE INDEX IF NOT EXISTS idx_obs_modified
+ON observations_raw(modification_date);
+
+CREATE INDEX IF NOT EXISTS idx_obs_year_slot_zoom
+ON observations_raw(year, slot_id, zoom);
+
+
 -- -------------------------
 -- Views for taxa listing per hotmap cell (year-aware)
 --

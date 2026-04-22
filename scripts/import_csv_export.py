@@ -18,7 +18,6 @@
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
-
 from __future__ import annotations
 
 import argparse
@@ -29,9 +28,9 @@ import sys
 import zipfile
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
-from typing import Dict, Iterable, Tuple, Optional, List
+from typing import Dict, Iterable, Tuple, Optional, List, Set
 
 # If you run inside the repo, this should work (same pattern as server/app.py)
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -47,17 +46,23 @@ def utc_now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def slot_from_yyyy_mm_dd(s: str) -> int:
+def parse_yyyy_mm_dd(s: str) -> date:
+    return datetime.strptime(s, "%Y-%m-%d").date()
+
+
+def slot_from_date(d: date) -> int:
     """
     Slot mapping:
       month 1..12, quartile 1..4 in month:
         1-7 => q1, 8-14 => q2, 15-21 => q3, else => q4
       slot_id = (month-1)*4 + q, so 1..48
     """
-    d = datetime.strptime(s, "%Y-%m-%d").date()
     day = d.day
     q = 1 if day <= 7 else 2 if day <= 14 else 3 if day <= 21 else 4
     return (d.month - 1) * 4 + q
+
+def slot_from_yyyy_mm_dd(s: str) -> int:
+    return slot_from_date(parse_yyyy_mm_dd(s))
 
 
 # --- Slippy map helpers (WebMercator tile math) ---
@@ -128,7 +133,7 @@ def iter_observations_tsv(csv_path: Path) -> Iterable[Dict[str, str]]:
     """
     The export CSV is actually TSV (tab separated), with quoted fields.
     """
-    with csv_path.open("r", encoding="utf-8", newline="") as f:
+    with csv_path.open("r", encoding="utf-8-sig", newline="") as f:    
         reader = csv.DictReader(f, delimiter="\t")
         for row in reader:
             # normalize keys a bit (strip)
@@ -153,18 +158,80 @@ def parse_int(row: Dict[str, str], key: str) -> Optional[int]:
         return int(float(s))
     except Exception:
         return None
+    
+def upsert_observation_raw(conn, row):
+    conn.execute(
+        """
+        INSERT INTO observations_raw (
+            occurrence_id,
+            taxon_id,
+            observation_date,
+            modification_date,
+            year,
+            slot_id,
+            latitude,
+            longitude,
+            tile_x,
+            tile_y,
+            zoom,
+            occurrence_status,
+            individual_count,
+            imported_at_utc
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
 
+        ON CONFLICT(occurrence_id)
+        DO UPDATE SET
+            taxon_id = excluded.taxon_id,
+            observation_date = excluded.observation_date,
+            modification_date = excluded.modification_date,
+            year = excluded.year,
+            slot_id = excluded.slot_id,
+            latitude = excluded.latitude,
+            longitude = excluded.longitude,
+            tile_x = excluded.tile_x,
+            tile_y = excluded.tile_y,
+            zoom = excluded.zoom,
+            occurrence_status = excluded.occurrence_status,
+            individual_count = excluded.individual_count,
+            imported_at_utc = datetime('now')
+        WHERE
+            excluded.modification_date IS NOT NULL
+            AND (
+                observations_raw.modification_date IS NULL
+                OR excluded.modification_date > observations_raw.modification_date
+            );
+        """,
+        (
+            row["occurrence_id"],
+            row["taxon_id"],
+            row["observation_date"],
+            row["modification_date"],
+            row["year"],
+            row["slot_id"],
+            row["latitude"],
+            row["longitude"],
+            row["tile_x"],
+            row["tile_y"],
+            row["zoom"],
+            row["occurrence_status"],
+            row["individual_count"],
+        ),
+    )
+    
 
-def build_counts(
-    args: IngestArgs,
-) -> Dict[Tuple[int, int, int], Dict[Tuple[int, int], int]]:
+def import_observations_raw(
+        conn: sqlite3.Connection,
+        args: IngestArgs,
+) -> Set[Tuple[int, int, int, int]]:
     """
-    Returns:
-      per_slot_taxon[(slot_id, zoom, taxon_id)][(x,y)] = observations_count
-    """
-    # slot, zoom, taxon -> cell -> count
-    out: Dict[Tuple[int, int, int], Dict[Tuple[int, int], int]] = defaultdict(lambda: defaultdict(int))
+    Import raw observations into observations_raw.
 
+    Returns a set of affected scopes:
+      (year, slot_id, zoom, taxon_id)
+    These scopes can then be consolidated into taxon_grid.
+    """
+    touched: Set[Tuple[int, int, int, int]] = set()
     rows = 0
     kept = 0
 
@@ -193,77 +260,87 @@ def build_counts(
 
         # export uses YYYY-MM-DD
         try:
-            slot_id = slot_from_yyyy_mm_dd(ds)
+            d = parse_yyyy_mm_dd(ds)
+            year = int(d.year)
+            slot_id = slot_from_date(d)
         except Exception:
             continue
+        
+        year = int(ds[0:4])
+
+        occurrence_id = (row.get("OccurrenceId") or "").strip()
+        if not occurrence_id:
+            continue
+        
+        modification_date = (
+            row.get("Modified")
+            or row.get("ModificationDate")
+            or None
+        )
+
+        occurrence_status = row.get("OccurrenceStatus")
+        individual_count = parse_int(row, "IndividualCount")
 
         for z in args.zooms:
             x, y = lonlat_to_tile_xy(lon, lat, z)
-            out[(slot_id, z, tid)][(x, y)] += 1
+
+            # raw observation write
+            raw_row = {
+                "occurrence_id": occurrence_id,
+                "taxon_id": tid,
+                "observation_date": ds,
+                "modification_date": modification_date,
+                "year": year,
+                "slot_id": slot_id,
+                "latitude": lat,
+                "longitude": lon,
+                "tile_x": x,
+                "tile_y": y,
+                "zoom": z,
+                "occurrence_status": occurrence_status,
+                "individual_count": individual_count,
+            }
+            upsert_observation_raw(conn, raw_row)
+            touched.add((year, slot_id, z, tid))
 
         kept += 1
 
     print(f"[import] rows={rows} kept={kept} (after filters)")
-    return out
+    return touched
 
 
-def ensure_slot0(
-    per_slot: Dict[Tuple[int, int, int], Dict[Tuple[int, int], int]]
-) -> Dict[Tuple[int, int, int], Dict[Tuple[int, int], int]]:
-    """
-    Create slot_id=0 layers by summing over all slots 1..48 per (zoom,taxon,x,y).
-    """
-    agg: Dict[Tuple[int, int, int], Dict[Tuple[int, int], int]] = defaultdict(lambda: defaultdict(int))
-    for (slot_id, z, tid), cells in per_slot.items():
-        if slot_id == SLOT_ALL:
-            continue
-        dst_key = (SLOT_ALL, z, tid)
-        for (x, y), c in cells.items():
-            agg[dst_key][(x, y)] += c
-
-    # merge agg into per_slot (don’t overwrite existing slot0 if any)
-    out = dict(per_slot)
-    for k, v in agg.items():
-        if k not in out:
-            out[k] = v
-        else:
-            for cell, c in v.items():
-                out[k][cell] = out[k].get(cell, 0) + c
-    return out
-
-
-def replace_taxon_grid_offline(
+def _replace_taxon_grid_from_rows(
     conn: sqlite3.Connection,
     taxon_id: int,
     zoom: int,
     slot_id: int,
-    cell_counts: Dict[Tuple[int, int], int],
+    year: int,
+    rows_in: Iterable[Tuple[int, int, int]],
 ) -> None:
     """
-    Deletes and inserts taxon_grid rows for a (taxon_id, zoom, slot_id).
-    observations_count := number of observations (rows) in that tile for that taxon in that slot
-    taxa_count := 1 for any tile that has observations (matches "per taxon" semantics)
-    bbox_* := tile bbox
+    Replace a single (taxon_id, zoom, year, slot_id) layer from aggregated rows:
+      (tile_x, tile_y, observations_count)
     """
     now = utc_now_iso()
 
     conn.execute(
-        "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND slot_id=?;",
-        (taxon_id, zoom, slot_id),
+        "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND year=? AND slot_id=?;",
+        (taxon_id, zoom, int(year), slot_id),
     )
 
     rows = []
-    for (x, y), obs_count in cell_counts.items():
-        top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(x, y, zoom)
+    for (x, y, obs_count) in rows_in:
+        top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), zoom)
         rows.append(
             (
                 taxon_id,
                 zoom,
+                int(year),
                 slot_id,
                 int(x),
                 int(y),
                 int(obs_count),
-                1,  # taxa_count (per-taxon layer)
+                1,
                 float(top_lat),
                 float(left_lon),
                 float(bottom_lat),
@@ -272,16 +349,148 @@ def replace_taxon_grid_offline(
             )
         )
 
-    conn.executemany(
-        """
-        INSERT INTO taxon_grid(
-          taxon_id, zoom, slot_id, x, y, observations_count, taxa_count,
-          bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
-          fetched_at_utc
-        ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
+    if rows:
+        conn.executemany(
+            """
+            INSERT INTO taxon_grid(
+              taxon_id, zoom, year, slot_id, x, y, observations_count, taxa_count,
+              bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+              fetched_at_utc
+            ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);
+            """,
+            rows,
+        )
+
+
+def consolidate_taxon_grid_from_raw(
+    conn: sqlite3.Connection,
+    *,
+    taxon_ids: Optional[List[int]] = None,
+    zooms: Optional[List[int]] = None,
+    years: Optional[List[int]] = None,
+    slot_ids: Optional[List[int]] = None,
+    include_slot0: bool = True,
+) -> int:
+    """
+    Rebuild taxon_grid deterministically from observations_raw for the requested scope.
+
+    Returns number of layers written.
+    """
+    where = []
+    args: List[object] = []
+
+    if taxon_ids:
+        where.append("taxon_id IN ({})".format(",".join(["?"] * len(taxon_ids))))
+        args.extend(int(t) for t in taxon_ids)
+    if zooms:
+        where.append("zoom IN ({})".format(",".join(["?"] * len(zooms))))
+        args.extend(int(z) for z in zooms)
+    if years:
+        where.append("year IN ({})".format(",".join(["?"] * len(years))))
+        args.extend(int(y) for y in years)
+    if slot_ids:
+        real_slots = [int(s) for s in slot_ids if int(s) != SLOT_ALL]
+        if real_slots:
+            where.append("slot_id IN ({})".format(",".join(["?"] * len(real_slots))))
+            args.extend(real_slots)
+
+    wh = ("WHERE " + " AND ".join(where)) if where else ""
+
+    scopes = conn.execute(
+        f"""
+        SELECT DISTINCT taxon_id, year, zoom, slot_id
+        FROM observations_raw
+        {wh}
+        ORDER BY taxon_id, year, zoom, slot_id;
         """,
-        rows,
-    )
+        args,
+    ).fetchall()
+
+    layers_written = 0
+
+    # Regular slots 1..48
+    for scope in scopes:
+        taxon_id = int(scope[0])
+        year = int(scope[1])
+        zoom = int(scope[2])
+        slot_id = int(scope[3])
+
+        rows = conn.execute(
+            """
+            SELECT tile_x, tile_y, COUNT(*) AS observations_count
+            FROM observations_raw
+            WHERE taxon_id=? AND year=? AND zoom=? AND slot_id=?
+            GROUP BY tile_x, tile_y
+            ORDER BY tile_x, tile_y;
+            """,
+            (taxon_id, year, zoom, slot_id),
+        ).fetchall()
+
+        with conn:
+            _replace_taxon_grid_from_rows(
+                conn,
+                taxon_id,
+                zoom,
+                slot_id,
+                year,
+                [(int(r[0]), int(r[1]), int(r[2])) for r in rows],
+            )
+        layers_written += 1
+
+    # Derived slot 0 per (taxon, year, zoom)
+    if include_slot0:
+        slot0_where = []
+        slot0_args: List[object] = []
+        if taxon_ids:
+            slot0_where.append("taxon_id IN ({})".format(",".join(["?"] * len(taxon_ids))))
+            slot0_args.extend(int(t) for t in taxon_ids)
+        if zooms:
+            slot0_where.append("zoom IN ({})".format(",".join(["?"] * len(zooms))))
+            slot0_args.extend(int(z) for z in zooms)
+        if years:
+            slot0_where.append("year IN ({})".format(",".join(["?"] * len(years))))
+            slot0_args.extend(int(y) for y in years)
+        slot0_wh = ("WHERE " + " AND ".join(slot0_where)) if slot0_where else ""
+
+        slot0_scopes = conn.execute(
+            f"""
+            SELECT DISTINCT taxon_id, year, zoom
+            FROM observations_raw
+            {slot0_wh}
+            ORDER BY taxon_id, year, zoom;
+            """,
+            slot0_args,
+        ).fetchall()
+
+        for scope in slot0_scopes:
+            taxon_id = int(scope[0])
+            year = int(scope[1])
+            zoom = int(scope[2])
+
+            rows = conn.execute(
+                """
+                SELECT tile_x, tile_y, COUNT(*) AS observations_count
+                FROM observations_raw
+                WHERE taxon_id=? AND year=? AND zoom=?
+                GROUP BY tile_x, tile_y
+                ORDER BY tile_x, tile_y;
+                """,
+                (taxon_id, year, zoom),
+            ).fetchall()
+
+            with conn:
+                _replace_taxon_grid_from_rows(
+                    conn,
+                    taxon_id,
+                    zoom,
+                    SLOT_ALL,
+                    year,
+                    [(int(r[0]), int(r[1]), int(r[2])) for r in rows],
+                )
+            layers_written += 1
+
+    return layers_written
+
 
 
 def main() -> int:
@@ -331,24 +540,30 @@ def main() -> int:
         occurrence_status=occ,
     )
 
-    per_slot = build_counts(ingest)
-    if ingest.include_slot0:
-        per_slot = ensure_slot0(per_slot)
-
     conn = storage.connect(ingest.db_path)
     conn.isolation_level = None  # autocommit
+
     try:
         storage.ensure_schema(conn)
 
-        # Write all (slot,zoom,taxon) layers found
-        keys = sorted(per_slot.keys(), key=lambda k: (k[2], k[1], k[0]))  # taxon, zoom, slot
-        print(f"[import] writing layers: {len(keys)}")
+        touched = import_observations_raw(conn, ingest)
+        print(f"[import] touched raw scopes: {len(touched)}")
 
-        for (slot_id, z, tid) in keys:
-            cell_counts = per_slot[(slot_id, z, tid)]
-            with conn:
-                replace_taxon_grid_offline(conn, tid, z, slot_id, cell_counts)
+        years = sorted({k[0] for k in touched})
+        slot_ids = sorted({k[1] for k in touched})
+        zooms = sorted({k[2] for k in touched}, reverse=True)
+        taxon_ids_scope = sorted({k[3] for k in touched})
 
+        layers_written = consolidate_taxon_grid_from_raw(
+            conn,
+            taxon_ids=taxon_ids_scope,
+            years=years,
+            slot_ids=slot_ids,
+            zooms=zooms,
+            include_slot0=ingest.include_slot0,
+        )
+
+        print(f"[import] wrote consolidated layers: {layers_written}")
         print("[import] done.")
         return 0
     finally:

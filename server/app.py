@@ -600,6 +600,38 @@ def read_taxa_rows(csv_path: Path, n: int) -> list[dict[str, Any]]:
         return out
 
 
+
+def parse_taxon_ids_arg(value: Any, *, name: str = "taxon_ids") -> list[int]:
+    """
+    Accepts:
+      - "123,456" (string)
+      - [123,456] (list)
+      - single int
+    Returns sorted unique positive taxon ids.
+    """
+    if value is None:
+        return []
+
+    if isinstance(value, str):
+        vals = [v.strip() for v in value.split(",") if v.strip()]
+    elif isinstance(value, (list, tuple)):
+        vals = list(value)
+    else:
+        vals = [value]
+
+    out: list[int] = []
+    for v in vals:
+        try:
+            tid = int(v)
+        except Exception:
+            raise BadRequest(description=f"{name} must contain integers")
+        if tid <= 0:
+            raise BadRequest(description=f"{name} must contain positive integers")
+        out.append(tid)
+    return sorted(set(out))
+
+
+    
 def make_app() -> Flask:
     app = Flask(__name__)
     CORS(app)  # keep it simple for local dev
@@ -763,6 +795,10 @@ def make_app() -> Flask:
     def _normalize_rebuild_spec(body: dict[str, Any], *, default_n: int, default_all_slots: bool) -> dict[str, Any]:
         this_year = datetime.now(timezone.utc).year
         year_from, year_to = parse_year_range_body(body, default_from=2000, default_to=this_year)
+        refresh_mode = str(body.get("refresh_mode", "upstream")).strip().lower()
+        if refresh_mode not in {"upstream", "local"}:
+            raise BadRequest(description="refresh_mode must be 'upstream' or 'local'")
+
         if year_from == YEAR_ALL or year_to == YEAR_ALL:
             raise BadRequest(description="jobs/rebuild requires concrete year_from/year_to, not 0")
 
@@ -784,8 +820,11 @@ def make_app() -> Flask:
         include_slot0 = bool(body.get("include_slot0", True))
         include_all_years = bool(body.get("include_all_years", True))
         zooms = parse_zooms(body.get("zooms", [ZOOM_DEFAULT]))
+        taxon_ids = parse_taxon_ids_arg(body.get("taxon_ids", None), name="taxon_ids")
 
         spec = {
+            "refresh_mode": refresh_mode,
+            "taxon_ids": taxon_ids,
             "fetch_slots": sorted(set(fetch_slots)),
             "final_slots": sorted(set(fetch_slots + ([SLOT_ALL] if include_slot0 else []))),
             "zooms": zooms,
@@ -802,36 +841,81 @@ def make_app() -> Flask:
         return spec
 
     def _run_rebuild_job(job_id: str, spec: dict[str, Any]) -> dict[str, Any]:
-        if not cfg.subscription_key:
-            raise RuntimeError("Missing ARTDATABANKEN_SUBSCRIPTION_KEY")
-        if not cfg.authorization:
-            raise RuntimeError("Missing ARTDATABANKEN_AUTHORIZATION")
+        refresh_mode = str(spec.get("refresh_mode", "upstream")).strip().lower()
+        if refresh_mode not in {"upstream", "local"}:
+            raise RuntimeError(f"Unsupported refresh_mode={refresh_mode}")
+
+        if refresh_mode == "upstream":
+            if not cfg.subscription_key:
+                raise RuntimeError("Missing ARTDATABANKEN_SUBSCRIPTION_KEY")
+            if not cfg.authorization:
+                raise RuntimeError("Missing ARTDATABANKEN_AUTHORIZATION")
 
         years = list(range(spec["year_from"], spec["year_to"] + 1))
         fetch_slots = list(spec["fetch_slots"])
         final_slots = list(spec["final_slots"])
         zooms = list(spec["zooms"])
+        explicit_taxon_ids = [int(t) for t in (spec.get("taxon_ids") or [])]
 
-        taxa_rows = read_taxa_rows(cfg.missing_species_csv, int(spec["n"]))
-        taxon_ids = [int(t["taxon_id"]) for t in taxa_rows]
-        if not taxon_ids:
-            raise RuntimeError("No taxon ids found in CSV")
-
-        fetch_steps = len(taxon_ids) * len(years) * len(fetch_slots)
-        derive_slot0_steps = len(taxon_ids) * len(years) if spec["include_slot0"] else 0
-        derive_all_years_steps = len(taxon_ids) * len(final_slots) if spec["include_all_years"] else 0
-        rebuild_years = list(years) + ([YEAR_ALL] if spec["include_all_years"] else [])
-        rebuild_steps = len(zooms) * len(rebuild_years) * len(final_slots)
-        total_steps = fetch_steps + derive_slot0_steps + derive_all_years_steps + rebuild_steps
-
-        JOB_MANAGER.set_total_steps(job_id, total_steps)
-        JOB_MANAGER.set_phase(job_id, "planning", current_step=f"taxa={len(taxon_ids)} years={len(years)} slots={len(fetch_slots)}")
-
-        throttle_state: dict[str, float] = {}
         conn = storage.connect(cfg.geomap_db_path)
         conn.isolation_level = None
         try:
             storage.ensure_schema(conn)
+
+            if explicit_taxon_ids:
+                taxon_ids = explicit_taxon_ids
+                taxa_rows = []
+                for tid in taxon_ids:
+                    dim = conn.execute(
+                        "SELECT scientific_name, swedish_name FROM taxon_dim WHERE taxon_id=?;",
+                        (tid,),
+                    ).fetchone()
+                    taxa_rows.append(
+                        {
+                            "taxon_id": tid,
+                            "scientific_name": (dim[0] if dim else "") or "",
+                            "swedish_name": (dim[1] if dim else "") or "",
+                        }
+                    )
+            else:
+                taxa_rows = read_taxa_rows(cfg.missing_species_csv, int(spec["n"]))
+                taxon_ids = [int(t["taxon_id"]) for t in taxa_rows]
+                if not taxon_ids:
+                    raise RuntimeError("No taxon ids found in CSV")
+
+            if refresh_mode == "local":
+                # Restrict to taxa that actually have local taxon_grid data for the requested range/slots/zooms.
+                placeholders = ",".join(["?"] * len(taxon_ids))
+                slot_placeholders = ",".join(["?"] * len(final_slots))
+                zoom_placeholders = ",".join(["?"] * len(zooms))
+                rows = conn.execute(
+                    f"""
+                    SELECT DISTINCT taxon_id
+                    FROM taxon_grid
+                    WHERE taxon_id IN ({placeholders})
+                      AND zoom IN ({zoom_placeholders})
+                      AND slot_id IN ({slot_placeholders})
+                      AND year BETWEEN ? AND ?
+                    ORDER BY taxon_id;
+                    """,
+                    (*taxon_ids, *zooms, *final_slots, spec["year_from"], spec["year_to"]),
+                ).fetchall()
+                taxon_ids = [int(r[0]) for r in rows]
+                taxa_rows = [t for t in taxa_rows if int(t["taxon_id"]) in set(taxon_ids)]
+                if not taxon_ids:
+                    raise RuntimeError("No local taxon_grid rows found for requested taxon_ids/year_range/slots/zooms")
+
+            fetch_steps = 0 if refresh_mode == "local" else len(taxon_ids) * len(years) * len(fetch_slots)
+            derive_slot0_steps = len(taxon_ids) * len(years) if spec["include_slot0"] else 0
+            derive_all_years_steps = len(taxon_ids) * len(final_slots) if spec["include_all_years"] else 0
+            rebuild_years = list(years) + ([YEAR_ALL] if spec["include_all_years"] else [])
+            rebuild_steps = len(zooms) * len(rebuild_years) * len(final_slots)
+            total_steps = fetch_steps + derive_slot0_steps + derive_all_years_steps + rebuild_steps
+
+            JOB_MANAGER.set_total_steps(job_id, total_steps)
+            JOB_MANAGER.set_phase(job_id, "planning", current_step=f"taxa={len(taxon_ids)} years={len(years)} slots={len(fetch_slots)}")
+
+            throttle_state: dict[str, float] = {}
 
             with conn:
                 storage.upsert_taxon_dim(
@@ -840,8 +924,9 @@ def make_app() -> Flask:
                 )
 
             logger.info(
-                "job=%s rebuild start years=%d..%d fetch_slots=%s final_slots=%s zooms=%s taxa=%d force=%s",
+                "job=%s rebuild start refresh_mode=%s years=%d..%d fetch_slots=%s final_slots=%s zooms=%s taxa=%d force=%s explicit_taxon_ids=%s",
                 job_id,
+                refresh_mode,
                 spec["year_from"],
                 spec["year_to"],
                 ",".join(map(str, fetch_slots)),
@@ -849,74 +934,76 @@ def make_app() -> Flask:
                 ",".join(map(str, zooms)),
                 len(taxon_ids),
                 str(spec["force"]),
+                ",".join(map(str, explicit_taxon_ids)) if explicit_taxon_ids else "",
             )
 
-            for taxon_id in taxon_ids:
-                JOB_MANAGER.ensure_not_cancelled(job_id)
-                per_slot_payloads: dict[int, list[dict[str, Any]]] = {s: [] for s in final_slots}
-
-                for yr in years:
+            if refresh_mode == "upstream":
+                for taxon_id in taxon_ids:
                     JOB_MANAGER.ensure_not_cancelled(job_id)
-                    yearly_slot_payloads: list[dict[str, Any]] = []
+                    per_slot_payloads: dict[int, list[dict[str, Any]]] = {s: [] for s in final_slots}
 
-                    for slot_id in fetch_slots:
+                    for yr in years:
                         JOB_MANAGER.ensure_not_cancelled(job_id)
-                        throttle(2.0, throttle_state)
-                        extra = _extra_filter_for_slot_year(slot_id, yr)
-                        payload = client.geogrid_aggregation_resilient([taxon_id], zoom=spec["base_zoom"], extra_filter=extra)
-                        _store_payload(
-                            conn,
-                            taxon_id=taxon_id,
-                            zooms=zooms,
-                            year=yr,
-                            slot_id=slot_id,
-                            payload=payload,
-                            force=bool(spec["force"]),
-                        )
-                        per_slot_payloads[slot_id].append(payload)
-                        yearly_slot_payloads.append(payload)
-                        JOB_MANAGER.advance(
-                            job_id,
-                            phase="fetch_slots",
-                            current_step=f"taxon={taxon_id} year={yr} slot={slot_id}",
-                        )
+                        yearly_slot_payloads: list[dict[str, Any]] = []
 
-                    if spec["include_slot0"]:
-                        merged_year_payload = {"gridCells": _merge_payloads_gridcells(yearly_slot_payloads)}
-                        _store_payload(
-                            conn,
-                            taxon_id=taxon_id,
-                            zooms=zooms,
-                            year=yr,
-                            slot_id=SLOT_ALL,
-                            payload=merged_year_payload,
-                            force=bool(spec["force"]),
-                        )
-                        per_slot_payloads[SLOT_ALL].append(merged_year_payload)
-                        JOB_MANAGER.advance(
-                            job_id,
-                            phase="derive_slot0_per_year",
-                            current_step=f"taxon={taxon_id} year={yr} slot=0",
-                        )
+                        for slot_id in fetch_slots:
+                            JOB_MANAGER.ensure_not_cancelled(job_id)
+                            throttle(2.0, throttle_state)
+                            extra = _extra_filter_for_slot_year(slot_id, yr)
+                            payload = client.geogrid_aggregation_resilient([taxon_id], zoom=spec["base_zoom"], extra_filter=extra)
+                            _store_payload(
+                                conn,
+                                taxon_id=taxon_id,
+                                zooms=zooms,
+                                year=yr,
+                                slot_id=slot_id,
+                                payload=payload,
+                                force=bool(spec["force"]),
+                            )
+                            per_slot_payloads[slot_id].append(payload)
+                            yearly_slot_payloads.append(payload)
+                            JOB_MANAGER.advance(
+                                job_id,
+                                phase="fetch_slots",
+                                current_step=f"taxon={taxon_id} year={yr} slot={slot_id}",
+                            )
 
-                if spec["include_all_years"]:
-                    for slot_id in final_slots:
-                        JOB_MANAGER.ensure_not_cancelled(job_id)
-                        merged_all_payload = {"gridCells": _merge_payloads_gridcells(per_slot_payloads[slot_id])}
-                        _store_payload(
-                            conn,
-                            taxon_id=taxon_id,
-                            zooms=zooms,
-                            year=YEAR_ALL,
-                            slot_id=slot_id,
-                            payload=merged_all_payload,
-                            force=bool(spec["force"]),
-                        )
-                        JOB_MANAGER.advance(
-                            job_id,
-                            phase="derive_all_years",
-                            current_step=f"taxon={taxon_id} year=0 slot={slot_id}",
-                        )
+                        if spec["include_slot0"]:
+                            merged_year_payload = {"gridCells": _merge_payloads_gridcells(yearly_slot_payloads)}
+                            _store_payload(
+                                conn,
+                                taxon_id=taxon_id,
+                                zooms=zooms,
+                                year=yr,
+                                slot_id=SLOT_ALL,
+                                payload=merged_year_payload,
+                                force=bool(spec["force"]),
+                            )
+                            per_slot_payloads[SLOT_ALL].append(merged_year_payload)
+                            JOB_MANAGER.advance(
+                                job_id,
+                                phase="derive_slot0_per_year",
+                                current_step=f"taxon={taxon_id} year={yr} slot=0",
+                            )
+
+                    if spec["include_all_years"]:
+                        for slot_id in final_slots:
+                            JOB_MANAGER.ensure_not_cancelled(job_id)
+                            merged_all_payload = {"gridCells": _merge_payloads_gridcells(per_slot_payloads[slot_id])}
+                            _store_payload(
+                                conn,
+                                taxon_id=taxon_id,
+                                zooms=zooms,
+                                year=YEAR_ALL,
+                                slot_id=slot_id,
+                                payload=merged_all_payload,
+                                force=bool(spec["force"]),
+                            )
+                            JOB_MANAGER.advance(
+                                job_id,
+                                phase="derive_all_years",
+                                current_step=f"taxon={taxon_id} year=0 slot={slot_id}",
+                            )
 
             for slot_id in final_slots:
                 for yr in rebuild_years:
@@ -933,6 +1020,8 @@ def make_app() -> Flask:
             summary = {
                 "ok": True,
                 "finished_at": _utc_now_iso(),
+                "refresh_mode": refresh_mode,
+                "taxon_ids": taxon_ids,
                 "n_taxa": len(taxon_ids),
                 "year_from": spec["year_from"],
                 "year_to": spec["year_to"],
