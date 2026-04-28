@@ -58,7 +58,11 @@ from scripts.import_csv_export import (
     find_csv_inside_zip,
     import_observations_raw,
     consolidate_taxon_grid_from_raw,
+    read_taxon_ids_from_csv,
+    chunked,
+    make_sos_export_filter,
 )
+from geomap.sos_export import export_csv_zip_to_file
 
 import threading                                                                                                         
 import logging
@@ -408,6 +412,10 @@ def _job_log_spec_summary(spec: dict) -> dict:
         "csv_name": spec.get("csv_name"),
         "csv_path": spec.get("csv_path"),
         "full_reconsolidate": spec.get("full_reconsolidate"),
+        "taxon_list_csv": spec.get("taxon_list_csv"),
+        "initial_batch_size": spec.get("initial_batch_size"),
+        "min_batch_size": spec.get("min_batch_size"),
+        "adaptive_split": spec.get("adaptive_split"),
     }
 
 
@@ -669,9 +677,6 @@ def _copy_to_stash(job_id: str, src: Path, dst_dir: Path) -> Path:
     return dst
 
 
-
-
-    
 def make_app() -> Flask:
     app = Flask(__name__)
     CORS(app)  # keep it simple for local dev
@@ -680,17 +685,16 @@ def make_app() -> Flask:
     logger.info("OVE_BASE_DIR=%s", os.getenv("OVE_BASE_DIR", ""))
     logger.info("OVE_STAGE_DIR=%s", os.getenv("OVE_STAGE_DIR", ""))
     logger.info("Resolved logs_dir=%s", cfg.logs_dir)
-    
     logger.info("Resolved csv_stash_dir=%s (%s)", cfg.csv_stash_dir, _path_status(cfg.csv_stash_dir))
     logger.info("Resolved csv_meta_dir=%s (%s)", cfg.csv_meta_dir, _path_status(cfg.csv_meta_dir))
     logger.info("Resolved missing_species_csv=%s (%s)", cfg.missing_species_csv, _path_status(cfg.missing_species_csv))
     logger.info("Resolved geomap_db_path=%s (%s)", cfg.geomap_db_path, _path_status(cfg.geomap_db_path))
     logger.info("Resolved observed_db_path=%s (%s)", cfg.observed_db_path, _path_status(cfg.observed_db_path))
     logger.info("Resolved dyntaxa_db_path=%s (%s)", cfg.dyntaxa_db_path, _path_status(cfg.dyntaxa_db_path))
-    
+
     if not cfg.geomap_db_path.exists():
         logger.warning("Geomap DB not found yet (will be created on first build?): %s", cfg.geomap_db_path)
-    
+
     # Build SOS client once
     client = SOSClient(
         base_url=cfg.base_url,
@@ -698,7 +702,7 @@ def make_app() -> Flask:
         subscription_key=cfg.subscription_key,
         authorization=cfg.authorization,
     )
-       
+
     @app.before_request
     def log_request():
         logger.info(
@@ -707,7 +711,7 @@ def make_app() -> Flask:
             request.path,
             request.remote_addr,
         )
-    
+
 
     @app.get("/api/health")
     def health():
@@ -802,10 +806,10 @@ def make_app() -> Flask:
         base_zoom = zooms[0]
         grid_cells = payload.get("gridCells") or []
         sha = stable_gridcells_hash(payload)
-        
+
         prev = storage.get_layer_state(conn, taxon_id, base_zoom, slot_id, year=year)
         unchanged = (prev is not None and prev[1] == sha)
-        
+
         if (not unchanged) or force:
             with conn:
                 storage.replace_taxon_grid(conn, taxon_id, base_zoom, slot_id, grid_cells, year=year)
@@ -834,6 +838,58 @@ def make_app() -> Flask:
                 )
             src_zoom = dst_zoom
 
+    def _normalize_sos_import_spec(body: dict[str, Any]) -> dict[str, Any]:
+        this_year = datetime.now(timezone.utc).year
+
+        taxon_list_csv = (body.get("taxon_list_csv") or "").strip()
+        if not taxon_list_csv:
+            taxon_list_csv = str(cfg.missing_species_csv)
+            
+        year_from, year_to = parse_year_range_body(
+            body,
+            default_from=2000,
+            default_to=this_year,
+        )
+        if year_from == YEAR_ALL or year_to == YEAR_ALL:
+            raise BadRequest(description="sos_import requires concrete year_from/year_to, not 0")
+
+        slots_raw = body.get("slot_ids", body.get("slots", list(range(1, SLOT_MAX + 1))))
+        parsed_slots = parse_slot_ids_arg(slots_raw, name="slot_ids")
+        fetch_slots = list(range(1, SLOT_MAX + 1)) if parsed_slots == [SLOT_ALL] else parsed_slots
+
+        if SLOT_ALL in fetch_slots:
+            raise BadRequest(description="slot_id 0 is derived; pass slots 1..48 and set include_slot0=true")
+
+        csv_date_field = str(body.get("csv_date_field", "StartDate")).strip()
+        if csv_date_field not in {"StartDate", "EndDate"}:
+            raise BadRequest(description="csv_date_field must be 'StartDate' or 'EndDate'")
+
+        taxon_ids = parse_taxon_ids_arg(body.get("taxon_ids", None), name="taxon_ids")
+        
+        return {
+            "taxon_list_csv": taxon_list_csv,
+            "initial_batch_size": int(body.get("batch_size", 20)),
+            "min_batch_size": int(body.get("min_batch_size", 1)),
+            "adaptive_split": bool(body.get("adaptive_split", True)),
+            "year_from": int(year_from),
+            "year_to": int(year_to),
+            "fetch_slots": sorted(set(fetch_slots)),
+            "final_slots": sorted(set(fetch_slots + ([SLOT_ALL] if bool(body.get("include_slot0", True)) else []))),
+            "zooms": parse_zooms(body.get("zooms", [ZOOM_DEFAULT])),
+            "include_slot0": bool(body.get("include_slot0", True)),
+            "include_all_years": bool(body.get("include_all_years", True)),
+            "csv_date_field": csv_date_field,
+            "csv_occurrence_status": (body.get("occurrence_status") or
+                                      body.get("csv_occurrence_status") or
+                                      "present").strip() or None,
+            "alpha": float(body.get("alpha", cfg.hotmap_alpha)),
+            "beta": float(body.get("beta", cfg.hotmap_beta)),
+            "output_field_set": str(body.get("output_field_set", "All")),
+            "force": bool(body.get("force", False)),
+            "taxon_ids": taxon_ids,
+        }
+
+            
     def _normalize_rebuild_spec(body: dict[str, Any], *, default_n: int, default_all_slots: bool) -> dict[str, Any]:
         this_year = datetime.now(timezone.utc).year
         year_from, year_to = parse_year_range_body(body, default_from=2000, default_to=this_year)
@@ -902,6 +958,406 @@ def make_app() -> Flask:
             "full_reconsolidate": full_reconsolidate,
         }
         return spec
+
+    def _is_sos_export_limit_error(exc: Exception) -> bool:
+        msg = str(exc).lower()
+        return (
+            "exceeds limit of 50000 observations" in msg
+            or "query exceeds limit" in msg
+        )
+
+    def _split_taxon_batch(taxon_ids: list[int]) -> tuple[list[int], list[int]]:
+        mid = max(1, len(taxon_ids) // 2)
+        return taxon_ids[:mid], taxon_ids[mid:]
+
+    def _split_year_range(year_from: int, year_to: int) -> tuple[tuple[int, int], tuple[int, int]] | None:
+        if year_from >= year_to:
+            return None
+        mid = (year_from + year_to) // 2
+        return (year_from, mid), (mid + 1, year_to)
+    
+    def _safe_batch_label(batch_index: int, taxon_count: int) -> str:
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        return f"{stamp}__sosjob_batch{batch_index:05d}_taxa{taxon_count}.zip"
+
+
+    def _run_sos_import_job(job_id: str, spec: dict[str, Any]) -> dict[str, Any]:
+        if not cfg.subscription_key:
+            raise RuntimeError("Missing ARTDATABANKEN_SUBSCRIPTION_KEY")
+        if not cfg.authorization:
+            raise RuntimeError("Missing ARTDATABANKEN_AUTHORIZATION")
+
+        taxon_list_path = Path(spec["taxon_list_csv"]).expanduser().resolve()
+
+        explicit_taxon_ids = [int(t) for t in (spec.get("taxon_ids") or [])]
+        if explicit_taxon_ids:
+            taxon_ids_all = sorted(set(explicit_taxon_ids))
+        else:
+            taxon_list_path = Path(spec["taxon_list_csv"]).expanduser().resolve()
+            taxon_ids_all = read_taxon_ids_from_csv(taxon_list_path)
+
+        if not taxon_ids_all:
+            raise RuntimeError(f"No taxon ids found in {taxon_list_path}")
+
+        initial_batch_size = max(1, int(spec.get("initial_batch_size", 20)))
+        min_batch_size = max(1, int(spec.get("min_batch_size", 1)))
+        adaptive_split = bool(spec.get("adaptive_split", True))
+
+        pending: list[dict[str, Any]] = [
+            {
+                "taxon_ids": batch,
+                "year_from": int(spec["year_from"]),
+                "year_to": int(spec["year_to"]),
+                "split_depth": 0,
+            }
+            for batch in chunked(taxon_ids_all, initial_batch_size)
+        ]
+
+        cfg.csv_stash_dir.mkdir(parents=True, exist_ok=True)
+        cfg.csv_meta_dir.mkdir(parents=True, exist_ok=True)
+
+        summary: dict[str, Any] = {
+            "ok": True,
+            "job_id": job_id,
+            "taxon_list_csv": str(taxon_list_path),
+            "taxa_total": len(taxon_ids_all),
+            "initial_batch_size": initial_batch_size,
+            "min_batch_size": min_batch_size,
+            "adaptive_split": adaptive_split,
+            "exports_ok": 0,
+            "exports_empty": 0,
+            "exports_split": 0,
+            "exports_failed": 0,
+            "raw_scopes": 0,
+            "layers_written": 0,
+            "rebuilds_written": 0,
+            "stashed_exports": [],
+            "failed_batches": [],
+            "warnings": [],
+            "year_splits": 0,
+            "taxon_splits": 0,
+        }
+
+        # Estimate: export+import+consolidate per initial batch, plus rebuild phase.
+        JOB_MANAGER.set_total_steps(job_id, max(len(pending) * 3, 1))
+        JOB_MANAGER.set_phase(job_id, "planning", current_step=f"taxa={len(taxon_ids_all)} batches={len(pending)}")
+        
+        all_touched_taxa: set[int] = set()
+        all_touched_years: set[int] = set()
+        all_touched_slots: set[int] = set()
+        all_touched_zooms: set[int] = set()
+
+        conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None
+
+        batch_serial = 0
+
+        try:
+            storage.ensure_schema(conn)
+
+            while pending:
+                JOB_MANAGER.ensure_not_cancelled(job_id)
+
+                batch_serial += 1
+                batch_obj = pending.pop(0)
+
+                batch_taxon_ids = [int(t) for t in batch_obj["taxon_ids"]]
+                batch_year_from = int(batch_obj["year_from"])
+                batch_year_to = int(batch_obj["year_to"])
+                split_depth = int(batch_obj.get("split_depth", 0))                
+                batch_size = len(batch_taxon_ids)
+                
+                JOB_MANAGER.set_phase(
+                    job_id,
+                    "sos_export",
+                    current_step=f"batch={batch_serial} pending={len(pending)} taxa={batch_size} years={batch_year_from}-{batch_year_to}",
+                )
+
+                stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+                export_path = cfg.csv_stash_dir / (
+                    f"{stamp}__sosjob_batch{batch_serial:05d}_"
+                    f"taxa{batch_size}_years{batch_year_from}-{batch_year_to}.zip"
+                )
+
+                search_filter = make_sos_export_filter(
+                    taxon_ids=batch_taxon_ids,
+                    year_from=batch_year_from,
+                    year_to=batch_year_to,
+                )
+                
+                try:
+                    export_csv_zip_to_file(
+                        cfg,
+                        search_filter,
+                        export_path,
+                        output_field_set=str(spec.get("output_field_set", "All")),
+                        gzip=True,
+                        culture_code="sv-SE",
+                    )
+
+                except Exception as exc:
+                    if _is_sos_export_limit_error(exc):
+                        # First split by taxon list if possible.
+                        if adaptive_split and batch_size > min_batch_size:
+                            left, right = _split_taxon_batch(batch_taxon_ids)
+
+                            pending.insert(0, {
+                                "taxon_ids": right,
+                                "year_from": batch_year_from,
+                                "year_to": batch_year_to,
+                                "split_depth": split_depth + 1,
+                            })
+                            pending.insert(0, {
+                                "taxon_ids": left,
+                                "year_from": batch_year_from,
+                                "year_to": batch_year_to,
+                                "split_depth": split_depth + 1,
+                            })
+                            summary["taxon_splits"] += 1
+                            summary["exports_split"] += 1
+                            msg = (
+                                f"SOS export limit hit for {batch_size} taxa "
+                                f"years={batch_year_from}-{batch_year_to}; "
+                                f"split taxa into {len(left)} + {len(right)}"
+                            )
+                            summary["warnings"].append(msg)
+                            JOB_MANAGER.append_warning(job_id, msg)
+                            continue
+
+                        # If we are down to one taxon, split by year range.
+                        yr_split = _split_year_range(batch_year_from, batch_year_to)
+                        if adaptive_split and yr_split is not None:
+                            (a_from, a_to), (b_from, b_to) = yr_split
+
+                            pending.insert(0, {
+                                "taxon_ids": batch_taxon_ids,
+                                "year_from": b_from,
+                                "year_to": b_to,
+                                "split_depth": split_depth + 1,
+                            })
+                            pending.insert(0, {
+                                "taxon_ids": batch_taxon_ids,
+                                "year_from": a_from,
+                                "year_to": a_to,
+                                "split_depth": split_depth + 1,
+                            })
+                            summary["year_splits"] += 1
+                            summary["exports_split"] += 1
+                            msg = (
+                                f"SOS export limit hit for single-taxon batch "
+                                f"taxon={batch_taxon_ids[0]} years={batch_year_from}-{batch_year_to}; "
+                                f"split years into {a_from}-{a_to} + {b_from}-{b_to}"
+                            )
+                            summary["warnings"].append(msg)
+                            JOB_MANAGER.append_warning(job_id, msg)
+                            continue
+
+                        # Final safety net: cannot split further.
+                        failed_path = _write_failed_taxon_batch(
+                            cfg,
+                            job_id,
+                            batch_serial,
+                            batch_taxon_ids,
+                            f"{exc}; years={batch_year_from}-{batch_year_to}",
+                        )
+                        
+                        summary["exports_failed"] += 1
+                        summary["failed_batches"].append({
+                            "batch_serial": batch_serial,
+                            "taxon_ids": batch_taxon_ids,
+                            "size": batch_size,
+                            "year_from": batch_year_from,
+                            "year_to": batch_year_to,
+                            "error": str(exc),
+                            "failed_path": str(failed_path),
+                        })
+
+                        msg = (
+                            f"SOS export limit hit and cannot split further; "
+                            f"taxa={batch_taxon_ids} years={batch_year_from}-{batch_year_to}; "
+                            f"dumped to {failed_path}"
+                        )
+                        summary["warnings"].append(msg)
+                        JOB_MANAGER.append_warning(job_id, msg)
+                        continue
+
+                    summary["exports_failed"] += 1
+                    summary["failed_batches"].append({
+                        "batch_serial": batch_serial,
+                        "taxon_ids": batch_taxon_ids,
+                        "size": batch_size,
+                        "year_from": batch_year_from,
+                        "year_to": batch_year_to,
+                        "error": str(exc),
+                    })
+                    raise
+                
+                JOB_MANAGER.advance(
+                    job_id,
+                    phase="sos_export",
+                    current_step=f"exported {export_path.name}",
+                )
+
+                if not export_path.exists() or export_path.stat().st_size == 0:
+                    summary["exports_empty"] += 1
+                    JOB_MANAGER.append_warning(job_id, f"Empty SOS export for batch size={batch_size}")
+                    continue
+
+                summary["exports_ok"] += 1
+                summary["stashed_exports"].append({
+                    "path": str(export_path),
+                    "taxon_count": batch_size,
+                    "year_from": batch_year_from,
+                    "year_to": batch_year_to,
+                })
+
+                csv_or_zip = export_path
+                if csv_or_zip.suffix.lower() == ".zip":
+                    csv_or_zip = find_csv_inside_zip(csv_or_zip)
+
+                ingest = CsvIngestArgs(
+                    zip_or_csv=csv_or_zip,
+                    db_path=cfg.geomap_db_path,
+                    zooms=list(spec["zooms"]),
+                    taxon_ids=batch_taxon_ids,
+                    include_slot0=bool(spec.get("include_slot0", True)),
+                    date_field=str(spec.get("csv_date_field", "StartDate")),
+                    occurrence_status=spec.get("csv_occurrence_status"),
+                )
+                
+                JOB_MANAGER.set_phase(
+                    job_id,
+                    "csv_import_raw",
+                    current_step=f"batch={batch_serial} taxa={batch_size}",
+                )
+                touched = import_observations_raw(conn, ingest)
+                
+                summary["raw_scopes"] += len(touched)
+                JOB_MANAGER.advance(
+                    job_id,
+                    phase="csv_import_raw",
+                    current_step=f"batch={batch_serial} scopes={len(touched)}",
+                )
+
+                if not touched:
+                    continue
+
+                years = sorted({k[0] for k in touched})
+                slot_ids = sorted({k[1] for k in touched})
+                zooms_scope = sorted({k[2] for k in touched}, reverse=True)
+                taxon_ids_scope = sorted({k[3] for k in touched})
+
+                all_touched_taxa.update(taxon_ids_scope)
+                all_touched_years.update(years)
+                all_touched_slots.update(slot_ids)
+                all_touched_zooms.update(zooms_scope)
+
+                JOB_MANAGER.set_phase(
+                    job_id,
+                    "csv_consolidate",
+                    current_step=f"batch={batch_serial} scopes={len(touched)}",
+                )
+                layers_written = consolidate_taxon_grid_from_raw(
+                    conn,
+                    taxon_ids=taxon_ids_scope,
+                    years=years,
+                    slot_ids=slot_ids,
+                    zooms=zooms_scope,
+                    include_slot0=bool(spec.get("include_slot0", True)),
+                )
+
+                summary["layers_written"] += int(layers_written)
+                JOB_MANAGER.advance(
+                    job_id,
+                    phase="csv_consolidate",
+                    current_step=f"batch={batch_serial} layers={layers_written}",
+                )
+
+            if not all_touched_taxa:
+                raise RuntimeError("SOS import completed, but no observations were imported")
+
+            rebuild_years = sorted(all_touched_years)
+            if bool(spec.get("include_all_years", True)):
+                rebuild_years = sorted(set(rebuild_years + [YEAR_ALL]))
+
+            rebuild_slots = sorted(set(all_touched_slots))
+            if bool(spec.get("include_slot0", True)):
+                rebuild_slots = sorted(set(rebuild_slots + [SLOT_ALL]))
+                
+            rebuild_zooms = sorted(all_touched_zooms, reverse=True)
+            rebuild_taxa = sorted(all_touched_taxa)
+            
+            JOB_MANAGER.set_phase(
+                job_id,
+                "rebuild_hotmaps",
+                current_step=f"taxa={len(rebuild_taxa)} years={len(rebuild_years)} slots={len(rebuild_slots)} zooms={len(rebuild_zooms)}",
+            )
+
+            for yr in rebuild_years:
+                for slot_id in rebuild_slots:
+                    for z in rebuild_zooms:
+                        JOB_MANAGER.ensure_not_cancelled(job_id)
+                        with conn:
+                            storage.rebuild_hotmap(
+                                conn,
+                                z,
+                                slot_id,
+                                rebuild_taxa,
+                                alpha=float(spec["alpha"]),
+                                beta=float(spec["beta"]),
+                                year=yr,
+                            )
+                        summary["rebuilds_written"] += 1
+                        JOB_MANAGER.advance(
+                            job_id,
+                            phase="rebuild_hotmaps",
+                            current_step=f"zoom={z} year={yr} slot={slot_id}",
+                        )
+
+            meta_payload = dict(summary)
+            meta_payload.update(
+                {
+                    "finished_at": _utc_now_iso(),
+                    "taxon_ids": sorted(all_touched_taxa),
+                    "years": sorted(all_touched_years),
+                    "slot_ids": sorted(all_touched_slots),
+                    "zooms": sorted(all_touched_zooms, reverse=True),
+                }
+            )
+            meta_path = _write_csv_job_metadata(cfg, job_id, meta_payload)
+
+            summary["meta_path"] = str(meta_path)
+            summary["taxon_ids"] = sorted(all_touched_taxa)
+            summary["years"] = sorted(all_touched_years)
+            summary["slot_ids"] = sorted(all_touched_slots)
+            summary["zooms"] = sorted(all_touched_zooms, reverse=True)
+            summary["finished_at"] = _utc_now_iso()
+
+            return summary
+
+        finally:
+            conn.close()
+
+
+    def _write_failed_taxon_batch(
+            cfg: Config,
+            job_id: str,
+            batch_serial: int,
+            taxon_ids: list[int],
+            error: str,
+    ) -> Path:
+        cfg.csv_meta_dir.mkdir(parents=True, exist_ok=True)
+        out = cfg.csv_meta_dir / f"{job_id}__failed_batch{batch_serial:05d}.csv"
+
+        import csv
+        with out.open("w", encoding="utf-8", newline="") as f:
+            w = csv.writer(f)
+            w.writerow(["taxon_id", "error"])
+            for tid in taxon_ids:
+                w.writerow([tid, error])
+                
+        return out
+            
 
     def _run_csv_import_job(job_id: str, spec: dict[str, Any]) -> dict[str, Any]:
         input_path = _resolve_csv_input_path(cfg, spec.get("csv_name"), spec.get("csv_path"))
@@ -1344,6 +1800,36 @@ def make_app() -> Flask:
             "spec": spec,
         }), 202
 
+    @app.post("/api/jobs/sos_import")
+    def jobs_sos_import():
+        body = request.get_json(force=True) or {}
+        spec = _normalize_sos_import_spec(body)
+
+        try:
+            job = JOB_MANAGER.start_job(
+                kind="sos_import",
+                spec=spec,
+                target=lambda job_id: _run_sos_import_job(job_id, spec),
+            )
+        except RuntimeError:
+            current = JOB_MANAGER.get_status().get("current_job")
+            return jsonify({
+                "ok": False,
+                "code": "busy",
+                "error": "A write job is already running",
+                "current_job": current,
+            }), 409
+
+        return jsonify({
+            "ok": True,
+            "job_id": job.job_id,
+            "status": "queued",
+            "status_url": f"/api/jobs/{job.job_id}",
+            "busy": True,
+            "spec": spec,
+        }), 202
+
+    
     @app.post("/api/pipeline/build")
     def pipeline_build():
         body = request.get_json(force=True) or {}

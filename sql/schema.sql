@@ -99,28 +99,24 @@ CREATE TABLE IF NOT EXISTS hotmap_taxa_set (
 --  Raw observation storage
 -- ============================================================
 
+
+
 CREATE TABLE IF NOT EXISTS observations_raw (
-    occurrence_id TEXT PRIMARY KEY,
-
+    occurrence_id TEXT NOT NULL,
+    zoom INTEGER NOT NULL,
     taxon_id INTEGER NOT NULL,
-
-    observation_date TEXT NOT NULL,
+    observation_date TEXT,
     modification_date TEXT,
-
     year INTEGER NOT NULL,
     slot_id INTEGER NOT NULL,
-
     latitude REAL NOT NULL,
     longitude REAL NOT NULL,
-
     tile_x INTEGER NOT NULL,
     tile_y INTEGER NOT NULL,
-    zoom INTEGER NOT NULL,
-
     occurrence_status TEXT,
     individual_count INTEGER,
-
-    imported_at_utc TEXT NOT NULL
+    imported_at_utc TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (occurrence_id, zoom)
 );
 
 CREATE INDEX IF NOT EXISTS idx_obs_taxon_year_slot_zoom
@@ -250,3 +246,6 @@ ON grid_hotmap (zoom, year, slot_id);
 
 CREATE INDEX IF NOT EXISTS idx_taxon_grid_lookup
 ON taxon_grid (taxon_id, zoom, year, slot_id);
+
+
+PRAGMA user_version = 3;

@@ -234,7 +234,7 @@ def upsert_observation_raw(conn, row):
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
 
-        ON CONFLICT(occurrence_id)
+        ON CONFLICT(occurrence_id, zoom)
         DO UPDATE SET
             taxon_id = excluded.taxon_id,
             observation_date = excluded.observation_date,
