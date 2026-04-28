@@ -51,6 +51,12 @@ type JobStartResponse = {
   current_job?: JobSnapshot | null;
 };
 
+
+type SlotCoverage = {
+  slot_id: number;
+  cells: number;
+};
+
 // In dev: prefer proxy (/api -> vite proxy -> backend)
 // Only set VITE_API_BASE if you explicitly want direct mode.
 const API_BASE = import.meta.env.VITE_API_BASE ? String(import.meta.env.VITE_API_BASE) : "";
@@ -60,6 +66,19 @@ function normalizeSlot(s: number) {
   if (s < 1) return 48 + (s % 48);
   if (s > 48) return ((s - 1) % 48) + 1;
   return s;
+}
+
+const MONTHS = [
+  "January", "February", "March", "April",
+  "May", "June", "July", "August",
+  "September", "October", "November", "December",
+];
+
+function slotLabel(slotId: number): string {
+  if (slotId === 0) return "All year";
+  const monthIndex = Math.floor((slotId - 1) / 4);
+  const period = ((slotId - 1) % 4) + 1;
+  return `${MONTHS[monthIndex]} · period ${period}`;
 }
 
 function makeWindow(center: number, radius: number): number[] {
@@ -79,6 +98,9 @@ function formatEta(seconds: number | null): string {
   const remMins = mins % 60;
   return `${hours}h ${remMins}m`;
 }
+
+
+
 
 export default function App() {
   // Build/view controls
@@ -113,6 +135,34 @@ export default function App() {
   const [taxaLoading, setTaxaLoading] = useState(false);
 
   const apiUrl = useCallback((path: string) => (API_BASE ? `${API_BASE}${path}` : path), []);
+  const [slotCoverage, setSlotCoverage] = useState<SlotCoverage[]>([]);
+
+  const fetchSlotCoverage = useCallback(
+    async (zoom: number, yearFrom?: number, yearTo?: number) => {
+      try {
+        const u = new URL(apiUrl("/api/slots/coverage"), window.location.origin);
+        u.searchParams.set("zoom", String(zoom));
+        if (yearFrom !== undefined && yearTo !== undefined) {
+          u.searchParams.set("year_from", String(yearFrom));
+          u.searchParams.set("year_to", String(yearTo));
+        }
+        const res = await fetch(u.toString());
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+          setSlotCoverage(data as SlotCoverage[]);
+        } else {
+          console.warn("slot coverage unexpected response", data);
+          setSlotCoverage([]);
+        }
+      } catch (err) {
+        console.error("slot coverage fetch failed", err);
+        setSlotCoverage([]);
+      }
+    },
+    [apiUrl]
+  );
+
 
   // Default slot on first page load: today's month.quartile
   useEffect(() => {
@@ -160,6 +210,11 @@ export default function App() {
       console.error("Failed to refresh job status", err);
     }
   }, [apiUrl]);
+
+  useEffect(() => {
+    void fetchSlotCoverage(zoom);
+  }, [zoom, fetchSlotCoverage]);
+
 
   useEffect(() => {
     void refreshJobStatus();
@@ -298,6 +353,16 @@ export default function App() {
 
   const displayedJob = currentJob ?? lastJob;
 
+  { /* Normalize slot coverage rendering */ }
+
+  const sortedSlotCoverage = [...slotCoverage]
+    .sort((a, b) => a.slot_id - b.slot_id);
+
+  const maxSlotCells =
+    slotCoverage.length > 0
+      ? Math.max(...slotCoverage.map((s) => s.cells))
+      : 1;
+
   return (
     <div
       style={{
@@ -320,6 +385,9 @@ export default function App() {
             onChange={(e) => setSlotId(Number(e.target.value))}
             disabled={jobsBusy}
           />
+          <div style={{ fontSize: 12, opacity: 0.8 }}>
+            {slotLabel(slotId)}
+          </div>
           <div style={{ fontSize: 12, opacity: 0.7 }}>
             slot_id: 0 = build all 1..48 and derive slot 0, 1..48 = specific seasonal slot
           </div>
@@ -363,6 +431,64 @@ export default function App() {
           </div>
         </div>
 
+        { /* Rendering of bar-chart on coverage per period */}
+        <div style={{ marginTop: 12 }}>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>
+            Slots with data at zoom {zoom}
+          </div>
+
+          {sortedSlotCoverage.length === 0 && (
+            <div style={{ fontSize: 12, opacity: 0.7 }}>
+              No slot data for this zoom
+            </div>
+          )}
+
+          {sortedSlotCoverage.map((s) => (
+            <div
+              key={s.slot_id}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "150px 1fr 42px",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 12,
+                marginBottom: 3,
+              }}
+            >
+              <div>{slotLabel(s.slot_id)}</div>
+
+              <div
+                style={{
+                  height: 8,
+                  background: "#eee",
+                  borderRadius: 4,
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    height: 8,
+                    width: `${Math.max(
+                      2,
+                      (s.cells / maxSlotCells) * 100
+                    )}%`,
+                    background: "#3a7",
+                  }}
+                />
+              </div>
+
+              <div
+                style={{
+                  textAlign: "right",
+                  opacity: 0.7,
+                }}
+              >
+                {s.cells}
+              </div>
+            </div>
+          ))}
+        </div>
+
         {status && (
           <div style={{ marginTop: 8, fontSize: 12, whiteSpace: "pre-wrap" }}>
             {status}
@@ -381,7 +507,7 @@ export default function App() {
           >
             <div>
               <b>{currentJob ? "Job running" : "Last job"}</b>
-              {displayedJob?.job_id ? `: ${displayedJob.job_id}` : ""}              
+              {displayedJob?.job_id ? `: ${displayedJob.job_id}` : ""}
             </div>
             {displayedJob && (
               <>
@@ -414,6 +540,12 @@ export default function App() {
               max={48}
               onChange={(e) => setSlotCenter(Number(e.target.value))}
             />
+          </div>
+          <div style={{ fontSize: 12, opacity: 0.8 }}>
+            Center: {slotLabel(slotCenter)}
+          </div>
+          <div style={{ fontSize: 12, opacity: 0.7 }}>
+            Viewing: {slotIdsForView.map(slotLabel).join(", ")}
           </div>
           <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <input
@@ -502,7 +634,7 @@ export default function App() {
         {clicked && (
           <div>
             <div>
-                   x={clicked.x} y={clicked.y}
+              x={clicked.x} y={clicked.y}
             </div>
 
             <div style={{ marginTop: 8 }}>
@@ -511,10 +643,16 @@ export default function App() {
               {!taxaLoading && taxa.length === 0 && <div style={{ opacity: 0.7 }}>No taxa</div>}
 
               {!taxaLoading && taxa.length > 0 && (
-                <ul style={{ paddingLeft: 18 }}>
+                <ul style={{ paddingLeft: 18, margin: 0 }}>
                   {taxa.slice(0, 80).map((t) => (
-                    <li key={t.taxon_id}>
-                      <b>{t.swedish_name || t.scientific_name || t.taxon_id}</b> ({t.observations_count})
+                    <li key={t.taxon_id} style={{ marginBottom: 6 }}>
+                      <div>
+                        <b className="latin">{t.scientific_name || String(t.taxon_id)}</b>
+                        <span style={{ opacity: 0.75 }}> : {t.observations_count}</span>
+                      </div>
+                      {t.swedish_name && (
+                        <div style={{ fontSize: 12, opacity: 0.8 }}>{t.swedish_name}</div>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -522,7 +660,7 @@ export default function App() {
             </div>
           </div>
         )}
-	    </div>
+      </div>
 
       <div style={{ position: "relative", height: "100%", minWidth: 0 }}>
         <MapView

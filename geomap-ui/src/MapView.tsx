@@ -22,6 +22,10 @@ type Props = {
   selected?: { x: number; y: number } | null;
   fitRequestId: number;
 
+  // New behavior toggles
+  autoFit?: boolean;         // fit whenever fitRequestId changes
+  fitOnFirstLoad?: boolean;  // fit once on first successful geo load
+
   onCellClick: (p: { x: number; y: number; zoom: number; slotId: number }) => void;
 };
 
@@ -30,52 +34,69 @@ function apiUrl(apiBase: string, path: string) {
   return new URL(path, base).toString();
 }
 
-export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId, onCellClick }: Props) {
+function fitToGeoJson(map: Map, geo: any) {
+  const features = geo?.features;
+  if (!Array.isArray(features) || features.length === 0) return;
+
+  let minLon = Infinity;
+  let minLat = Infinity;
+  let maxLon = -Infinity;
+  let maxLat = -Infinity;
+
+  for (const f of features) {
+    const ring = f?.geometry?.coordinates?.[0];
+    if (!Array.isArray(ring)) continue;
+
+    for (const pt of ring) {
+      const lon = Number(pt?.[0]);
+      const lat = Number(pt?.[1]);
+      if (!Number.isFinite(lon) || !Number.isFinite(lat)) continue;
+
+      minLon = Math.min(minLon, lon);
+      minLat = Math.min(minLat, lat);
+      maxLon = Math.max(maxLon, lon);
+      maxLat = Math.max(maxLat, lat);
+    }
+  }
+
+  if (!Number.isFinite(minLon) || !Number.isFinite(minLat)) return;
+
+  map.fitBounds(
+    [
+      [minLon, minLat],
+      [maxLon, maxLat],
+    ],
+    { padding: 40, animate: true }
+  );
+}
+
+export function MapView({
+  apiBase,
+  zoom,
+  slotId,
+  slotIds,
+  selected,
+  fitRequestId,
+  autoFit = false,
+  fitOnFirstLoad = false,
+  onCellClick,
+}: Props) {
   const mapRef = useRef<Map | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const popupRef = useRef<Popup | null>(null);
+  const loadedRef = useRef(false);
+  const lastGeoRef = useRef<any>(null);
+  const didInitialFitRef = useRef(false);
 
   const onCellClickRef = useRef(onCellClick);
   const zoomRef = useRef(zoom);
   const slotIdRef = useRef(slotId);
 
-  const popupRef = useRef<Popup | null>(null);
-  const loadedRef = useRef(false);
-  const lastGeoRef = useRef<any>(null);
-
-  function fitToGeoJson(map: Map, geo: any) {
-    const features = geo?.features;
-    if (!Array.isArray(features) || features.length === 0) return;
-
-    let minLon = Infinity;
-    let minLat = Infinity;
-    let maxLon = -Infinity;
-    let maxLat = -Infinity;
-
-    for (const f of features) {
-      const ring = f?.geometry?.coordinates?.[0];
-      if (!Array.isArray(ring)) continue;
-
-      for (const pt of ring) {
-        const lon = Number(pt?.[0]);
-        const lat = Number(pt?.[1]);
-        if (!Number.isFinite(lon) || !Number.isFinite(lat)) continue;
-        minLon = Math.min(minLon, lon);
-        minLat = Math.min(minLat, lat);
-        maxLon = Math.max(maxLon, lon);
-        maxLat = Math.max(maxLat, lat);
-      }
-    }
-
-    if (!Number.isFinite(minLon) || !Number.isFinite(minLat)) return;
-
-    map.fitBounds(
-      [
-        [minLon, minLat],
-        [maxLon, maxLat],
-      ],
-      { padding: 40, animate: true }
-    );
-  }
+  const sourceId = "hotmap";
+  const layerFill = "hotmap-fill";
+  const layerLine = "hotmap-line";
+  const layerSelected = "hotmap-selected";
 
   useEffect(() => {
     onCellClickRef.current = onCellClick;
@@ -85,11 +106,6 @@ export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId
     zoomRef.current = zoom;
     slotIdRef.current = slotId;
   }, [zoom, slotId]);
-
-  const sourceId = "hotmap";
-  const layerFill = "hotmap-fill";
-  const layerLine = "hotmap-line";
-  const layerSelected = "hotmap-selected";
 
   const hotmapUrl = useMemo(() => {
     const hasWindow = Array.isArray(slotIds) && slotIds.length > 0;
@@ -107,6 +123,7 @@ export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId
     return u.toString();
   }, [apiBase, zoom, slotId, slotIds]);
 
+  // Init map exactly once
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -238,6 +255,7 @@ export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId
       map.on("click", layerFill, (e: MapMouseEvent) => {
         const f = e.features?.[0] as any;
         if (!f) return;
+
         const p = f.properties || {};
         if (p.x == null || p.y == null) return;
 
@@ -248,22 +266,6 @@ export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId
           slotId: Number(p.slot_id ?? slotIdRef.current),
         });
       });
-
-      void (async () => {
-        try {
-          const res = await fetch(hotmapUrl);
-          const text = await res.text();
-          if (!res.ok) {
-            throw new Error(`Hotmap HTTP ${res.status}: ${text.slice(0, 300)}`);
-          }
-          const geo = JSON.parse(text);
-          const src = map.getSource(sourceId) as GeoJSONSource | undefined;
-          if (src) src.setData(geo);
-          lastGeoRef.current = geo;
-        } catch (err) {
-          console.error("Failed to load initial hotmap", err);
-        }
-      })();
 
       setTimeout(() => map.resize(), 0);
     });
@@ -276,8 +278,9 @@ export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId
       map.remove();
       mapRef.current = null;
     };
-  }, [apiBase, hotmapUrl]);
+  }, []);
 
+  // Reload geojson when request params change
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -292,13 +295,26 @@ export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId
       try {
         const res = await fetch(hotmapUrl, { signal: ac.signal });
         const text = await res.text();
+
         if (!res.ok) {
           throw new Error(`Hotmap HTTP ${res.status}: ${text.slice(0, 300)}`);
         }
+
         const geo = JSON.parse(text);
         src.setData(geo);
         lastGeoRef.current = geo;
-        console.log("Hotmap loaded", { zoom, slotId, slotIds, features: geo?.features?.length });
+
+        if (fitOnFirstLoad && !didInitialFitRef.current) {
+          fitToGeoJson(map, geo);
+          didInitialFitRef.current = true;
+        }
+
+        console.log("Hotmap loaded", {
+          zoom,
+          slotId,
+          slotIds,
+          features: geo?.features?.length,
+        });
       } catch (err) {
         if (!ac.signal.aborted) {
           console.error("Failed to load hotmap", err);
@@ -307,8 +323,9 @@ export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId
     })();
 
     return () => ac.abort();
-  }, [hotmapUrl, zoom, slotId, slotIds]);
+  }, [hotmapUrl, fitOnFirstLoad, zoom, slotId, slotIds]);
 
+  // Selected highlight only
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -326,13 +343,18 @@ export function MapView({ apiBase, zoom, slotId, slotIds, selected, fitRequestId
     ]);
   }, [selected]);
 
+  // Explicit fit trigger only when enabled
   useEffect(() => {
+    if (!autoFit) return;
+
     const map = mapRef.current;
     if (!map) return;
+
     const geo = lastGeoRef.current;
     if (!geo) return;
+
     fitToGeoJson(map, geo);
-  }, [fitRequestId]);
+  }, [fitRequestId, autoFit]);
 
   return (
     <div

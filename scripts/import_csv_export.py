@@ -36,10 +36,17 @@ from typing import Dict, Iterable, Tuple, Optional, List, Set
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-from geomap import storage  # noqa: E402
+from geomap import storage  
+from geomap.config import Config
+from geomap.sos_export import export_csv_zip_to_file
 
 
 SLOT_ALL = 0
+
+
+
+def normalize_occurrence_id(row: Dict[str, str]) -> str:
+    return ((row.get("OccurrenceId") or row.get("\ufeffOccurrenceId") or "").strip())
 
 
 def utc_now_iso() -> str:
@@ -138,8 +145,7 @@ def iter_observations_tsv(csv_path: Path) -> Iterable[Dict[str, str]]:
         for row in reader:
             # normalize keys a bit (strip)
             yield { (k or "").strip(): (v or "").strip() for k, v in row.items() }
-
-
+            
 def parse_float(row: Dict[str, str], key: str) -> Optional[float]:
     s = row.get(key, "")
     if not s:
@@ -149,7 +155,6 @@ def parse_float(row: Dict[str, str], key: str) -> Optional[float]:
     except Exception:
         return None
 
-
 def parse_int(row: Dict[str, str], key: str) -> Optional[int]:
     s = row.get(key, "")
     if not s:
@@ -158,6 +163,55 @@ def parse_int(row: Dict[str, str], key: str) -> Optional[int]:
         return int(float(s))
     except Exception:
         return None
+
+def read_taxon_ids_from_csv(csv_path: Path) -> List[int]:
+    """
+    Reads taxon ids from CSV where first column contains taxon_id.
+    First row is assumed header.
+    """
+
+    if not csv_path.exists():
+        raise FileNotFoundError(str(csv_path))
+
+    out: List[int] = []
+    seen: Set[int] = set()
+
+    with csv_path.open("r", encoding="utf-8-sig", newline="") as f:
+        reader = csv.reader(f)
+
+        header = next(reader, None)
+        if header is None:
+            return []
+
+        for row in reader:
+            if not row:
+                continue
+
+            try:
+                tid = int(float(row[0]))
+            except Exception:
+                continue
+
+            if tid <= 0:
+                continue
+
+            if tid in seen:
+                continue
+
+            seen.add(tid)
+            out.append(tid)
+
+    return out
+
+
+def chunked(values: List[int], batch_size: int):
+    if batch_size <= 0:
+        yield values
+        return
+
+    for i in range(0, len(values), batch_size):
+        yield values[i:i + batch_size]
+    
     
 def upsert_observation_raw(conn, row):
     conn.execute(
@@ -258,17 +312,14 @@ def import_observations_raw(
         if not ds:
             continue
 
-        # export uses YYYY-MM-DD
         try:
             d = parse_yyyy_mm_dd(ds)
             year = int(d.year)
             slot_id = slot_from_date(d)
         except Exception:
             continue
-        
-        year = int(ds[0:4])
 
-        occurrence_id = (row.get("OccurrenceId") or "").strip()
+        occurrence_id = normalize_occurrence_id(row)
         if not occurrence_id:
             continue
         
@@ -304,10 +355,7 @@ def import_observations_raw(
             touched.add((year, slot_id, z, tid))
 
         kept += 1
-
-    print(f"[import] rows={rows} kept={kept} (after filters)")
     return touched
-
 
 def _replace_taxon_grid_from_rows(
     conn: sqlite3.Connection,
@@ -493,82 +541,162 @@ def consolidate_taxon_grid_from_raw(
 
 
 
+
+def make_sos_export_filter(
+    *,
+    taxon_ids: List[int],
+    year_from: int,
+    year_to: int,
+) -> Dict[str, object]:
+    return {
+        "taxon": {
+            "ids": taxon_ids,
+            "includeUnderlyingTaxa": True,
+        },
+        "date": {
+            "startDate": f"{year_from}-01-01T00:00:00Z",
+            "endDate": f"{year_to}-12-31T23:59:59Z",
+            "dateFilterType": "BetweenStartDateAndEndDate",
+        },
+    }
+
+    
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Import SOS CSV export ZIP/CSV into geomap.sqlite taxon_grid (slot-aware).")
-    ap.add_argument("zip_or_csv", type=str, help="Export.zip or extracted CSV file path")
+    ap = argparse.ArgumentParser(description="Fetch SOS CSV exports in taxon batches and import into geomap.sqlite.")
+
     ap.add_argument("--db", required=True, type=str, help="Path to geomap.sqlite")
-    ap.add_argument("--zooms", default="15,14,13", type=str, help="Comma-separated zooms (slippy tile zooms)")
-    ap.add_argument("--taxon-ids", default="", type=str, help="Comma-separated dyntaxa taxon ids (optional)")
-    ap.add_argument("--include-slot0", action="store_true", help="Also build slot_id=0 (all-year) by summing slots")
-    ap.add_argument("--date-field", default="StartDate", choices=["StartDate", "EndDate"], help="Which date column to slotize")
-    ap.add_argument("--occurrence-status", default="", type=str, help="Optional filter, e.g. present")
+    ap.add_argument("--zooms", default="15,14,13", type=str)
+    
+    ap.add_argument("--taxon-list-csv", required=True, type=str)
+    ap.add_argument("--batch-size", default=100, type=int)
+    
+    ap.add_argument("--year-from", required=True, type=int)
+    ap.add_argument("--year-to", required=True, type=int)
+    
+    ap.add_argument("--csv-stash-dir", default="", type=str)
+    ap.add_argument("--import-existing", default="", type=str, help="Debug: import an existing ZIP/CSV instead of fetching SOS")
+    
+    ap.add_argument("--include-slot0", action="store_true")
+    ap.add_argument("--date-field", default="StartDate", choices=["StartDate", "EndDate"])
+    ap.add_argument("--occurrence-status", default="present", type=str)
+
 
     args0 = ap.parse_args()
 
-    zip_or_csv = Path(args0.zip_or_csv).expanduser().resolve()
     db_path = Path(args0.db).expanduser().resolve()
+    taxon_list_csv = Path(args0.taxon_list_csv).expanduser().resolve()
 
     zooms = [int(z.strip()) for z in args0.zooms.split(",") if z.strip()]
     zooms = sorted(set(zooms), reverse=True)
     if not zooms:
         raise SystemExit("No zooms provided")
 
-    taxon_ids: Optional[List[int]] = None
-    if args0.taxon_ids.strip():
-        taxon_ids = [int(x.strip()) for x in args0.taxon_ids.split(",") if x.strip()]
+    taxon_ids_all = read_taxon_ids_from_csv(taxon_list_csv)
+    if not taxon_ids_all:
+        raise SystemExit(f"No taxon ids found in {taxon_list_csv}")
 
+    print(f"[import] loaded {len(taxon_ids_all)} taxon ids from {taxon_list_csv}")
+
+    batches = list(chunked(taxon_ids_all, int(args0.batch_size)))
     occ = args0.occurrence_status.strip() or None
 
-    # unzip if needed
-    if zip_or_csv.suffix.lower() == ".zip":
-        extracted = find_csv_inside_zip(zip_or_csv)
-        print(f"[import] extracted CSV: {extracted}")
-        zip_or_csv = extracted
-
-    if not zip_or_csv.exists():
-        raise SystemExit(f"Missing input file: {zip_or_csv}")
-    if not db_path.exists():
-        print(f"[import] DB does not exist yet, will create: {db_path}")
-
-    ingest = IngestArgs(
-        zip_or_csv=zip_or_csv,
-        db_path=db_path,
-        zooms=zooms,
-        taxon_ids=taxon_ids,
-        include_slot0=bool(args0.include_slot0),
-        date_field=args0.date_field,
-        occurrence_status=occ,
+    cfg = Config(repo_root=REPO_ROOT)
+    
+    stash_dir = (
+        Path(args0.csv_stash_dir).expanduser().resolve()
+        if args0.csv_stash_dir.strip()
+        else cfg.csv_stash_dir
     )
-
-    conn = storage.connect(ingest.db_path)
-    conn.isolation_level = None  # autocommit
+    stash_dir.mkdir(parents=True, exist_ok=True)
+    
+    conn = storage.connect(db_path)
+    conn.isolation_level = None
 
     try:
         storage.ensure_schema(conn)
+        
+        total_touched_scopes = 0
+        total_layers_written = 0
 
-        touched = import_observations_raw(conn, ingest)
-        print(f"[import] touched raw scopes: {len(touched)}")
+        for batch_index, batch_taxon_ids in enumerate(batches, start=1):
+            print(f"[import] batch {batch_index}/{len(batches)} taxa={len(batch_taxon_ids)}")
 
-        years = sorted({k[0] for k in touched})
-        slot_ids = sorted({k[1] for k in touched})
-        zooms = sorted({k[2] for k in touched}, reverse=True)
-        taxon_ids_scope = sorted({k[3] for k in touched})
+            if args0.import_existing.strip():
+                export_path = Path(args0.import_existing).expanduser().resolve()
+                if not export_path.exists():
+                    raise SystemExit(f"Missing --import-existing file: {export_path}")
+            else:
+                stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+                export_path = stash_dir / f"{stamp}__batch{batch_index:04d}_taxa{len(batch_taxon_ids)}.zip"
 
-        layers_written = consolidate_taxon_grid_from_raw(
-            conn,
-            taxon_ids=taxon_ids_scope,
-            years=years,
-            slot_ids=slot_ids,
-            zooms=zooms,
-            include_slot0=ingest.include_slot0,
-        )
+                search_filter = make_sos_export_filter(
+                    taxon_ids=batch_taxon_ids,
+                    year_from=int(args0.year_from),
+                    year_to=int(args0.year_to),
+                )
 
-        print(f"[import] wrote consolidated layers: {layers_written}")
+                print(f"[export] batch {batch_index}: writing {export_path}")
+                export_csv_zip_to_file(
+                    cfg,
+                    search_filter,
+                    export_path,
+                    output_field_set="All",
+                    gzip=True,
+                    culture_code="sv-SE",
+                )
+            
+            if export_path.stat().st_size == 0:
+                print(f"[import] batch {batch_index}: empty export, skipping")
+                continue
+
+            csv_or_zip = export_path
+            if csv_or_zip.suffix.lower() == ".zip":
+                extracted = find_csv_inside_zip(csv_or_zip)
+                print(f"[import] batch {batch_index}: extracted CSV: {extracted}")
+                csv_or_zip = extracted
+
+            ingest = IngestArgs(
+                zip_or_csv=csv_or_zip,
+                db_path=db_path,
+                zooms=zooms,
+                taxon_ids=batch_taxon_ids,
+                include_slot0=bool(args0.include_slot0),
+                date_field=args0.date_field,
+                occurrence_status=occ,
+            )
+
+            touched = import_observations_raw(conn, ingest)
+            print(f"[import] batch {batch_index}: touched raw scopes: {len(touched)}")
+
+            if not touched:
+                continue
+
+            years = sorted({k[0] for k in touched})
+            slot_ids = sorted({k[1] for k in touched})
+            zooms_scope = sorted({k[2] for k in touched}, reverse=True)
+            taxon_ids_scope = sorted({k[3] for k in touched})
+
+            layers_written = consolidate_taxon_grid_from_raw(
+                conn,
+                taxon_ids=taxon_ids_scope,
+                years=years,
+                slot_ids=slot_ids,
+                zooms=zooms_scope,
+                include_slot0=bool(args0.include_slot0),
+            )
+            
+            total_touched_scopes += len(touched)
+            total_layers_written += layers_written
+            
+            print(f"[import] batch {batch_index}: wrote consolidated layers: {layers_written}")
+            
+        print(f"[import] total touched raw scopes: {total_touched_scopes}")
+        print(f"[import] total consolidated layers: {total_layers_written}")
         print("[import] done.")
         return 0
+
     finally:
         conn.close()
-
-
+    
 if __name__ == "__main__":
     raise SystemExit(main())

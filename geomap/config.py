@@ -43,6 +43,8 @@ class Config:
     logs_dir: Path = None             # type: ignore[assignment]
     geomap_lists_dir: Path = None     # type: ignore[assignment]
     geomap_out_dir: Path = None       # type: ignore[assignment]
+    csv_stash_dir: Path = None        # type: ignore[assignment]
+    csv_meta_dir: Path = None         # type: ignore[assignment]
 
     hotmap_alpha: float = 2.0
     hotmap_beta: float = 0.5
@@ -71,6 +73,8 @@ class Config:
             default_logs_dir       = ove_stage / "logs" / "geomap"
             default_geomap_lists   = ove_stage / "lists" / "geomap"
             default_geomap_out     = default_geomap_lists
+            default_csv_stash_dir  = ove_stage / "stash" / "csv"
+            default_csv_meta_dir   = ove_stage / "stash" / "csv_meta"
         else:
             # Legacy / non-OVE fallbacks
             default_missing_species = self.repo_root / ".." / "boston_sos_observatory" / "data" / "out" / "missing_species.csv"
@@ -82,6 +86,8 @@ class Config:
             default_logs_dir        = self.repo_root / "logs"
             default_geomap_lists    = self.repo_root / "data" / "out"
             default_geomap_out      = self.repo_root / "data" / "out"
+            default_csv_stash_dir   = self.repo_root / "data" / "stash" / "csv"
+            default_csv_meta_dir    = self.repo_root / "data" / "stash" / "csv_meta"
 
         object.__setattr__(self, "missing_species_csv", _p("GEOMAP_MISSING_SPECIES_CSV", default_missing_species))
         object.__setattr__(self, "observed_db_path",     _p("GEOMAP_OBSERVED_DB",        default_observed_db))
@@ -93,3 +99,6 @@ class Config:
 
         object.__setattr__(self, "geomap_lists_dir",     _p("GEOMAP_LISTS_DIR",         default_geomap_lists))
         object.__setattr__(self, "geomap_out_dir",       _p("GEOMAP_OUT_DIR",           default_geomap_out))
+
+        object.__setattr__(self, "csv_stash_dir", _p("GEOMAP_CSV_STASH_DIR", default_csv_stash_dir))
+        object.__setattr__(self, "csv_meta_dir",  _p("GEOMAP_CSV_META_DIR",  default_csv_meta_dir))

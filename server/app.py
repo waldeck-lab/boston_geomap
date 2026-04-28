@@ -24,13 +24,14 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from typing import Any
-from pathlib import Path                                                                                                 
-from typing import Any, Callable, Optional                                                                               
-from dataclasses import dataclass, field                                                                                 
-from copy import deepcopy                                                                                                
-from datetime import datetime, timezone                                                                                  
-import time                                                                                                              
-import uuid                                                                                                              
+from pathlib import Path
+from typing import Any, Callable, Optional
+from dataclasses import dataclass, field
+from copy import deepcopy
+from datetime import datetime, timezone
+import time
+import json
+import uuid
 import traceback
 
 from flask import Flask, request, jsonify
@@ -52,6 +53,12 @@ from geomap.sos_client import SOSClient, stable_gridcells_hash, throttle
 from geomap.distance import haversine_km, distance_weight_rational, distance_weight_exp
 from geomap.storage import YEAR_MAX, YEAR_MIN, YEAR_ALL
 from geomap.config import SLOT_MIN, SLOT_MAX, SLOT_ALL
+from scripts.import_csv_export import (
+    IngestArgs as CsvIngestArgs,
+    find_csv_inside_zip,
+    import_observations_raw,
+    consolidate_taxon_grid_from_raw,
+)
 
 import threading                                                                                                         
 import logging
@@ -398,6 +405,9 @@ def _job_log_spec_summary(spec: dict) -> dict:
         "n": spec.get("n"),
         "alpha": spec.get("alpha"),
         "beta": spec.get("beta"),
+        "csv_name": spec.get("csv_name"),
+        "csv_path": spec.get("csv_path"),
+        "full_reconsolidate": spec.get("full_reconsolidate"),
     }
 
 
@@ -630,6 +640,36 @@ def parse_taxon_ids_arg(value: Any, *, name: str = "taxon_ids") -> list[int]:
         out.append(tid)
     return sorted(set(out))
 
+def _resolve_csv_input_path(cfg: Config, csv_name: str | None, csv_path: str | None) -> Path:
+    if csv_path:
+        p = Path(csv_path).expanduser().resolve()
+        if not p.exists():
+            raise RuntimeError(f"csv_path does not exist: {p}")
+        return p
+    if csv_name:
+        p = (cfg.csv_stash_dir / csv_name).expanduser().resolve()
+        if not p.exists():
+            raise RuntimeError(f"csv_name not found in stash: {p}")
+        return p
+    raise RuntimeError("Either csv_name or csv_path must be provided for refresh_mode='csv_import'")
+
+def _write_csv_job_metadata(cfg: Config, job_id: str, payload: dict[str, Any]) -> Path:
+    cfg.csv_meta_dir.mkdir(parents=True, exist_ok=True)
+    meta_path = cfg.csv_meta_dir / f"{job_id}.json"
+    meta_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return meta_path
+
+def _copy_to_stash(job_id: str, src: Path, dst_dir: Path) -> Path:
+    import shutil
+
+    dst_dir.mkdir(parents=True, exist_ok=True)
+    safe_name = src.name
+    dst = dst_dir / f"{job_id}__{safe_name}"
+    shutil.copy2(src, dst)
+    return dst
+
+
+
 
     
 def make_app() -> Flask:
@@ -641,6 +681,8 @@ def make_app() -> Flask:
     logger.info("OVE_STAGE_DIR=%s", os.getenv("OVE_STAGE_DIR", ""))
     logger.info("Resolved logs_dir=%s", cfg.logs_dir)
     
+    logger.info("Resolved csv_stash_dir=%s (%s)", cfg.csv_stash_dir, _path_status(cfg.csv_stash_dir))
+    logger.info("Resolved csv_meta_dir=%s (%s)", cfg.csv_meta_dir, _path_status(cfg.csv_meta_dir))
     logger.info("Resolved missing_species_csv=%s (%s)", cfg.missing_species_csv, _path_status(cfg.missing_species_csv))
     logger.info("Resolved geomap_db_path=%s (%s)", cfg.geomap_db_path, _path_status(cfg.geomap_db_path))
     logger.info("Resolved observed_db_path=%s (%s)", cfg.observed_db_path, _path_status(cfg.observed_db_path))
@@ -795,9 +837,20 @@ def make_app() -> Flask:
     def _normalize_rebuild_spec(body: dict[str, Any], *, default_n: int, default_all_slots: bool) -> dict[str, Any]:
         this_year = datetime.now(timezone.utc).year
         year_from, year_to = parse_year_range_body(body, default_from=2000, default_to=this_year)
+
         refresh_mode = str(body.get("refresh_mode", "upstream")).strip().lower()
-        if refresh_mode not in {"upstream", "local"}:
-            raise BadRequest(description="refresh_mode must be 'upstream' or 'local'")
+        if refresh_mode not in {"upstream", "local", "csv_import", "raw_rebuild"}:
+            raise BadRequest(description="refresh_mode must be 'upstream', 'local', 'csv_import' or 'raw_rebuild'")
+
+        full_reconsolidate = bool(body.get("full_reconsolidate", False))
+
+        csv_name = (body.get("csv_name") or "").strip() or None
+        csv_path = (body.get("csv_path") or "").strip() or None
+        stash_copy = bool(body.get("stash_copy", True))
+        csv_date_field = str(body.get("csv_date_field", "StartDate")).strip()
+        if csv_date_field not in {"StartDate", "EndDate"}:
+            raise BadRequest(description="csv_date_field must be 'StartDate' or 'EndDate'")
+        csv_occurrence_status = (body.get("csv_occurrence_status") or "present").strip() or None
 
         if year_from == YEAR_ALL or year_to == YEAR_ALL:
             raise BadRequest(description="jobs/rebuild requires concrete year_from/year_to, not 0")
@@ -818,6 +871,10 @@ def make_app() -> Flask:
             raise BadRequest(description="slot_id 0 is derived; pass slots 1..48 and set include_slot0=true")
 
         include_slot0 = bool(body.get("include_slot0", True))
+        if refresh_mode == "csv_import" and not include_slot0:
+            # allow false, but the current raw pipeline commonly derives slot0 and the UI relies on it
+            pass
+
         include_all_years = bool(body.get("include_all_years", True))
         zooms = parse_zooms(body.get("zooms", [ZOOM_DEFAULT]))
         taxon_ids = parse_taxon_ids_arg(body.get("taxon_ids", None), name="taxon_ids")
@@ -825,6 +882,11 @@ def make_app() -> Flask:
         spec = {
             "refresh_mode": refresh_mode,
             "taxon_ids": taxon_ids,
+            "csv_name": csv_name,
+            "csv_path": csv_path,
+            "stash_copy": stash_copy,
+            "csv_date_field": csv_date_field,
+            "csv_occurrence_status": csv_occurrence_status,
             "fetch_slots": sorted(set(fetch_slots)),
             "final_slots": sorted(set(fetch_slots + ([SLOT_ALL] if include_slot0 else []))),
             "zooms": zooms,
@@ -837,14 +899,204 @@ def make_app() -> Flask:
             "year_to": int(year_to),
             "include_slot0": include_slot0,
             "include_all_years": include_all_years,
+            "full_reconsolidate": full_reconsolidate,
         }
         return spec
 
+    def _run_csv_import_job(job_id: str, spec: dict[str, Any]) -> dict[str, Any]:
+        input_path = _resolve_csv_input_path(cfg, spec.get("csv_name"), spec.get("csv_path"))
+        stashed_path = _copy_to_stash(job_id, input_path, cfg.csv_stash_dir) if bool(spec.get("stash_copy", True)) else input_path
+        extracted_or_csv = find_csv_inside_zip(stashed_path) if stashed_path.suffix.lower() == ".zip" else stashed_path
+
+        conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None
+        try:
+            storage.ensure_schema(conn)
+
+            ingest = CsvIngestArgs(
+                zip_or_csv=extracted_or_csv,
+                db_path=cfg.geomap_db_path,
+                zooms=list(spec["zooms"]),
+                taxon_ids=[int(t) for t in (spec.get("taxon_ids") or [])] or None,
+                include_slot0=bool(spec.get("include_slot0", True)),
+                date_field=str(spec.get("csv_date_field", "StartDate")),
+                occurrence_status=spec.get("csv_occurrence_status"),
+            )
+
+            JOB_MANAGER.set_phase(job_id, "csv_import_raw", current_step=stashed_path.name)
+            touched = import_observations_raw(conn, ingest)
+
+            years = sorted({k[0] for k in touched})
+            slot_ids = sorted({k[1] for k in touched})
+            zooms_scope = sorted({k[2] for k in touched}, reverse=True)
+            taxon_ids_scope = sorted({k[3] for k in touched})
+
+            JOB_MANAGER.set_phase(job_id, "csv_consolidate", current_step=f"scopes={len(touched)}")
+            layers_written = consolidate_taxon_grid_from_raw(
+                conn,
+                taxon_ids=taxon_ids_scope,
+                years=years,
+                slot_ids=slot_ids,
+                zooms=zooms_scope,
+                include_slot0=ingest.include_slot0,
+            )
+
+            meta_payload = {
+                "job_id": job_id,
+                "source_path": str(input_path),
+                "stashed_path": str(stashed_path),
+                "csv_path": str(extracted_or_csv),
+                "imported_at": _utc_now_iso(),
+                "taxon_ids": taxon_ids_scope,
+                "years": years,
+                "slot_ids": slot_ids,
+                "zooms": zooms_scope,
+                "touched_scopes": len(touched),
+                "layers_written": layers_written,
+            }
+            meta_path = _write_csv_job_metadata(cfg, job_id, meta_payload)
+
+            return {
+                "ok": True,
+                "job_id": job_id,
+                "source_path": str(input_path),
+                "stashed_path": str(stashed_path),
+                "csv_path": str(extracted_or_csv),
+                "meta_path": str(meta_path),
+                "touched_scopes": len(touched),
+                "layers_written": layers_written,
+                "taxon_ids": taxon_ids_scope,
+                "years": years,
+                "slot_ids": slot_ids,
+                "zooms": zooms_scope,
+            }
+        finally:
+            conn.close()
+
+    def _run_raw_rebuild_job(job_id: str, spec: dict[str, Any]) -> dict[str, Any]:
+        conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None
+        try:
+            storage.ensure_schema(conn)
+
+            explicit_taxon_ids = [int(t) for t in (spec.get("taxon_ids") or [])]
+            years_scope = list(range(int(spec["year_from"]), int(spec["year_to"]) + 1))
+            zooms_scope = list(spec["zooms"])
+            slot_ids_scope = list(spec["fetch_slots"])
+            full_reconsolidate = bool(spec.get("full_reconsolidate", False))
+
+            if full_reconsolidate:
+                JOB_MANAGER.set_phase(job_id, "raw_scan", current_step="discovering raw scopes")
+
+                where = []
+                args: list[Any] = []
+
+                if explicit_taxon_ids:
+                    where.append("taxon_id IN ({})".format(",".join(["?"] * len(explicit_taxon_ids))))
+                    args.extend(explicit_taxon_ids)
+
+                if zooms_scope:
+                    where.append("zoom IN ({})".format(",".join(["?"] * len(zooms_scope))))
+                    args.extend([int(z) for z in zooms_scope])
+
+                if years_scope:
+                    where.append("year IN ({})".format(",".join(["?"] * len(years_scope))))
+                    args.extend([int(y) for y in years_scope])
+
+                if slot_ids_scope:
+                    where.append("slot_id IN ({})".format(",".join(["?"] * len(slot_ids_scope))))
+                    args.extend([int(s) for s in slot_ids_scope])
+
+                wh = ("WHERE " + " AND ".join(where)) if where else ""
+                rows = conn.execute(
+                    f"""
+                    SELECT DISTINCT taxon_id, year, zoom, slot_id
+                    FROM observations_raw
+                    {wh}
+                    ORDER BY taxon_id, year, zoom, slot_id;
+                    """,
+                    args,
+                ).fetchall()
+
+                taxon_ids_scope = sorted({int(r[0]) for r in rows})
+                years_scope = sorted({int(r[1]) for r in rows})
+                zooms_scope = sorted({int(r[2]) for r in rows}, reverse=True)
+                slot_ids_scope = sorted({int(r[3]) for r in rows})
+            else:
+                taxon_ids_scope = explicit_taxon_ids
+
+            if not taxon_ids_scope:
+                raise RuntimeError("No raw observations found for requested raw_rebuild scope")
+
+            JOB_MANAGER.set_phase(
+                job_id,
+                "raw_consolidate",
+                current_step=f"taxa={len(taxon_ids_scope)} years={len(years_scope)} slots={len(slot_ids_scope)}",
+            )
+
+            layers_written = consolidate_taxon_grid_from_raw(
+                conn,
+                taxon_ids=taxon_ids_scope,
+                years=years_scope or None,
+                slot_ids=slot_ids_scope or None,
+                zooms=zooms_scope or None,
+                include_slot0=bool(spec.get("include_slot0", True)),
+            )
+
+            raw_rows_count = conn.execute(
+                """
+                SELECT COUNT(*)
+                FROM observations_raw
+                WHERE year BETWEEN ? AND ?
+                """,
+                (int(spec["year_from"]), int(spec["year_to"])),
+            ).fetchone()[0]
+
+            grid_rows_count = conn.execute(
+                """
+                SELECT COUNT(*)
+                FROM taxon_grid
+                WHERE year BETWEEN ? AND ?
+                """,
+                (int(spec["year_from"]), int(spec["year_to"])),
+            ).fetchone()[0]
+
+            return {
+                "ok": True,
+                "job_id": job_id,
+                "full_reconsolidate": full_reconsolidate,
+                "taxon_ids": taxon_ids_scope,
+                "years": years_scope,
+                "slot_ids": slot_ids_scope,
+                "zooms": zooms_scope,
+                "layers_written": int(layers_written),
+                "raw_rows_count": int(raw_rows_count),
+                "grid_rows_count": int(grid_rows_count),
+            }
+        finally:
+            conn.close()
+
+            
     def _run_rebuild_job(job_id: str, spec: dict[str, Any]) -> dict[str, Any]:
         refresh_mode = str(spec.get("refresh_mode", "upstream")).strip().lower()
-        if refresh_mode not in {"upstream", "local"}:
+        if refresh_mode not in {"upstream", "local", "csv_import", "raw_rebuild"}:
             raise RuntimeError(f"Unsupported refresh_mode={refresh_mode}")
 
+        csv_summary = None
+        raw_rebuild_summary = None
+        
+        if refresh_mode == "csv_import":
+            csv_summary = _run_csv_import_job(job_id, spec)
+            spec = dict(spec)
+            if not spec.get("taxon_ids"):
+                spec["taxon_ids"] = list(csv_summary.get("taxon_ids") or [])
+
+        if refresh_mode == "raw_rebuild":
+            raw_rebuild_summary = _run_raw_rebuild_job(job_id, spec)
+            spec = dict(spec)
+            if not spec.get("taxon_ids"):
+                spec["taxon_ids"] = list(raw_rebuild_summary.get("taxon_ids") or [])
+                
         if refresh_mode == "upstream":
             if not cfg.subscription_key:
                 raise RuntimeError("Missing ARTDATABANKEN_SUBSCRIPTION_KEY")
@@ -883,7 +1135,7 @@ def make_app() -> Flask:
                 if not taxon_ids:
                     raise RuntimeError("No taxon ids found in CSV")
 
-            if refresh_mode == "local":
+            if refresh_mode in {"local", "raw_rebuild"}:
                 # Restrict to taxa that actually have local taxon_grid data for the requested range/slots/zooms.
                 placeholders = ",".join(["?"] * len(taxon_ids))
                 slot_placeholders = ",".join(["?"] * len(final_slots))
@@ -905,7 +1157,7 @@ def make_app() -> Flask:
                 if not taxon_ids:
                     raise RuntimeError("No local taxon_grid rows found for requested taxon_ids/year_range/slots/zooms")
 
-            fetch_steps = 0 if refresh_mode == "local" else len(taxon_ids) * len(years) * len(fetch_slots)
+            fetch_steps = 0 if refresh_mode in {"local", "raw_rebuild"} else len(taxon_ids) * len(years) * len(fetch_slots)
             derive_slot0_steps = len(taxon_ids) * len(years) if spec["include_slot0"] else 0
             derive_all_years_steps = len(taxon_ids) * len(final_slots) if spec["include_all_years"] else 0
             rebuild_years = list(years) + ([YEAR_ALL] if spec["include_all_years"] else [])
@@ -1020,6 +1272,7 @@ def make_app() -> Flask:
             summary = {
                 "ok": True,
                 "finished_at": _utc_now_iso(),
+                "csv_import": csv_summary if refresh_mode == "csv_import" else None,
                 "refresh_mode": refresh_mode,
                 "taxon_ids": taxon_ids,
                 "n_taxa": len(taxon_ids),
@@ -1032,6 +1285,11 @@ def make_app() -> Flask:
                 "beta": spec["beta"],
                 "force": bool(spec["force"]),
             }
+            if csv_summary is not None:
+                summary["csv_import"] = csv_summary
+            if raw_rebuild_summary is not None:
+                summary["raw_rebuild"] = raw_rebuild_summary
+                
             logger.info("job=%s rebuild done summary=%s", job_id, summary)
             return summary
         finally:
@@ -1447,6 +1705,52 @@ def make_app() -> Flask:
         finally:
             conn.close()
 
+
+    @app.get("/api/slots/coverage")
+    def slots_coverage():
+        zoom = int(request.args.get("zoom", "15"))
+        year_from, year_to = parse_year_range_args(request.args)
+
+        conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None
+        try:
+            storage.ensure_schema(conn)
+
+            if year_from == YEAR_ALL and year_to == YEAR_ALL:
+                rows = conn.execute(
+                    """
+                    SELECT slot_id, COUNT(*) AS cells
+                    FROM grid_hotmap
+                    WHERE zoom=? AND year=?
+                    GROUP BY slot_id
+                    ORDER BY slot_id;
+                    """,
+                    (zoom, YEAR_ALL),
+                ).fetchall()
+            else:
+                rows = conn.execute(
+                    """
+                    SELECT slot_id, COUNT(*) AS cells
+                    FROM grid_hotmap
+                    WHERE zoom=? AND year BETWEEN ? AND ?
+                    GROUP BY slot_id
+                    ORDER BY slot_id;
+                    """,
+                    (zoom, year_from, year_to),
+                ).fetchall()
+            
+            out = [
+                {
+                    "slot_id": int(r[0]),
+                    "cells": int(r[1]),
+                }
+                for r in rows
+            ]
+
+            return jsonify(out)
+
+        finally:
+            conn.close()
             
     @app.get("/api/rank_nearby")
     def rank_nearby():

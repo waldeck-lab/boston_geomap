@@ -80,6 +80,56 @@ def parse_csv_from_zip_bytes(zip_bytes: bytes) -> List[Dict[str, Any]]:
         r = csv.DictReader(io.StringIO(text), delimiter=delim, restval="")
         return [dict(row) for row in r]
 
+def export_csv_zip_to_file(
+    cfg: Config,
+    search_filter: Dict[str, Any],
+    out_path,
+    *,
+    output_field_set: str = "All",
+    output_fields: Optional[List[str]] = None,
+    gzip: bool = True,
+    sensitive_observations: bool = False,
+    validate_search_filter: bool = False,
+    culture_code: str = "sv-SE",
+) -> None:
+    if not cfg.subscription_key:
+        raise RuntimeError("Missing ARTDATABANKEN_SUBSCRIPTION_KEY")
+    if not cfg.authorization:
+        raise RuntimeError("Missing ARTDATABANKEN_AUTHORIZATION")
+
+    url = cfg.base_url.rstrip("/") + "/Exports/Download/Csv"
+    params = {
+        "outputFieldSet": output_field_set,
+        "validateSearchFilter": "true" if validate_search_filter else "false",
+        "cultureCode": culture_code,
+        "gzip": "true" if gzip else "false",
+        "sensitiveObservations": "true" if sensitive_observations else "false",
+    }
+
+    if output_fields:
+        search_filter = dict(search_filter)
+        search_filter["outputFields"] = output_fields
+
+    headers = {
+        "X-Api-Version": cfg.api_version,
+        "Ocp-Apim-Subscription-Key": cfg.subscription_key,
+        "Content-Type": "application/json",
+        "Accept": "application/zip, application/octet-stream, */*",
+        "Cache-Control": "no-cache",
+        "Authorization": cfg.authorization,
+    }
+
+    resp = post_with_backoff(url, headers, params, search_filter)
+    if resp.status_code == 204:
+        out_path.write_bytes(b"")
+        return
+    if resp.status_code != 200:
+        raise RuntimeError(f"Export failed: HTTP {resp.status_code} – {(resp.text or '')[:500]}")
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_bytes(resp.content)
+
+    
 def export_csv(
     cfg: Config,
     search_filter: Dict[str, Any],
