@@ -128,6 +128,15 @@ ON observations_raw(modification_date);
 CREATE INDEX IF NOT EXISTS idx_obs_year_slot_zoom
 ON observations_raw(year, slot_id, zoom);
 
+CREATE INDEX IF NOT EXISTS idx_observations_raw_scope
+ON observations_raw(taxon_id, year, slot_id, zoom);
+
+CREATE INDEX IF NOT EXISTS idx_observations_raw_year_slot_zoom
+ON observations_raw(year, slot_id, zoom);
+
+CREATE INDEX IF NOT EXISTS idx_observations_raw_tile
+ON observations_raw(taxon_id, year, slot_id, zoom, tile_x, tile_y);
+
 
 -- -------------------------
 -- Views for taxa listing per hotmap cell (year-aware)

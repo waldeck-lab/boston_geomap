@@ -61,7 +61,9 @@ from scripts.import_csv_export import (
     read_taxon_ids_from_csv,
     chunked,
     make_sos_export_filter,
+    tile_xy_to_bbox,
 )
+
 from geomap.sos_export import export_csv_zip_to_file
 
 import threading                                                                                                         
@@ -1429,6 +1431,217 @@ def make_app() -> Flask:
         finally:
             conn.close()
 
+    def _replace_taxon_grid_year_all_from_counts(
+        conn: sqlite3.Connection,
+            *,
+            taxon_id: int,
+            zoom: int,
+            slot_id: int,
+            cell_counts: list[tuple[int, int, int]],
+    ) -> int:
+        now = _utc_now_iso()
+        
+        conn.execute(
+            "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND year=? AND slot_id=?;",
+            (taxon_id, zoom, YEAR_ALL, slot_id),
+        )
+
+        rows = []
+        for x, y, obs_count in cell_counts:
+            top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), int(zoom))
+            rows.append(
+                (
+                    taxon_id,
+                    zoom,
+                    YEAR_ALL,
+                    slot_id,
+                    int(x),
+                    int(y),
+                    int(obs_count),
+                    1,
+                    float(top_lat),
+                    float(left_lon),
+                    float(bottom_lat),
+                    float(right_lon),
+                    now,
+                )
+            )
+
+        if rows:
+            conn.executemany(
+                """
+                INSERT INTO taxon_grid(
+                taxon_id, zoom, year, slot_id, x, y,
+                observations_count, taxa_count,
+                bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+                fetched_at_utc
+                ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);
+                """,
+                rows,
+            )
+            
+        return len(rows)
+
+
+
+    def _consolidate_taxon_grid_year_all_from_raw(
+        conn: sqlite3.Connection,
+            *,
+            taxon_ids: list[int],
+            zooms: list[int],
+            years: list[int],
+            slot_ids: list[int],
+            include_slot0: bool,
+    ) -> int:
+        """
+        Build taxon_grid year=0 layers from observations_raw.
+        
+        Creates per-taxon layers:
+        year=0, slot=real_slot
+        year=0, slot=0 if include_slot0
+        """
+        real_slots = sorted({int(s) for s in slot_ids if int(s) != SLOT_ALL})
+        years = sorted({int(y) for y in years if int(y) != YEAR_ALL})
+        taxon_ids = sorted({int(t) for t in taxon_ids})
+        zooms = sorted({int(z) for z in zooms}, reverse=True)
+        
+        if not taxon_ids or not zooms or not years or not real_slots:
+            return 0
+
+        taxon_ph = ",".join(["?"] * len(taxon_ids))
+        zoom_ph = ",".join(["?"] * len(zooms))
+        year_ph = ",".join(["?"] * len(years))
+        slot_ph = ",".join(["?"] * len(real_slots))
+    
+        # Remove old year=0 derived layers for this exact scope.
+        with conn:
+            conn.execute(
+                f"""
+                DELETE FROM taxon_grid
+                WHERE year=?
+                AND taxon_id IN ({taxon_ph})
+                AND zoom IN ({zoom_ph})
+                AND slot_id IN ({slot_ph});
+                """,
+                (YEAR_ALL, *taxon_ids, *zooms, *real_slots),
+            )
+
+            if include_slot0:
+                conn.execute(
+                    f"""
+                    DELETE FROM taxon_grid
+                    WHERE year=?
+                    AND taxon_id IN ({taxon_ph})
+                    AND zoom IN ({zoom_ph})
+                    AND slot_id=?;
+                    """,
+                    (YEAR_ALL, *taxon_ids, *zooms, SLOT_ALL),
+                )
+
+        now = _utc_now_iso()
+        layers: set[tuple[int, int, int]] = set()
+        insert_rows = []
+
+        # Specific slots: year=0, slot=23..28 etc.
+        rows = conn.execute(
+            f"""
+            SELECT
+            taxon_id,
+            zoom,
+            slot_id,
+            tile_x,
+            tile_y,
+            COUNT(*) AS observations_count
+            FROM observations_raw
+            WHERE taxon_id IN ({taxon_ph})
+            AND zoom IN ({zoom_ph})
+            AND year IN ({year_ph})
+            AND slot_id IN ({slot_ph})
+            GROUP BY taxon_id, zoom, slot_id, tile_x, tile_y
+            ORDER BY taxon_id, zoom, slot_id, tile_x, tile_y;
+            """,
+            (*taxon_ids, *zooms, *years, *real_slots),
+        ).fetchall()
+
+        for taxon_id, zoom, slot_id, x, y, obs_count in rows:
+            top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), int(zoom))
+            insert_rows.append(
+                (
+                    int(taxon_id),
+                    int(zoom),
+                    YEAR_ALL,
+                    int(slot_id),
+                    int(x),
+                    int(y),
+                    int(obs_count),
+                    1,
+                    float(top_lat),
+                    float(left_lon),
+                    float(bottom_lat),
+                    float(right_lon),
+                    now,
+                )
+            )
+            layers.add((int(taxon_id), int(zoom), int(slot_id)))
+
+        # Slot 0: year=0, all selected slots merged.
+        if include_slot0:
+            rows = conn.execute(
+                f"""
+                SELECT
+                taxon_id,
+                zoom,
+                tile_x,
+                tile_y,
+                COUNT(*) AS observations_count
+                FROM observations_raw
+                WHERE taxon_id IN ({taxon_ph})
+                AND zoom IN ({zoom_ph})
+                AND year IN ({year_ph})
+                AND slot_id IN ({slot_ph})
+                GROUP BY taxon_id, zoom, tile_x, tile_y
+                ORDER BY taxon_id, zoom, tile_x, tile_y;
+                """,
+                (*taxon_ids, *zooms, *years, *real_slots),
+            ).fetchall()
+
+            for taxon_id, zoom, x, y, obs_count in rows:
+                top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), int(zoom))
+                insert_rows.append(
+                    (
+                        int(taxon_id),
+                        int(zoom),
+                        YEAR_ALL,
+                        SLOT_ALL,
+                        int(x),
+                        int(y),
+                        int(obs_count),
+                        1,
+                        float(top_lat),
+                        float(left_lon),
+                        float(bottom_lat),
+                        float(right_lon),
+                        now,
+                    )
+                )
+                layers.add((int(taxon_id), int(zoom), SLOT_ALL))
+
+        if insert_rows:
+            with conn:
+                conn.executemany(
+                    """
+                    INSERT INTO taxon_grid(
+                    taxon_id, zoom, year, slot_id, x, y,
+                    observations_count, taxa_count,
+                    bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+                    fetched_at_utc
+                    ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);
+                    """,
+                    insert_rows,
+                )
+
+        return len(layers)
+    
     def _run_raw_rebuild_job(job_id: str, spec: dict[str, Any]) -> dict[str, Any]:
         conn = storage.connect(cfg.geomap_db_path)
         conn.isolation_level = None
@@ -1499,6 +1712,26 @@ def make_app() -> Flask:
                 include_slot0=bool(spec.get("include_slot0", True)),
             )
 
+            all_year_layers_written = 0
+            if bool(spec.get("include_all_years", True)):
+                JOB_MANAGER.set_phase(
+                    job_id,
+                    "raw_consolidate_all_years",
+                    current_step=(
+                        f"taxa={len(taxon_ids_scope)} years={len(years_scope)} "
+                        f"slots={len(slot_ids_scope)} zooms={len(zooms_scope)}"
+                    ),
+                )
+                
+                all_year_layers_written = _consolidate_taxon_grid_year_all_from_raw(
+                    conn,
+                    taxon_ids=taxon_ids_scope,
+                    years=years_scope,
+                    slot_ids=slot_ids_scope,
+                    zooms=zooms_scope,
+                    include_slot0=bool(spec.get("include_slot0", True)),
+                )
+
             raw_rows_count = conn.execute(
                 """
                 SELECT COUNT(*)
@@ -1526,6 +1759,7 @@ def make_app() -> Flask:
                 "slot_ids": slot_ids_scope,
                 "zooms": zooms_scope,
                 "layers_written": int(layers_written),
+                "all_year_layers_written": int(all_year_layers_written),
                 "raw_rows_count": int(raw_rows_count),
                 "grid_rows_count": int(grid_rows_count),
             }
