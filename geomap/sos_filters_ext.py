@@ -39,3 +39,23 @@ def __slot_to_mq(slot_id: int) -> tuple[int,int]:
     month = (slot_id - 1) // 4 + 1
     q = (slot_id - 1) % 4 + 1
     return month, q
+
+
+def make_sos_export_filter(
+    *,
+    taxon_ids: List[int],
+    year_from: int,
+    year_to: int,
+) -> Dict[str, object]:
+    return {
+        "taxon": {
+            "ids": taxon_ids,
+            "includeUnderlyingTaxa": True,
+        },
+        "date": {
+            "startDate": f"{year_from}-01-01T00:00:00Z",
+            "endDate": f"{year_to}-12-31T23:59:59Z",
+            "dateFilterType": "BetweenStartDateAndEndDate",
+        },
+    }
+

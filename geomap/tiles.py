@@ -34,3 +34,41 @@ def tile_bbox_latlon(x: int, y: int, z: int) -> Tuple[float, float, float, float
     top_lat = lat_from_ytile(y)
     bottom_lat = lat_from_ytile(y + 1)
     return top_lat, left_lon, bottom_lat, right_lon
+
+
+# --- Slippy map helpers (WebMercator tile math) ---
+
+def lonlat_to_tile_xy(lon: float, lat: float, z: int) -> Tuple[int, int]:
+    """
+    Convert lon/lat to slippy tile x,y at zoom z.
+    """
+    lat = max(min(lat, 85.05112878), -85.05112878)  # clamp for Mercator
+    n = 2 ** z
+    x = int((lon + 180.0) / 360.0 * n)
+    lat_rad = math.radians(lat)
+    y = int((1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n)
+    # clamp to tile range
+    x = max(0, min(x, n - 1))
+    y = max(0, min(y, n - 1))
+    return x, y
+
+
+def tile_xy_to_bbox(x: int, y: int, z: int) -> Tuple[float, float, float, float]:
+    """
+    Returns (top_lat, left_lon, bottom_lat, right_lon) for tile x,y,z.
+    """
+    n = 2 ** z
+    left_lon = x / n * 360.0 - 180.0
+    right_lon = (x + 1) / n * 360.0 - 180.0
+
+    def merc_to_lat(a: float) -> float:
+        return math.degrees(math.atan(math.sinh(a)))
+
+    top_lat = merc_to_lat(math.pi * (1 - 2 * (y / n)))
+    bottom_lat = merc_to_lat(math.pi * (1 - 2 * ((y + 1) / n)))
+    return (top_lat, left_lon, bottom_lat, right_lon)
+
+
+
+
+

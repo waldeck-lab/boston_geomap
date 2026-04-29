@@ -1,3 +1,5 @@
+# file: geomap/__init__.py
+
 """
 geomap package
 """
@@ -12,4 +14,6 @@ __all__ = [
     "sos_filters_ext",
     "tiles",
     "cli_paths",
+    "taxon_lists",
+    "csv_import",
 ]
