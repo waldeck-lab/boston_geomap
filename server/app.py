@@ -1045,7 +1045,10 @@ def make_app() -> Flask:
         }
 
         # Estimate: export+import+consolidate per initial batch, plus rebuild phase.
-        JOB_MANAGER.set_total_steps(job_id, max(len(pending) * 3, 1))
+        JOB_MANAGER.set_total_steps(
+            job_id,
+            max(len(pending) * 3 + 1, 1)
+        )
         JOB_MANAGER.set_phase(job_id, "planning", current_step=f"taxa={len(taxon_ids_all)} batches={len(pending)}")
         
         all_touched_taxa: set[int] = set()
@@ -1296,30 +1299,35 @@ def make_app() -> Flask:
             JOB_MANAGER.set_phase(
                 job_id,
                 "rebuild_hotmaps",
-                current_step=f"taxa={len(rebuild_taxa)} years={len(rebuild_years)} slots={len(rebuild_slots)} zooms={len(rebuild_zooms)}",
+                current_step=(
+                    f"bulk rebuild "
+                    f"years={len(rebuild_years)} "
+                    f"slots={len(rebuild_slots)} "
+                    f"zooms={len(rebuild_zooms)}"
+                ),
             )
-
-            for yr in rebuild_years:
-                for slot_id in rebuild_slots:
-                    for z in rebuild_zooms:
-                        JOB_MANAGER.ensure_not_cancelled(job_id)
-                        with conn:
-                            storage.rebuild_hotmap(
-                                conn,
-                                z,
-                                slot_id,
-                                rebuild_taxa,
-                                alpha=float(spec["alpha"]),
-                                beta=float(spec["beta"]),
-                                year=yr,
-                            )
-                        summary["rebuilds_written"] += 1
-                        JOB_MANAGER.advance(
-                            job_id,
-                            phase="rebuild_hotmaps",
-                            current_step=f"zoom={z} year={yr} slot={slot_id}",
-                        )
-
+            
+            JOB_MANAGER.ensure_not_cancelled(job_id)
+            
+            with conn:
+                rows_written = storage.rebuild_hotmap_bulk(
+                    conn,
+                    zooms=rebuild_zooms,
+                    slot_ids=rebuild_slots,
+                    years=rebuild_years,
+                    taxon_ids=rebuild_taxa,
+                    alpha=float(spec["alpha"]),
+                    beta=float(spec["beta"]),
+                )
+                
+            summary["rebuilds_written"] = rows_written
+            
+            JOB_MANAGER.advance(
+                job_id,
+                phase="rebuild_hotmaps",
+                current_step=f"bulk rows={rows_written}",
+            )
+            
             meta_payload = dict(summary)
             meta_payload.update(
                 {
@@ -1851,13 +1859,25 @@ def make_app() -> Flask:
                 if not taxon_ids:
                     raise RuntimeError("No local taxon_grid rows found for requested taxon_ids/year_range/slots/zooms")
 
-            fetch_steps = 0 if refresh_mode in {"local", "raw_rebuild"} else len(taxon_ids) * len(years) * len(fetch_slots)
-            derive_slot0_steps = len(taxon_ids) * len(years) if spec["include_slot0"] else 0
-            derive_all_years_steps = len(taxon_ids) * len(final_slots) if spec["include_all_years"] else 0
             rebuild_years = list(years) + ([YEAR_ALL] if spec["include_all_years"] else [])
             rebuild_steps = len(zooms) * len(rebuild_years) * len(final_slots)
-            total_steps = fetch_steps + derive_slot0_steps + derive_all_years_steps + rebuild_steps
 
+            if refresh_mode == "raw_rebuild":
+                fetch_steps = 0
+                derive_slot0_steps = 0
+                derive_all_years_steps = 0
+                total_steps = 3
+            elif refresh_mode == "local":
+                fetch_steps = 0
+                derive_slot0_steps = 0
+                derive_all_years_steps = 0
+                total_steps = rebuild_steps
+            else:
+                fetch_steps = len(taxon_ids) * len(years) * len(fetch_slots)
+                derive_slot0_steps = len(taxon_ids) * len(years) if spec["include_slot0"] else 0
+                derive_all_years_steps = len(taxon_ids) * len(final_slots) if spec["include_all_years"] else 0
+                total_steps = fetch_steps + derive_slot0_steps + derive_all_years_steps + rebuild_steps
+            
             JOB_MANAGER.set_total_steps(job_id, total_steps)
             JOB_MANAGER.set_phase(job_id, "planning", current_step=f"taxa={len(taxon_ids)} years={len(years)} slots={len(fetch_slots)}")
 
@@ -1951,17 +1971,38 @@ def make_app() -> Flask:
                                 current_step=f"taxon={taxon_id} year=0 slot={slot_id}",
                             )
 
-            for slot_id in final_slots:
-                for yr in rebuild_years:
-                    for z in zooms:
-                        JOB_MANAGER.ensure_not_cancelled(job_id)
-                        with conn:
-                            storage.rebuild_hotmap(conn, z, slot_id, taxon_ids, alpha=spec["alpha"], beta=spec["beta"], year=yr)
-                        JOB_MANAGER.advance(
-                            job_id,
-                            phase="rebuild_hotmaps",
-                            current_step=f"zoom={z} year={yr} slot={slot_id}",
-                        )
+            hotmap_rows_written = 0
+
+            JOB_MANAGER.set_phase(
+                job_id,
+                "rebuild_hotmaps",
+                current_step=(
+                    f"bulk rebuild years={len(rebuild_years)} "
+                    f"slots={len(final_slots)} zooms={len(zooms)} taxa={len(taxon_ids)}"
+                ),
+            )
+            
+            JOB_MANAGER.ensure_not_cancelled(job_id)
+            
+            with conn:
+                hotmap_rows_written = storage.rebuild_hotmap_bulk(
+                    conn,
+                    zooms=zooms,
+                    years=rebuild_years,
+                    slot_ids=final_slots,
+                    taxon_ids=taxon_ids,
+                alpha=spec["alpha"],
+                    beta=spec["beta"],
+                )
+
+            JOB_MANAGER.advance(
+                job_id,
+                phase="rebuild_hotmaps",
+                current_step=f"bulk rows={hotmap_rows_written}",
+                inc=1,
+            )
+
+                        
             JOB_MANAGER.set_phase(job_id, "finalizing", current_step="writing summary")
             summary = {
                 "ok": True,
@@ -1978,6 +2019,7 @@ def make_app() -> Flask:
                 "alpha": spec["alpha"],
                 "beta": spec["beta"],
                 "force": bool(spec["force"]),
+                "hotmap_rows_written": int(hotmap_rows_written),                
             }
             if csv_summary is not None:
                 summary["csv_import"] = csv_summary

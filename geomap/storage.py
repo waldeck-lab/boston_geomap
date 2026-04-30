@@ -30,6 +30,9 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Tuple
 import math
 
+conn = sqlite3.connect("din_databas.sqlite")
+conn.create_function("POWER", 2, math.pow)
+
 from geomap.tiles import tile_bbox_latlon
 
 YEAR_ALL = 0  # all-years aggregate
@@ -315,9 +318,6 @@ def materialize_parent_zoom_from_child(
     marker = local_from_marker(src_zoom, src_sha)
     upsert_layer_state(conn, taxon_id, dst_zoom, slot_id, marker, len(out), year=year)
 
-
-
-
 def ensure_parent_dir(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -533,6 +533,140 @@ def replace_taxon_grid(
         rows,
     )
 
+def rebuild_hotmap_bulk(
+    conn: sqlite3.Connection,
+    *,
+    zooms: list[int],
+    slot_ids: list[int],
+    years: list[int],
+    taxon_ids: list[int],
+    alpha: float = 2.0,
+    beta: float = 0.5,
+) -> int:
+    """
+    Bulk rebuild of many (zoom, year, slot) in one SQL aggregation.
+
+    Returns number of inserted grid_hotmap rows.
+    """
+
+    if not taxon_ids:
+        return 0
+
+    total_rows = 0
+
+    zoom_placeholders = ",".join(["?"] * len(zooms))
+    year_placeholders = ",".join(["?"] * len(years))
+    slot_placeholders = ",".join(["?"] * len(slot_ids))
+    taxon_placeholders = ",".join(["?"] * len(taxon_ids))
+
+    args_common = (
+        list(zooms)
+        + list(years)
+        + list(slot_ids)
+        + list(taxon_ids)
+    )
+
+    # Clear existing data first
+    conn.execute(
+        f"""
+        DELETE FROM grid_hotmap
+        WHERE zoom IN ({zoom_placeholders})
+          AND year IN ({year_placeholders})
+          AND slot_id IN ({slot_placeholders});
+        """,
+        list(zooms) + list(years) + list(slot_ids),
+    )
+
+    conn.execute(
+        f"""
+        DELETE FROM hotmap_taxa_set
+        WHERE zoom IN ({zoom_placeholders})
+          AND year IN ({year_placeholders})
+          AND slot_id IN ({slot_placeholders});
+        """,
+        list(zooms) + list(years) + list(slot_ids),
+    )
+
+    # Reinsert taxa set once per combination
+    for z in zooms:
+        for y in years:
+            for s in slot_ids:
+                conn.executemany(
+                    """
+                    INSERT OR IGNORE INTO hotmap_taxa_set
+                    (zoom, year, slot_id, taxon_id)
+                    VALUES (?, ?, ?, ?);
+                    """,
+                    [(z, y, s, tid) for tid in taxon_ids],
+                )
+
+    now = _utc_now_iso()
+   
+    # Core aggregation
+    conn.execute(
+        f"""
+        INSERT INTO grid_hotmap (
+        zoom,
+        year,
+        slot_id,
+        x,
+        y,
+        coverage,
+        score,
+        bbox_top_lat,
+        bbox_left_lon,
+        bbox_bottom_lat,
+        bbox_right_lon,
+        updated_at_utc
+        )
+        SELECT
+        zoom,
+        year,
+        slot_id,
+        x,
+        y,
+        coverage,
+        (CAST(coverage AS REAL) * CAST(coverage AS REAL)) / POWER(CAST(coverage AS REAL), ?) / POWER(CAST(obs_total AS REAL) + 1.0, ?),
+        bbox_top_lat,
+        bbox_left_lon,
+        bbox_bottom_lat,
+        bbox_right_lon,
+        ?
+        FROM (
+        SELECT
+        zoom,
+        year,
+        slot_id,
+        x,
+        y,
+        COUNT(DISTINCT taxon_id) AS coverage,
+        SUM(observations_count) AS obs_total,
+        MAX(bbox_top_lat) AS bbox_top_lat,
+        MIN(bbox_left_lon) AS bbox_left_lon,
+        MIN(bbox_bottom_lat) AS bbox_bottom_lat,
+        MAX(bbox_right_lon) AS bbox_right_lon
+        FROM taxon_grid
+        WHERE zoom IN ({zoom_placeholders})
+        AND year IN ({year_placeholders})
+        AND slot_id IN ({slot_placeholders})
+        AND taxon_id IN ({taxon_placeholders})
+        GROUP BY
+        zoom,
+        year,
+        slot_id,
+        x,
+        y
+        );
+        """,
+        [float(alpha), float(beta), now, *args_common],
+    )
+ 
+    total_rows += conn.execute(
+        "SELECT changes();"
+    ).fetchone()[0]
+
+    return int(total_rows)
+    
 def rebuild_hotmap(
     conn: sqlite3.Connection,
     zoom: int,

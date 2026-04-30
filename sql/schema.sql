@@ -56,6 +56,26 @@ CREATE TABLE IF NOT EXISTS taxon_grid (
   PRIMARY KEY (taxon_id, zoom, year, slot_id, x, y)
 );
 
+CREATE INDEX IF NOT EXISTS idx_taxon_grid_rebuild
+ON taxon_grid(zoom, year, slot_id, taxon_id, x, y);
+
+CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell
+ON taxon_grid(zoom, year, slot_id, x, y);
+
+CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell
+ON taxon_grid(zoom, year, slot_id, x, y);
+
+CREATE INDEX IF NOT EXISTS idx_taxon_grid_taxon
+ON taxon_grid(taxon_id, zoom, year, slot_id);
+
+CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell_obs
+ON taxon_grid(zoom, year, slot_id, x, y, observations_count DESC);
+
+CREATE INDEX IF NOT EXISTS idx_taxon_grid_lookup
+ON taxon_grid (taxon_id, zoom, year, slot_id);
+
+
+
 CREATE TABLE IF NOT EXISTS taxon_layer_state (
   taxon_id INTEGER NOT NULL,
   zoom INTEGER NOT NULL,
@@ -86,6 +106,13 @@ CREATE TABLE IF NOT EXISTS grid_hotmap (
   PRIMARY KEY (zoom, year, slot_id, x, y)
 );
 
+CREATE INDEX IF NOT EXISTS idx_grid_hotmap_slot
+ON grid_hotmap(zoom, year, slot_id, coverage, score);
+
+CREATE INDEX IF NOT EXISTS idx_grid_hotmap_lookup
+ON grid_hotmap (zoom, year, slot_id);
+
+
 CREATE TABLE IF NOT EXISTS hotmap_taxa_set (
   zoom INTEGER NOT NULL,
   year INTEGER NOT NULL,
@@ -93,6 +120,11 @@ CREATE TABLE IF NOT EXISTS hotmap_taxa_set (
   taxon_id INTEGER NOT NULL,
   PRIMARY KEY (zoom, year, slot_id, taxon_id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_hotmap_taxa_set_slot
+ON hotmap_taxa_set(zoom, year, slot_id, taxon_id);
+
+
 
 
 -- ============================================================
@@ -130,6 +162,9 @@ ON observations_raw(year, slot_id, zoom);
 
 CREATE INDEX IF NOT EXISTS idx_observations_raw_scope
 ON observations_raw(taxon_id, year, slot_id, zoom);
+
+CREATE INDEX IF NOT EXISTS idx_observations_raw_rebuild
+ON observations_raw(taxon_id, year, slot_id, zoom, tile_x, tile_y);
 
 CREATE INDEX IF NOT EXISTS idx_observations_raw_year_slot_zoom
 ON observations_raw(year, slot_id, zoom);
@@ -232,29 +267,5 @@ JOIN hotmap_taxa_set s
  AND s.taxon_id=t.taxon_id
 LEFT JOIN taxon_dim d
   ON d.taxon_id=t.taxon_id;
-
--- Helpful indexes (SQLite will also index PKs, but these help common filters)
-
-CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell
-ON taxon_grid(zoom, year, slot_id, x, y);
-
-CREATE INDEX IF NOT EXISTS idx_taxon_grid_taxon
-ON taxon_grid(taxon_id, zoom, year, slot_id);
-
-CREATE INDEX IF NOT EXISTS idx_taxon_grid_cell_obs
-ON taxon_grid(zoom, year, slot_id, x, y, observations_count DESC);
-
-CREATE INDEX IF NOT EXISTS idx_grid_hotmap_slot
-ON grid_hotmap(zoom, year, slot_id, coverage, score);
-
-CREATE INDEX IF NOT EXISTS idx_hotmap_taxa_set_slot
-ON hotmap_taxa_set(zoom, year, slot_id, taxon_id);
-
-CREATE INDEX IF NOT EXISTS idx_grid_hotmap_lookup
-ON grid_hotmap (zoom, year, slot_id);
-
-CREATE INDEX IF NOT EXISTS idx_taxon_grid_lookup
-ON taxon_grid (taxon_id, zoom, year, slot_id);
-
 
 PRAGMA user_version = 3;
