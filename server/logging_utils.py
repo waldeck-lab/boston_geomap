@@ -26,18 +26,33 @@ from pathlib import Path
 
 import logging
 import time
-from logging.handlers import RotatingFileHandler
-from pathlib import Path
 
-class _UTCZFormatter(logging.Formatter):
-    # Produces: 2026-01-03T18:43:55.067Z
-    converter = time.gmtime
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from typing import Optional
+
+LOCAL_TZ = ZoneInfo("Europe/Stockholm")
+
+
+def local_now_ts() -> float:
+    return time.time()
+
+
+def local_now_iso() -> str:
+    return datetime.now(LOCAL_TZ).isoformat()
+
+
+def iso_or_none(ts: Optional[float]) -> Optional[str]:
+    if ts is None:
+        return None
+    return datetime.fromtimestamp(ts, tz=LOCAL_TZ).isoformat()
+
+class _LocalTZFormatter(logging.Formatter):
+    # Produces: 2026-01-03T19:43:55.067+01:00
 
     def formatTime(self, record, datefmt=None):
-        t = self.converter(record.created)
-        base = time.strftime("%Y-%m-%dT%H:%M:%S", t)
-        ms = int(record.msecs)
-        return f"{base}.{ms:03d}Z"
+        dt = datetime.fromtimestamp(record.created, tz=LOCAL_TZ)
+        return dt.isoformat(timespec="milliseconds")
 
 def setup_server_logger(
     name: str = "geomap-server",
@@ -50,8 +65,10 @@ def setup_server_logger(
     if logger.handlers:
         return logger  # already configured
 
-    fmt = _UTCZFormatter("%(asctime)s %(levelname)-5s %(name)s: %(message)s")
-
+    fmt = _LocalTZFormatter(
+        "%(asctime)s %(levelname)-5s %(name)s: %(message)s"
+    )
+    
     # Console handler
     ch = logging.StreamHandler()
     ch.setFormatter(fmt)
@@ -61,7 +78,7 @@ def setup_server_logger(
     if log_dir:
         log_dir.mkdir(parents=True, exist_ok=True)
         fh = RotatingFileHandler(
-            log_dir / "server.log",
+            log_dir / "server/server.log",
             maxBytes=5_000_000,
             backupCount=5,
         )

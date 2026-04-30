@@ -71,6 +71,7 @@ from geomap.tiles import tile_xy_to_bbox
 from geomap.sos_export import export_csv_zip_to_file
 
 import threading                                                                                                         
+from logging_utils import iso_or_none, local_now_ts, local_now_iso
 import logging
 logger = logging.getLogger("geomap-server")
 
@@ -82,20 +83,6 @@ class CancelledJobError(RuntimeError):
     pass
 
 
-def _utc_now_ts() -> float:
-    return time.time()
-
-
-def _utc_now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-
-
-def _iso_or_none(ts: Optional[float]) -> Optional[str]:
-    if ts is None:
-        return None
-    return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat().replace("+00:00", "Z")
-
-
 @dataclass
 class JobState:
     job_id: str
@@ -105,10 +92,10 @@ class JobState:
     current_step: str = ""
     total_steps: int = 0
     completed_steps: int = 0
-    created_at: float = field(default_factory=_utc_now_ts)
+    created_at: float = field(default_factory=local_now_ts)
     started_at: Optional[float] = None
     finished_at: Optional[float] = None
-    updated_at: float = field(default_factory=_utc_now_ts)
+    updated_at: float = field(default_factory=local_now_ts)
     error: Optional[str] = None
     traceback_text: Optional[str] = None
     warnings: list[str] = field(default_factory=list)
@@ -140,7 +127,7 @@ class JobManager:
             progress_pct = round((job.completed_steps / job.total_steps) * 100.0, 2)
 
         if job.started_at and job.completed_steps > 0 and job.status == "running":
-            elapsed = max(_utc_now_ts() - job.started_at, 0.001)
+            elapsed = max(local_now_ts() - job.started_at, 0.001)
             sec_per_step = elapsed / max(job.completed_steps, 1)
             remaining = max(job.total_steps - job.completed_steps, 0)
             eta_seconds = int(sec_per_step * remaining)
@@ -155,10 +142,10 @@ class JobManager:
             "completed_steps": job.completed_steps,
             "progress_pct": progress_pct,
             "eta_seconds": eta_seconds,
-            "created_at": _iso_or_none(job.created_at),
-            "started_at": _iso_or_none(job.started_at),
-            "finished_at": _iso_or_none(job.finished_at),
-            "updated_at": _iso_or_none(job.updated_at),
+            "created_at": iso_or_none(job.created_at),
+            "started_at": iso_or_none(job.started_at),
+            "finished_at": iso_or_none(job.finished_at),
+            "updated_at": iso_or_none(job.updated_at),
             "error": job.error,
             "warnings": list(job.warnings),
             "summary": deepcopy(job.summary),
@@ -227,7 +214,7 @@ class JobManager:
     def mark_running(self, job_id: str) -> None:
         with self._state_lock:
             job = self._jobs[job_id]
-            now = _utc_now_ts()
+            now = local_now_ts()
             job.status = "running"
             job.started_at = now
             job.updated_at = now
@@ -243,7 +230,7 @@ class JobManager:
         with self._state_lock:
             job = self._jobs[job_id]
             job.total_steps = max(int(total_steps), 0)
-            job.updated_at = _utc_now_ts()
+            job.updated_at = local_now_ts()
 
     def set_phase(self, job_id: str, phase: str, current_step: str = "") -> None:
         with self._state_lock:
@@ -254,7 +241,7 @@ class JobManager:
             job.phase = phase
             if current_step:
                 job.current_step = current_step
-            job.updated_at = _utc_now_ts()
+            job.updated_at = local_now_ts()
 
             completed_steps = job.completed_steps
             total_steps = job.total_steps
@@ -281,7 +268,7 @@ class JobManager:
             job.phase = phase
             job.current_step = current_step
             job.completed_steps = min(job.total_steps, job.completed_steps + max(int(inc), 0))
-            job.updated_at = _utc_now_ts()
+            job.updated_at = local_now_ts()
 
             completed_steps = job.completed_steps
             total_steps = job.total_steps
@@ -302,14 +289,14 @@ class JobManager:
         with self._state_lock:
             job = self._jobs[job_id]
             job.warnings.append(warning)
-            job.updated_at = _utc_now_ts()
+            job.updated_at = local_now_ts()
 
         logger.warning("job %s warning=%s", job_id, warning)
 
     def mark_done(self, job_id: str, *, summary: dict[str, Any]) -> None:
         with self._state_lock:
             job = self._jobs[job_id]
-            now = _utc_now_ts()
+            now = local_now_ts()
             job.status = "done"
             job.phase = "done"
             job.current_step = "completed"
@@ -334,7 +321,7 @@ class JobManager:
         tb = traceback.format_exc()
         with self._state_lock:
             job = self._jobs[job_id]
-            now = _utc_now_ts()
+            now = local_now_ts()
             job.status = "failed"
             job.error = str(exc)
             job.traceback_text = tb
@@ -361,7 +348,7 @@ class JobManager:
     def mark_cancelled(self, job_id: str) -> None:
         with self._state_lock:
             job = self._jobs[job_id]
-            now = _utc_now_ts()
+            now = local_now_ts()
             job.status = "cancelled"
             job.finished_at = now
             job.updated_at = now
@@ -388,7 +375,7 @@ class JobManager:
             if job.status not in {"queued", "running"}:
                 return False
             job.cancel_requested = True
-            job.updated_at = _utc_now_ts()
+            job.updated_at = local_now_ts()
 
         logger.warning("job %s cancel requested", job_id)
         return True
@@ -1331,7 +1318,7 @@ def make_app() -> Flask:
             meta_payload = dict(summary)
             meta_payload.update(
                 {
-                    "finished_at": _utc_now_iso(),
+                    "finished_at": local_now_iso(),
                     "taxon_ids": sorted(all_touched_taxa),
                     "years": sorted(all_touched_years),
                     "slot_ids": sorted(all_touched_slots),
@@ -1345,7 +1332,7 @@ def make_app() -> Flask:
             summary["years"] = sorted(all_touched_years)
             summary["slot_ids"] = sorted(all_touched_slots)
             summary["zooms"] = sorted(all_touched_zooms, reverse=True)
-            summary["finished_at"] = _utc_now_iso()
+            summary["finished_at"] = local_now_iso()
 
             return summary
 
@@ -1416,7 +1403,7 @@ def make_app() -> Flask:
                 "source_path": str(input_path),
                 "stashed_path": str(stashed_path),
                 "csv_path": str(extracted_or_csv),
-                "imported_at": _utc_now_iso(),
+                "imported_at": local_now_iso(),
                 "taxon_ids": taxon_ids_scope,
                 "years": years,
                 "slot_ids": slot_ids,
@@ -1451,7 +1438,7 @@ def make_app() -> Flask:
             slot_id: int,
             cell_counts: list[tuple[int, int, int]],
     ) -> int:
-        now = _utc_now_iso()
+        now = local_now_iso()
         
         conn.execute(
             "DELETE FROM taxon_grid WHERE taxon_id=? AND zoom=? AND year=? AND slot_id=?;",
@@ -1550,7 +1537,7 @@ def make_app() -> Flask:
                     (YEAR_ALL, *taxon_ids, *zooms, SLOT_ALL),
                 )
 
-        now = _utc_now_iso()
+        now = local_now_iso()
         layers: set[tuple[int, int, int]] = set()
         insert_rows = []
 
@@ -2006,7 +1993,7 @@ def make_app() -> Flask:
             JOB_MANAGER.set_phase(job_id, "finalizing", current_step="writing summary")
             summary = {
                 "ok": True,
-                "finished_at": _utc_now_iso(),
+                "finished_at": local_now_iso(),
                 "csv_import": csv_summary if refresh_mode == "csv_import" else None,
                 "refresh_mode": refresh_mode,
                 "taxon_ids": taxon_ids,
