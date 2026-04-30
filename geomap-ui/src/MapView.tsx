@@ -27,6 +27,10 @@ type Props = {
   fitOnFirstLoad?: boolean;  // fit once on first successful geo load
 
   onCellClick: (p: { x: number; y: number; zoom: number; slotId: number }) => void;
+
+  // Year handling 
+  yearFrom: number;
+  yearTo: number;
 };
 
 function apiUrl(apiBase: string, path: string) {
@@ -70,9 +74,12 @@ function fitToGeoJson(map: Map, geo: any) {
   );
 }
 
+
 export function MapView({
   apiBase,
   zoom,
+  yearFrom,
+  yearTo,
   slotId,
   slotIds,
   selected,
@@ -113,15 +120,19 @@ export function MapView({
     if (hasWindow) {
       const u = new URL(apiUrl(apiBase, "/api/hotmap_window"));
       u.searchParams.set("zoom", String(zoom));
+      u.searchParams.set("year_from", String(yearFrom));
+      u.searchParams.set("year_to", String(yearTo));
       u.searchParams.set("slot_ids", slotIds.join(","));
       return u.toString();
     }
 
     const u = new URL(apiUrl(apiBase, "/api/hotmap"));
     u.searchParams.set("zoom", String(zoom));
+    u.searchParams.set("year_from", String(yearFrom));
+    u.searchParams.set("year_to", String(yearTo));
     u.searchParams.set("slot_id", String(slotId));
     return u.toString();
-  }, [apiBase, zoom, slotId, slotIds]);
+  }, [apiBase, zoom, yearFrom, yearTo, slotId, slotIds]);
 
   // Init map exactly once
   useEffect(() => {

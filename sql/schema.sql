@@ -74,6 +74,26 @@ ON taxon_grid(zoom, year, slot_id, x, y, observations_count DESC);
 CREATE INDEX IF NOT EXISTS idx_taxon_grid_lookup
 ON taxon_grid (taxon_id, zoom, year, slot_id);
 
+CREATE INDEX IF NOT EXISTS idx_taxon_grid_replace
+ON taxon_grid(taxon_id, year, zoom, slot_id);
+
+-- -------------------------
+-- cache table for tile
+-- -------------------------
+CREATE TABLE IF NOT EXISTS tile_bbox (
+  zoom INTEGER NOT NULL,
+  x INTEGER NOT NULL,
+  y INTEGER NOT NULL,
+  bbox_top_lat REAL NOT NULL,
+  bbox_left_lon REAL NOT NULL,
+  bbox_bottom_lat REAL NOT NULL,
+  bbox_right_lon REAL NOT NULL,
+  PRIMARY KEY (zoom, x, y)
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tile_bbox_pk
+ON tile_bbox(zoom, x, y);
+
 
 
 CREATE TABLE IF NOT EXISTS taxon_layer_state (
@@ -157,6 +177,9 @@ ON observations_raw(taxon_id, year, slot_id, zoom);
 CREATE INDEX IF NOT EXISTS idx_obs_modified
 ON observations_raw(modification_date);
 
+CREATE INDEX IF NOT EXISTS idx_obs_raw_bulk
+ON observations_raw(taxon_id, year, zoom, slot_id, tile_x, tile_y);
+
 CREATE INDEX IF NOT EXISTS idx_obs_year_slot_zoom
 ON observations_raw(year, slot_id, zoom);
 
@@ -211,6 +234,7 @@ JOIN grid_taxa_v gt
  AND gt.y=gh.y;
 
 -- “hotmap cells with some extra rollups” (optional)
+
 CREATE VIEW grid_hotmap_v AS
 SELECT
   h.zoom, h.year, h.slot_id, h.x, h.y, h.coverage, h.score,
@@ -220,13 +244,8 @@ SELECT
   h.bbox_right_lon  AS bottomRight_lon,
   (h.bbox_top_lat + h.bbox_bottom_lat) / 2.0 AS centroid_lat,
   (h.bbox_left_lon + h.bbox_right_lon) / 2.0 AS centroid_lon,
-  COALESCE(SUM(
-    CASE WHEN s.taxon_id IS NOT NULL THEN t.observations_count ELSE 0 END
-  ), 0) AS obs_total,
-  GROUP_CONCAT(
-    CASE WHEN s.taxon_id IS NOT NULL THEN CAST(t.taxon_id AS TEXT) END,
-    ';'
-  ) AS taxa_list,
+  COALESCE(SUM(t.observations_count), 0) AS obs_total,
+  GROUP_CONCAT(CAST(t.taxon_id AS TEXT), ';') AS taxa_list,
   h.updated_at_utc
 FROM grid_hotmap h
 LEFT JOIN taxon_grid t
@@ -235,17 +254,13 @@ LEFT JOIN taxon_grid t
  AND t.slot_id=h.slot_id
  AND t.x=h.x
  AND t.y=h.y
-LEFT JOIN hotmap_taxa_set s
-  ON s.zoom=t.zoom
- AND s.year=t.year
- AND s.slot_id=t.slot_id
- AND s.taxon_id=t.taxon_id
 GROUP BY
   h.zoom, h.year, h.slot_id, h.x, h.y, h.coverage, h.score,
   h.bbox_top_lat, h.bbox_left_lon, h.bbox_bottom_lat, h.bbox_right_lon,
   h.updated_at_utc;
-
+  
 -- “taxa names per hotmap cell” (this is what many UIs want)
+
 CREATE VIEW grid_hotmap_taxa_names_v AS
 SELECT
   h.zoom, h.year, h.slot_id, h.x, h.y,
@@ -260,11 +275,6 @@ JOIN taxon_grid t
  AND t.slot_id=h.slot_id
  AND t.x=h.x
  AND t.y=h.y
-JOIN hotmap_taxa_set s
-  ON s.zoom=t.zoom
- AND s.year=t.year
- AND s.slot_id=t.slot_id
- AND s.taxon_id=t.taxon_id
 LEFT JOIN taxon_dim d
   ON d.taxon_id=t.taxon_id;
 

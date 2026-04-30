@@ -22,8 +22,9 @@ from typing import Dict, Iterable, Tuple, Optional, List, Set
 from datetime import date, datetime, timezone
 import sqlite3
 import csv
+import zipfile
 
-from .tiles import lonlat_to_tile_xy, tile_xy_to_bbox
+from .tiles import lonlat_to_tile_xy, tile_xy_to_bbox, ensure_tile_bbox_rows
 
 SLOT_ALL = 0
 
@@ -221,8 +222,10 @@ def upsert_observation_raw(conn, row):
             row["individual_count"],
         ),
     )
-    
 
+
+
+    
 def import_observations_raw(
         conn: sqlite3.Connection,
         args: IngestArgs,
@@ -306,6 +309,502 @@ def import_observations_raw(
         kept += 1
     return touched
 
+
+def consolidate_taxon_grid_year_all_from_grid(
+    conn,
+    *,
+    taxon_ids,
+    years,
+    slot_ids,
+    zooms,
+    include_slot0=True,
+):
+    if not taxon_ids:
+        return 0
+
+    taxon_ph = ",".join(["?"] * len(taxon_ids))
+    year_ph  = ",".join(["?"] * len(years))
+    slot_ph  = ",".join(["?"] * len(slot_ids))
+    zoom_ph  = ",".join(["?"] * len(zooms))
+
+    now = utc_now_iso()
+
+    with conn:
+
+        conn.execute(
+            f"""
+            DELETE FROM taxon_grid
+            WHERE taxon_id IN ({taxon_ph})
+              AND zoom IN ({zoom_ph})
+              AND slot_id IN ({slot_ph})
+              AND year=0;
+            """,
+            (*taxon_ids, *zooms, *slot_ids),
+        )
+
+        conn.execute(
+            f"""
+            INSERT INTO taxon_grid(
+                taxon_id,
+                zoom,
+                year,
+                slot_id,
+                x,
+                y,
+                observations_count,
+                taxa_count,
+                bbox_top_lat,
+                bbox_left_lon,
+                bbox_bottom_lat,
+                bbox_right_lon,
+                fetched_at_utc
+            )
+            SELECT
+                taxon_id,
+                zoom,
+                0,
+                slot_id,
+                x,
+                y,
+                SUM(observations_count),
+                1,
+                bbox_top_lat,
+                bbox_left_lon,
+                bbox_bottom_lat,
+                bbox_right_lon,
+                ?
+            FROM taxon_grid
+            WHERE taxon_id IN ({taxon_ph})
+              AND zoom IN ({zoom_ph})
+              AND slot_id IN ({slot_ph})
+              AND year IN ({year_ph})
+            GROUP BY
+                taxon_id,
+                zoom,
+                slot_id,
+                x,
+                y;
+            """,
+            (now, *taxon_ids, *zooms, *slot_ids, *years),
+        )
+
+        if include_slot0:
+
+            conn.execute(
+                f"""
+                DELETE FROM taxon_grid
+                WHERE taxon_id IN ({taxon_ph})
+                  AND zoom IN ({zoom_ph})
+                  AND slot_id=?
+                  AND year=0;
+                """,
+                (*taxon_ids, *zooms, SLOT_ALL),
+            )
+
+            conn.execute(
+                f"""
+                INSERT INTO taxon_grid(
+                    taxon_id,
+                    zoom,
+                    year,
+                    slot_id,
+                    x,
+                    y,
+                    observations_count,
+                    taxa_count,
+                    bbox_top_lat,
+                    bbox_left_lon,
+                    bbox_bottom_lat,
+                    bbox_right_lon,
+                    fetched_at_utc
+                )
+                SELECT
+                    taxon_id,
+                    zoom,
+                    0,
+                    ?,
+                    x,
+                    y,
+                    SUM(observations_count),
+                    1,
+                    bbox_top_lat,
+                    bbox_left_lon,
+                    bbox_bottom_lat,
+                    bbox_right_lon,
+                    ?
+                FROM taxon_grid
+                WHERE taxon_id IN ({taxon_ph})
+                  AND zoom IN ({zoom_ph})
+                  AND slot_id IN ({slot_ph})
+                  AND year IN ({year_ph})
+                GROUP BY
+                    taxon_id,
+                    zoom,
+                    x,
+                    y;
+                """,
+                (SLOT_ALL, now, *taxon_ids, *zooms, *slot_ids, *years),
+            )
+
+    regular_layers = (
+        len(taxon_ids)
+        * len(zooms)
+        * len(slot_ids)
+    )
+
+    slot0_layers = (
+        len(taxon_ids)
+        * len(zooms)
+        if include_slot0
+        else 0
+    )
+
+    return regular_layers + slot0_layers
+
+def consolidate_taxon_grid_from_raw_bulk_tile_bbox(
+    conn: sqlite3.Connection,
+    *,
+    taxon_ids: Optional[List[int]] = None,
+    zooms: Optional[List[int]] = None,
+    years: Optional[List[int]] = None,
+    slot_ids: Optional[List[int]] = None,
+    include_slot0: bool = True,
+) -> int:
+    where = []
+    args: list[object] = []
+
+    def add_in(col: str, values: Optional[List[int]]) -> None:
+        if values:
+            vals = sorted({int(v) for v in values})
+            where.append(f"{col} IN ({','.join(['?'] * len(vals))})")
+            args.extend(vals)
+
+    add_in("taxon_id", taxon_ids)
+    add_in("zoom", zooms)
+    add_in("year", years)
+
+    real_slots = sorted({int(s) for s in (slot_ids or []) if int(s) != SLOT_ALL})
+    if real_slots:
+        where.append(f"slot_id IN ({','.join(['?'] * len(real_slots))})")
+        args.extend(real_slots)
+
+    wh = ("WHERE " + " AND ".join(where)) if where else ""
+
+    scope_rows = conn.execute(
+        f"""
+        SELECT DISTINCT taxon_id, year, zoom, slot_id, tile_x, tile_y
+        FROM observations_raw
+        {wh};
+        """,
+        args,
+    ).fetchall()
+
+    if not scope_rows:
+        return 0
+
+    scope_taxa = sorted({int(r[0]) for r in scope_rows})
+    scope_years = sorted({int(r[1]) for r in scope_rows})
+    scope_zooms = sorted({int(r[2]) for r in scope_rows})
+    scope_slots = sorted({int(r[3]) for r in scope_rows if int(r[3]) != SLOT_ALL})
+
+    xys_by_zoom: dict[int, set[tuple[int, int]]] = {}
+    for r in scope_rows:
+        z = int(r[2])
+        x = int(r[4])
+        y = int(r[5])
+        xys_by_zoom.setdefault(z, set()).add((x, y))
+
+    now = utc_now_iso()
+
+    taxon_ph = ",".join(["?"] * len(scope_taxa))
+    year_ph = ",".join(["?"] * len(scope_years))
+    zoom_ph = ",".join(["?"] * len(scope_zooms))
+    slot_ph = ",".join(["?"] * len(scope_slots))
+
+    with conn:
+        ensure_tile_bbox_rows(
+            conn,
+            zooms=scope_zooms,
+            xys_by_zoom=xys_by_zoom,
+        )
+
+        conn.execute(
+            f"""
+            DELETE FROM taxon_grid
+            WHERE taxon_id IN ({taxon_ph})
+              AND year IN ({year_ph})
+              AND zoom IN ({zoom_ph})
+              AND slot_id IN ({slot_ph});
+            """,
+            (*scope_taxa, *scope_years, *scope_zooms, *scope_slots),
+        )
+
+        conn.execute(
+            f"""
+            INSERT INTO taxon_grid(
+                taxon_id, zoom, year, slot_id,
+                x, y,
+                observations_count, taxa_count,
+                bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+                fetched_at_utc
+            )
+            SELECT
+                r.taxon_id,
+                r.zoom,
+                r.year,
+                r.slot_id,
+                r.tile_x,
+                r.tile_y,
+                COUNT(*) AS observations_count,
+                1 AS taxa_count,
+                b.bbox_top_lat,
+                b.bbox_left_lon,
+                b.bbox_bottom_lat,
+                b.bbox_right_lon,
+                ?
+            FROM observations_raw r
+            JOIN tile_bbox b
+              ON b.zoom = r.zoom
+             AND b.x = r.tile_x
+             AND b.y = r.tile_y
+            WHERE r.taxon_id IN ({taxon_ph})
+              AND r.year IN ({year_ph})
+              AND r.zoom IN ({zoom_ph})
+              AND r.slot_id IN ({slot_ph})
+            GROUP BY
+                r.taxon_id,
+                r.zoom,
+                r.year,
+                r.slot_id,
+                r.tile_x,
+                r.tile_y;
+            """,
+            (now, *scope_taxa, *scope_years, *scope_zooms, *scope_slots),
+        )
+
+        if include_slot0:
+            conn.execute(
+                f"""
+                DELETE FROM taxon_grid
+                WHERE taxon_id IN ({taxon_ph})
+                  AND year IN ({year_ph})
+                  AND zoom IN ({zoom_ph})
+                  AND slot_id=?;
+                """,
+                (*scope_taxa, *scope_years, *scope_zooms, SLOT_ALL),
+            )
+
+            conn.execute(
+                f"""
+                INSERT INTO taxon_grid(
+                    taxon_id, zoom, year, slot_id,
+                    x, y,
+                    observations_count, taxa_count,
+                    bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+                    fetched_at_utc
+                )
+                SELECT
+                    r.taxon_id,
+                    r.zoom,
+                    r.year,
+                    ? AS slot_id,
+                    r.tile_x,
+                    r.tile_y,
+                    COUNT(*) AS observations_count,
+                    1 AS taxa_count,
+                    b.bbox_top_lat,
+                    b.bbox_left_lon,
+                    b.bbox_bottom_lat,
+                    b.bbox_right_lon,
+                    ?
+                FROM observations_raw r
+                JOIN tile_bbox b
+                  ON b.zoom = r.zoom
+                 AND b.x = r.tile_x
+                 AND b.y = r.tile_y
+                WHERE r.taxon_id IN ({taxon_ph})
+                  AND r.year IN ({year_ph})
+                  AND r.zoom IN ({zoom_ph})
+                  AND r.slot_id IN ({slot_ph})
+                GROUP BY
+                    r.taxon_id,
+                    r.zoom,
+                    r.year,
+                    r.tile_x,
+                    r.tile_y;
+                """,
+                (SLOT_ALL, now, *scope_taxa, *scope_years, *scope_zooms, *scope_slots),
+            )
+
+    regular_layers = len(scope_taxa) * len(scope_years) * len(scope_zooms) * len(scope_slots)
+    slot0_layers = len(scope_taxa) * len(scope_years) * len(scope_zooms) if include_slot0 else 0
+
+    return regular_layers + slot0_layers
+
+# Legacy -- to be removed
+def consolidate_taxon_grid_from_raw_bulk_python_bbox(
+    conn: sqlite3.Connection,
+    *,
+    taxon_ids: Optional[List[int]] = None,
+    zooms: Optional[List[int]] = None,
+    years: Optional[List[int]] = None,
+    slot_ids: Optional[List[int]] = None,
+    include_slot0: bool = True,
+) -> int:
+    where = []
+    args: list[object] = []
+
+    def add_in(col: str, values: Optional[List[int]]) -> None:
+        if values:
+            vals = sorted({int(v) for v in values})
+            where.append(f"{col} IN ({','.join(['?'] * len(vals))})")
+            args.extend(vals)
+
+    add_in("taxon_id", taxon_ids)
+    add_in("zoom", zooms)
+    add_in("year", years)
+
+    real_slots = sorted({int(s) for s in (slot_ids or []) if int(s) != SLOT_ALL})
+    if real_slots:
+        where.append(f"slot_id IN ({','.join(['?'] * len(real_slots))})")
+        args.extend(real_slots)
+
+    wh = ("WHERE " + " AND ".join(where)) if where else ""
+
+    rows = conn.execute(
+        f"""
+        SELECT
+          taxon_id,
+          zoom,
+          year,
+          slot_id,
+          tile_x,
+          tile_y,
+          COUNT(*) AS observations_count
+        FROM observations_raw
+        {wh}
+        GROUP BY taxon_id, zoom, year, slot_id, tile_x, tile_y
+        ORDER BY taxon_id, zoom, year, slot_id, tile_x, tile_y;
+        """,
+        args,
+    ).fetchall()
+
+    if not rows:
+        return 0
+
+    now = utc_now_iso()
+
+    scope_taxa = sorted({int(r[0]) for r in rows})
+    scope_zooms = sorted({int(r[1]) for r in rows})
+    scope_years = sorted({int(r[2]) for r in rows})
+    scope_slots = sorted({int(r[3]) for r in rows})
+
+    taxon_ph = ",".join(["?"] * len(scope_taxa))
+    zoom_ph = ",".join(["?"] * len(scope_zooms))
+    year_ph = ",".join(["?"] * len(scope_years))
+    slot_ph = ",".join(["?"] * len(scope_slots))
+
+    insert_rows = []
+    layers = set()
+
+    for taxon_id, zoom, year, slot_id, x, y, obs_count in rows:
+        top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), int(zoom))
+        insert_rows.append(
+            (
+                int(taxon_id),
+                int(zoom),
+                int(year),
+                int(slot_id),
+                int(x),
+                int(y),
+                int(obs_count),
+                1,
+                float(top_lat),
+                float(left_lon),
+                float(bottom_lat),
+                float(right_lon),
+                now,
+            )
+        )
+        layers.add((int(taxon_id), int(zoom), int(year), int(slot_id)))
+
+    if include_slot0:
+        slot0_rows = conn.execute(
+            f"""
+            SELECT
+              taxon_id,
+              zoom,
+              year,
+              tile_x,
+              tile_y,
+              COUNT(*) AS observations_count
+            FROM observations_raw
+            {wh}
+            GROUP BY taxon_id, zoom, year, tile_x, tile_y
+            ORDER BY taxon_id, zoom, year, tile_x, tile_y;
+            """,
+            args,
+        ).fetchall()
+
+        for taxon_id, zoom, year, x, y, obs_count in slot0_rows:
+            top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), int(zoom))
+            insert_rows.append(
+                (
+                    int(taxon_id),
+                    int(zoom),
+                    int(year),
+                    SLOT_ALL,
+                    int(x),
+                    int(y),
+                    int(obs_count),
+                    1,
+                    float(top_lat),
+                    float(left_lon),
+                    float(bottom_lat),
+                    float(right_lon),
+                    now,
+                )
+            )
+            layers.add((int(taxon_id), int(zoom), int(year), SLOT_ALL))
+
+    with conn:
+        conn.execute(
+            f"""
+            DELETE FROM taxon_grid
+            WHERE taxon_id IN ({taxon_ph})
+              AND zoom IN ({zoom_ph})
+              AND year IN ({year_ph})
+              AND slot_id IN ({slot_ph});
+            """,
+            (*scope_taxa, *scope_zooms, *scope_years, *scope_slots),
+        )
+
+        if include_slot0:
+            conn.execute(
+                f"""
+                DELETE FROM taxon_grid
+                WHERE taxon_id IN ({taxon_ph})
+                  AND zoom IN ({zoom_ph})
+                  AND year IN ({year_ph})
+                  AND slot_id=?;
+                """,
+                (*scope_taxa, *scope_zooms, *scope_years, SLOT_ALL),
+            )
+
+        conn.executemany(
+            """
+            INSERT INTO taxon_grid(
+              taxon_id, zoom, year, slot_id,
+              x, y,
+              observations_count, taxa_count,
+              bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+              fetched_at_utc
+            ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);
+            """,
+            insert_rows,
+        )
+
+    return len(layers)
 
 
 def consolidate_taxon_grid_from_raw(

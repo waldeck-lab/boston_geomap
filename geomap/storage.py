@@ -30,9 +30,6 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Tuple
 import math
 
-conn = sqlite3.connect("din_databas.sqlite")
-conn.create_function("POWER", 2, math.pow)
-
 from geomap.tiles import tile_bbox_latlon
 
 YEAR_ALL = 0  # all-years aggregate
@@ -251,6 +248,55 @@ def clear_export_files(
 
     return deleted
 
+def read_taxa_rows(csv_path: Path, n: int) -> list[dict[str, Any]]:
+    """
+    Supports:
+      1) header CSV with columns: taxon_id, scientific_name, swedish_name, ...
+      2) legacy CSV where first column is taxon_id
+    Returns rows with keys: taxon_id, scientific_name, swedish_name
+    """
+    import csv
+
+    if not csv_path.exists():
+        raise FileNotFoundError(str(csv_path))
+
+    out: list[dict[str, Any]] = []
+    with csv_path.open("r", encoding="utf-8") as f:
+        peek = f.read(4096)
+        f.seek(0)
+
+        # Heuristic: headered CSV
+        if "taxon_id" in peek.splitlines()[0]:
+            r = csv.DictReader(f)
+            for rec in r:
+                tid = (rec.get("taxon_id") or "").strip()
+                if not tid.isdigit():
+                    continue
+                out.append(
+                    {
+                        "taxon_id": int(tid),
+                        "scientific_name": (rec.get("scientific_name") or "").strip(),
+                        "swedish_name": (rec.get("swedish_name") or "").strip(),
+                    }
+                )
+                if n > 0 and len(out) >= n:
+                    break
+            return out
+
+        # Legacy format
+        r2 = csv.reader(f)
+        for row in r2:
+            if not row:
+                continue
+            tid = (row[0] or "").strip()
+            if tid.isdigit():
+                out.append({"taxon_id": int(tid), "scientific_name": "", "swedish_name": ""})
+            if n > 0 and len(out) >= n:
+                break
+        return out
+
+
+
 def materialize_parent_zoom_from_child(
     conn: sqlite3.Connection,
     *,
@@ -325,6 +371,7 @@ def connect(db_path: Path) -> sqlite3.Connection:
     ensure_parent_dir(db_path)
     conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
+    conn.create_function("POWER", 2, math.pow)
 
     # ensure PRAGMAs run outside any txn
     old = conn.isolation_level
@@ -381,6 +428,8 @@ def upsert_taxon_dim(
         """,
         [(tid, sci, swe, now) for tid, sci, swe in taxa],
     )
+
+    
 def upsert_layer_state(
     conn: sqlite3.Connection,
     taxon_id: int,
@@ -577,28 +626,18 @@ def rebuild_hotmap_bulk(
         list(zooms) + list(years) + list(slot_ids),
     )
 
+    # Legacy cleanup only.
+    # Do NOT repopulate hotmap_taxa_set here:
+    # that creates zoom × year × slot × taxon rows and can dominate runtime.
     conn.execute(
         f"""
         DELETE FROM hotmap_taxa_set
         WHERE zoom IN ({zoom_placeholders})
-          AND year IN ({year_placeholders})
-          AND slot_id IN ({slot_placeholders});
+        AND year IN ({year_placeholders})
+        AND slot_id IN ({slot_placeholders});
         """,
         list(zooms) + list(years) + list(slot_ids),
     )
-
-    # Reinsert taxa set once per combination
-    for z in zooms:
-        for y in years:
-            for s in slot_ids:
-                conn.executemany(
-                    """
-                    INSERT OR IGNORE INTO hotmap_taxa_set
-                    (zoom, year, slot_id, taxon_id)
-                    VALUES (?, ?, ?, ?);
-                    """,
-                    [(z, y, s, tid) for tid in taxon_ids],
-                )
 
     now = _utc_now_iso()
    

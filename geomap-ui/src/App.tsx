@@ -105,6 +105,8 @@ function formatEta(seconds: number | null): string {
 export default function App() {
   // Build/view controls
   const [slotId, setSlotId] = useState(0);
+  const [yearFrom, setYearFrom] = useState(2020);
+  const [yearTo, setYearTo] = useState(2026);
   const [zooms, setZooms] = useState("15,14,13");
   const [zoom, setZoom] = useState(15);
   const [n, setN] = useState(5);
@@ -164,19 +166,14 @@ export default function App() {
   );
 
 
-  // Default slot on first page load: today's month.quartile
+  // Default view: all slots within selected year interval
   useEffect(() => {
-    const now = new Date();
-    const month = now.getMonth() + 1; // 1..12
-    const day = now.getDate(); // 1..31
-    const q = day <= 7 ? 1 : day <= 14 ? 2 : day <= 21 ? 3 : 4;
-    const todaySlot = (month - 1) * 4 + q; // 1..48
-
-    setSlotCenter(todaySlot);
+    setSlotCenter(0);
     setSlotRadius(1);
-    setUseWindow(true);
-    setSlotId(todaySlot);
+    setUseWindow(false);
+    setSlotId(0);
   }, []);
+
 
   const slotIdsForView = useMemo(() => {
     if (!useWindow) return [slotCenter];
@@ -212,9 +209,8 @@ export default function App() {
   }, [apiUrl]);
 
   useEffect(() => {
-    void fetchSlotCoverage(zoom);
-  }, [zoom, fetchSlotCoverage]);
-
+    void fetchSlotCoverage(zoom, yearFrom, yearTo);
+  }, [zoom, yearFrom, yearTo, fetchSlotCoverage]);
 
   useEffect(() => {
     void refreshJobStatus();
@@ -264,8 +260,8 @@ export default function App() {
           alpha,
           beta,
           force: forceRebuild,
-          year_from: 2000,
-          year_to: new Date().getFullYear(),
+          year_from: yearFrom,
+          year_to: yearTo,
           include_slot0: true,
           include_all_years: true,
         }),
@@ -291,8 +287,7 @@ export default function App() {
     } catch (e: any) {
       setStatus(`Error: ${e?.message || String(e)}`);
     }
-  }, [apiUrl, alpha, beta, forceRebuild, n, parsedZooms, refreshJobStatus, slotId]);
-
+  }, [apiUrl, alpha, beta, forceRebuild, n, parsedZooms, refreshJobStatus, slotId, yearFrom, yearTo]);
   const cancelJob = useCallback(async () => {
     if (!currentJob) return;
     try {
@@ -329,6 +324,8 @@ export default function App() {
         u.searchParams.set("x", String(p.x));
         u.searchParams.set("y", String(p.y));
         u.searchParams.set("limit", "200");
+        u.searchParams.set("year_from", String(yearFrom));
+        u.searchParams.set("year_to", String(yearTo));
 
         if (usingWindow) {
           u.searchParams.set("slot_ids", slotIdsForView.join(","));
@@ -348,7 +345,7 @@ export default function App() {
         setTaxaLoading(false);
       }
     },
-    [apiUrl, slotIdsForView]
+    [apiUrl, slotIdsForView, yearFrom, yearTo]
   );
 
   const displayedJob = currentJob ?? lastJob;
@@ -374,6 +371,35 @@ export default function App() {
     >
       <div style={{ padding: 12, borderRight: "1px solid #ddd", overflow: "auto" }}>
         <h2>Geomap</h2>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div>
+            <label>From year</label>
+            <input
+              type="number"
+              value={yearFrom}
+              min={1900}
+              max={2100}
+              onChange={(e) => setYearFrom(Number(e.target.value))}
+            />
+          </div>
+
+          <div>
+            <label>To year</label>
+            <input
+              type="number"
+              value={yearTo}
+              min={1900}
+              max={2100}
+              onChange={(e) => setYearTo(Number(e.target.value))}
+            />
+          </div>
+        </div>
+
+        <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 8 }}>
+          slot_id=0 means all seasonal slots within {yearFrom}–{yearTo}
+        </div>
+
 
         <div>
           <label>Build slot</label>
@@ -666,6 +692,8 @@ export default function App() {
         <MapView
           apiBase={API_BASE}
           zoom={zoom}
+          yearFrom={yearFrom}
+          yearTo={yearTo}
           slotId={slotId}
           slotIds={slotIdsForView}
           selected={clicked}

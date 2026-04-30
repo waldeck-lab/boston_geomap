@@ -58,7 +58,8 @@ from geomap.csv_import import (
     IngestArgs as CsvIngestArgs,
     find_csv_inside_zip,
     import_observations_raw,
-    consolidate_taxon_grid_from_raw,
+    consolidate_taxon_grid_from_raw_bulk_tile_bbox,
+    consolidate_taxon_grid_year_all_from_grid,
 )
 
 from geomap.taxon_lists import (
@@ -388,7 +389,6 @@ class JobManager:
 
 JOB_MANAGER = JobManager()
 
-
 def _job_log_spec_summary(spec: dict) -> dict:
     return {
         "year_from": spec.get("year_from"),
@@ -411,6 +411,13 @@ def _job_log_spec_summary(spec: dict) -> dict:
         "adaptive_split": spec.get("adaptive_split"),
     }
 
+def _timed_log(label: str, fn):
+    t0 = time.monotonic()
+    logger.info("TIMER start %s", label)
+    try:
+        return fn()
+    finally:
+        logger.info("TIMER done %s dt=%.3fs", label, time.monotonic() - t0)
 
 def parse_year(value: Any, *, name: str) -> int:
     try:
@@ -423,6 +430,52 @@ def parse_year(value: Any, *, name: str) -> int:
     if y < YEAR_MIN or y > YEAR_MAX:
         raise BadRequest(description=f"{name} out of range: {y} (valid: {YEAR_MIN}..{YEAR_MAX}, or 0=all-years)")
     return y
+
+def _upsert_taxon_dim_from_sources(
+        conn,
+        taxon_ids: list[int],
+        cfg,
+):
+    if not taxon_ids:
+        return 0
+
+    csv_rows = storage.read_taxa_rows(
+        cfg.missing_species_csv,
+        0,
+    )
+
+    csv_map = {
+        int(r["taxon_id"]): r
+        for r in csv_rows
+    }
+
+    taxa = []
+
+    for tid in taxon_ids:
+
+        r = csv_map.get(tid)
+
+        if r:
+            taxa.append(
+                (
+                    int(tid),
+                    (r.get("scientific_name") or "").strip(),
+                    (r.get("swedish_name") or "").strip(),
+                )
+            )
+        else:
+            taxa.append(
+                (
+                    int(tid),
+                    "",
+                    "",
+                )
+            )
+
+    storage.upsert_taxon_dim(conn, taxa)
+
+    return len(taxa)
+
 
 def parse_year_range_args(args) -> tuple[int, int]:
     """
@@ -562,54 +615,6 @@ def parse_zooms(val) -> list[int]:
     if not zs:
         raise ValueError("empty zooms")
     return zs
-
-def read_taxa_rows(csv_path: Path, n: int) -> list[dict[str, Any]]:
-    """
-    Supports:
-      1) header CSV with columns: taxon_id, scientific_name, swedish_name, ...
-      2) legacy CSV where first column is taxon_id
-    Returns rows with keys: taxon_id, scientific_name, swedish_name
-    """
-    import csv
-
-    if not csv_path.exists():
-        raise FileNotFoundError(str(csv_path))
-
-    out: list[dict[str, Any]] = []
-    with csv_path.open("r", encoding="utf-8") as f:
-        peek = f.read(4096)
-        f.seek(0)
-
-        # Heuristic: headered CSV
-        if "taxon_id" in peek.splitlines()[0]:
-            r = csv.DictReader(f)
-            for rec in r:
-                tid = (rec.get("taxon_id") or "").strip()
-                if not tid.isdigit():
-                    continue
-                out.append(
-                    {
-                        "taxon_id": int(tid),
-                        "scientific_name": (rec.get("scientific_name") or "").strip(),
-                        "swedish_name": (rec.get("swedish_name") or "").strip(),
-                    }
-                )
-                if n > 0 and len(out) >= n:
-                    break
-            return out
-
-        # Legacy format
-        r2 = csv.reader(f)
-        for row in r2:
-            if not row:
-                continue
-            tid = (row[0] or "").strip()
-            if tid.isdigit():
-                out.append({"taxon_id": int(tid), "scientific_name": "", "swedish_name": ""})
-            if n > 0 and len(out) >= n:
-                break
-        return out
-
 
 
 def parse_taxon_ids_arg(value: Any, *, name: str = "taxon_ids") -> list[int]:
@@ -1068,7 +1073,9 @@ def make_app() -> Flask:
                     "sos_export",
                     current_step=f"batch={batch_serial} pending={len(pending)} taxa={batch_size} years={batch_year_from}-{batch_year_to}",
                 )
-
+                # Stopwatch (debug) 
+                batch_t0 = time.perf_counter()
+                export_t0 = time.perf_counter()
                 stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
                 export_path = cfg.csv_stash_dir / (
                     f"{stamp}__sosjob_batch{batch_serial:05d}_"
@@ -1194,6 +1201,18 @@ def make_app() -> Flask:
                     current_step=f"exported {export_path.name}",
                 )
 
+                # Stopwatch (debug)
+                export_dt = time.perf_counter() - export_t0
+                logger.info(
+                    "job %s timing batch=%s export_seconds=%.3f taxa=%s years=%s-%s",
+                    job_id,
+                    batch_serial,
+                    export_dt,
+                    len(batch_taxon_ids),
+                    batch_year_from,
+                    batch_year_to,
+                )
+                
                 if not export_path.exists() or export_path.stat().st_size == 0:
                     summary["exports_empty"] += 1
                     JOB_MANAGER.append_warning(job_id, f"Empty SOS export for batch size={batch_size}")
@@ -1220,6 +1239,9 @@ def make_app() -> Flask:
                     date_field=str(spec.get("csv_date_field", "StartDate")),
                     occurrence_status=spec.get("csv_occurrence_status"),
                 )
+
+                # Stopwatch (debug)
+                raw_t0 = time.perf_counter()
                 
                 JOB_MANAGER.set_phase(
                     job_id,
@@ -1247,13 +1269,26 @@ def make_app() -> Flask:
                 all_touched_years.update(years)
                 all_touched_slots.update(slot_ids)
                 all_touched_zooms.update(zooms_scope)
+                
+                raw_dt = time.perf_counter() - raw_t0
+                # Stopwatch (debug)
+                logger.info(
+                    "job %s timing batch=%s raw_import_seconds=%.3f scopes=%s",
+                    job_id,
+                    batch_serial,
+                    raw_dt,
+                    len(touched),
+                )
 
+                # Stopwatch (debug)
+                consolidate_t0 = time.perf_counter()
+                
                 JOB_MANAGER.set_phase(
                     job_id,
                     "csv_consolidate",
                     current_step=f"batch={batch_serial} scopes={len(touched)}",
                 )
-                layers_written = consolidate_taxon_grid_from_raw(
+                layers_written = consolidate_taxon_grid_from_raw_bulk_tile_bbox(
                     conn,
                     taxon_ids=taxon_ids_scope,
                     years=years,
@@ -1267,6 +1302,18 @@ def make_app() -> Flask:
                     job_id,
                     phase="csv_consolidate",
                     current_step=f"batch={batch_serial} layers={layers_written}",
+                )
+
+                # Stopwatch (debug)
+                consolidate_dt = time.perf_counter() - consolidate_t0
+                batch_dt = time.perf_counter() - batch_t0
+                logger.info(
+                    "job %s timing batch=%s consolidate_seconds=%.3f total_batch_seconds=%.3f layers=%s",
+                    job_id,
+                    batch_serial,
+                    consolidate_dt,
+                    batch_dt,
+                    layers_written,
                 )
 
             if not all_touched_taxa:
@@ -1387,9 +1434,15 @@ def make_app() -> Flask:
             slot_ids = sorted({k[1] for k in touched})
             zooms_scope = sorted({k[2] for k in touched}, reverse=True)
             taxon_ids_scope = sorted({k[3] for k in touched})
-
+            with conn:
+                _upsert_taxon_dim_from_sources(
+                    conn,
+                    taxon_ids_scope,
+                    cfg,
+                )
+            
             JOB_MANAGER.set_phase(job_id, "csv_consolidate", current_step=f"scopes={len(touched)}")
-            layers_written = consolidate_taxon_grid_from_raw(
+            layers_written = consolidate_taxon_grid_from_raw_bulk_tile_bbox(
                 conn,
                 taxon_ids=taxon_ids_scope,
                 years=years,
@@ -1397,6 +1450,17 @@ def make_app() -> Flask:
                 zooms=zooms_scope,
                 include_slot0=ingest.include_slot0,
             )
+
+            all_year_layers_written = 0
+            if bool(spec.get("include_all_years", True)):
+                all_year_layers_written = consolidate_taxon_grid_year_all_from_grid(
+                    conn,
+                    taxon_ids=taxon_ids_scope,
+                    years=years,
+                    slot_ids=slot_ids,
+                    zooms=zooms_scope,
+                    include_slot0=ingest.include_slot0,
+                )
 
             meta_payload = {
                 "job_id": job_id,
@@ -1410,6 +1474,7 @@ def make_app() -> Flask:
                 "zooms": zooms_scope,
                 "touched_scopes": len(touched),
                 "layers_written": layers_written,
+                "all_year_layers_written": all_year_layers_written,
             }
             meta_path = _write_csv_job_metadata(cfg, job_id, meta_payload)
 
@@ -1422,6 +1487,7 @@ def make_app() -> Flask:
                 "meta_path": str(meta_path),
                 "touched_scopes": len(touched),
                 "layers_written": layers_written,
+                "all_year_layers_written": all_year_layers_written,
                 "taxon_ids": taxon_ids_scope,
                 "years": years,
                 "slot_ids": slot_ids,
@@ -1483,163 +1549,163 @@ def make_app() -> Flask:
 
 
 
-    def _consolidate_taxon_grid_year_all_from_raw(
-        conn: sqlite3.Connection,
-            *,
-            taxon_ids: list[int],
-            zooms: list[int],
-            years: list[int],
-            slot_ids: list[int],
-            include_slot0: bool,
-    ) -> int:
-        """
-        Build taxon_grid year=0 layers from observations_raw.
+    # def _consolidate_taxon_grid_year_all_from_raw(
+    #     conn: sqlite3.Connection,
+    #         *,
+    #         taxon_ids: list[int],
+    #         zooms: list[int],
+    #         years: list[int],
+    #         slot_ids: list[int],
+    #         include_slot0: bool,
+    # ) -> int:
+    #     """
+    #     Build taxon_grid year=0 layers from observations_raw.
         
-        Creates per-taxon layers:
-        year=0, slot=real_slot
-        year=0, slot=0 if include_slot0
-        """
-        real_slots = sorted({int(s) for s in slot_ids if int(s) != SLOT_ALL})
-        years = sorted({int(y) for y in years if int(y) != YEAR_ALL})
-        taxon_ids = sorted({int(t) for t in taxon_ids})
-        zooms = sorted({int(z) for z in zooms}, reverse=True)
+    #     Creates per-taxon layers:
+    #     year=0, slot=real_slot
+    #     year=0, slot=0 if include_slot0
+    #     """
+    #     real_slots = sorted({int(s) for s in slot_ids if int(s) != SLOT_ALL})
+    #     years = sorted({int(y) for y in years if int(y) != YEAR_ALL})
+    #     taxon_ids = sorted({int(t) for t in taxon_ids})
+    #     zooms = sorted({int(z) for z in zooms}, reverse=True)
         
-        if not taxon_ids or not zooms or not years or not real_slots:
-            return 0
+    #     if not taxon_ids or not zooms or not years or not real_slots:
+    #         return 0
 
-        taxon_ph = ",".join(["?"] * len(taxon_ids))
-        zoom_ph = ",".join(["?"] * len(zooms))
-        year_ph = ",".join(["?"] * len(years))
-        slot_ph = ",".join(["?"] * len(real_slots))
+    #     taxon_ph = ",".join(["?"] * len(taxon_ids))
+    #     zoom_ph = ",".join(["?"] * len(zooms))
+    #     year_ph = ",".join(["?"] * len(years))
+    #     slot_ph = ",".join(["?"] * len(real_slots))
     
-        # Remove old year=0 derived layers for this exact scope.
-        with conn:
-            conn.execute(
-                f"""
-                DELETE FROM taxon_grid
-                WHERE year=?
-                AND taxon_id IN ({taxon_ph})
-                AND zoom IN ({zoom_ph})
-                AND slot_id IN ({slot_ph});
-                """,
-                (YEAR_ALL, *taxon_ids, *zooms, *real_slots),
-            )
+    #     # Remove old year=0 derived layers for this exact scope.
+    #     with conn:
+    #         conn.execute(
+    #             f"""
+    #             DELETE FROM taxon_grid
+    #             WHERE year=?
+    #             AND taxon_id IN ({taxon_ph})
+    #             AND zoom IN ({zoom_ph})
+    #             AND slot_id IN ({slot_ph});
+    #             """,
+    #             (YEAR_ALL, *taxon_ids, *zooms, *real_slots),
+    #         )
 
-            if include_slot0:
-                conn.execute(
-                    f"""
-                    DELETE FROM taxon_grid
-                    WHERE year=?
-                    AND taxon_id IN ({taxon_ph})
-                    AND zoom IN ({zoom_ph})
-                    AND slot_id=?;
-                    """,
-                    (YEAR_ALL, *taxon_ids, *zooms, SLOT_ALL),
-                )
+    #         if include_slot0:
+    #             conn.execute(
+    #                 f"""
+    #                 DELETE FROM taxon_grid
+    #                 WHERE year=?
+    #                 AND taxon_id IN ({taxon_ph})
+    #                 AND zoom IN ({zoom_ph})
+    #                 AND slot_id=?;
+    #                 """,
+    #                 (YEAR_ALL, *taxon_ids, *zooms, SLOT_ALL),
+    #             )
 
-        now = local_now_iso()
-        layers: set[tuple[int, int, int]] = set()
-        insert_rows = []
+    #     now = local_now_iso()
+    #     layers: set[tuple[int, int, int]] = set()
+    #     insert_rows = []
 
-        # Specific slots: year=0, slot=23..28 etc.
-        rows = conn.execute(
-            f"""
-            SELECT
-            taxon_id,
-            zoom,
-            slot_id,
-            tile_x,
-            tile_y,
-            COUNT(*) AS observations_count
-            FROM observations_raw
-            WHERE taxon_id IN ({taxon_ph})
-            AND zoom IN ({zoom_ph})
-            AND year IN ({year_ph})
-            AND slot_id IN ({slot_ph})
-            GROUP BY taxon_id, zoom, slot_id, tile_x, tile_y
-            ORDER BY taxon_id, zoom, slot_id, tile_x, tile_y;
-            """,
-            (*taxon_ids, *zooms, *years, *real_slots),
-        ).fetchall()
+    #     # Specific slots: year=0, slot=23..28 etc.
+    #     rows = conn.execute(
+    #         f"""
+    #         SELECT
+    #         taxon_id,
+    #         zoom,
+    #         slot_id,
+    #         tile_x,
+    #         tile_y,
+    #         COUNT(*) AS observations_count
+    #         FROM observations_raw
+    #         WHERE taxon_id IN ({taxon_ph})
+    #         AND zoom IN ({zoom_ph})
+    #         AND year IN ({year_ph})
+    #         AND slot_id IN ({slot_ph})
+    #         GROUP BY taxon_id, zoom, slot_id, tile_x, tile_y
+    #         ORDER BY taxon_id, zoom, slot_id, tile_x, tile_y;
+    #         """,
+    #         (*taxon_ids, *zooms, *years, *real_slots),
+    #     ).fetchall()
 
-        for taxon_id, zoom, slot_id, x, y, obs_count in rows:
-            top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), int(zoom))
-            insert_rows.append(
-                (
-                    int(taxon_id),
-                    int(zoom),
-                    YEAR_ALL,
-                    int(slot_id),
-                    int(x),
-                    int(y),
-                    int(obs_count),
-                    1,
-                    float(top_lat),
-                    float(left_lon),
-                    float(bottom_lat),
-                    float(right_lon),
-                    now,
-                )
-            )
-            layers.add((int(taxon_id), int(zoom), int(slot_id)))
+    #     for taxon_id, zoom, slot_id, x, y, obs_count in rows:
+    #         top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), int(zoom))
+    #         insert_rows.append(
+    #             (
+    #                 int(taxon_id),
+    #                 int(zoom),
+    #                 YEAR_ALL,
+    #                 int(slot_id),
+    #                 int(x),
+    #                 int(y),
+    #                 int(obs_count),
+    #                 1,
+    #                 float(top_lat),
+    #                 float(left_lon),
+    #                 float(bottom_lat),
+    #                 float(right_lon),
+    #                 now,
+    #             )
+    #         )
+    #         layers.add((int(taxon_id), int(zoom), int(slot_id)))
 
-        # Slot 0: year=0, all selected slots merged.
-        if include_slot0:
-            rows = conn.execute(
-                f"""
-                SELECT
-                taxon_id,
-                zoom,
-                tile_x,
-                tile_y,
-                COUNT(*) AS observations_count
-                FROM observations_raw
-                WHERE taxon_id IN ({taxon_ph})
-                AND zoom IN ({zoom_ph})
-                AND year IN ({year_ph})
-                AND slot_id IN ({slot_ph})
-                GROUP BY taxon_id, zoom, tile_x, tile_y
-                ORDER BY taxon_id, zoom, tile_x, tile_y;
-                """,
-                (*taxon_ids, *zooms, *years, *real_slots),
-            ).fetchall()
+    #     # Slot 0: year=0, all selected slots merged.
+    #     if include_slot0:
+    #         rows = conn.execute(
+    #             f"""
+    #             SELECT
+    #             taxon_id,
+    #             zoom,
+    #             tile_x,
+    #             tile_y,
+    #             COUNT(*) AS observations_count
+    #             FROM observations_raw
+    #             WHERE taxon_id IN ({taxon_ph})
+    #             AND zoom IN ({zoom_ph})
+    #             AND year IN ({year_ph})
+    #             AND slot_id IN ({slot_ph})
+    #             GROUP BY taxon_id, zoom, tile_x, tile_y
+    #             ORDER BY taxon_id, zoom, tile_x, tile_y;
+    #             """,
+    #             (*taxon_ids, *zooms, *years, *real_slots),
+    #         ).fetchall()
 
-            for taxon_id, zoom, x, y, obs_count in rows:
-                top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), int(zoom))
-                insert_rows.append(
-                    (
-                        int(taxon_id),
-                        int(zoom),
-                        YEAR_ALL,
-                        SLOT_ALL,
-                        int(x),
-                        int(y),
-                        int(obs_count),
-                        1,
-                        float(top_lat),
-                        float(left_lon),
-                        float(bottom_lat),
-                        float(right_lon),
-                        now,
-                    )
-                )
-                layers.add((int(taxon_id), int(zoom), SLOT_ALL))
+    #         for taxon_id, zoom, x, y, obs_count in rows:
+    #             top_lat, left_lon, bottom_lat, right_lon = tile_xy_to_bbox(int(x), int(y), int(zoom))
+    #             insert_rows.append(
+    #                 (
+    #                     int(taxon_id),
+    #                     int(zoom),
+    #                     YEAR_ALL,
+    #                     SLOT_ALL,
+    #                     int(x),
+    #                     int(y),
+    #                     int(obs_count),
+    #                     1,
+    #                     float(top_lat),
+    #                     float(left_lon),
+    #                     float(bottom_lat),
+    #                     float(right_lon),
+    #                     now,
+    #                 )
+    #             )
+    #             layers.add((int(taxon_id), int(zoom), SLOT_ALL))
 
-        if insert_rows:
-            with conn:
-                conn.executemany(
-                    """
-                    INSERT INTO taxon_grid(
-                    taxon_id, zoom, year, slot_id, x, y,
-                    observations_count, taxa_count,
-                    bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
-                    fetched_at_utc
-                    ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);
-                    """,
-                    insert_rows,
-                )
+    #     if insert_rows:
+    #         with conn:
+    #             conn.executemany(
+    #                 """
+    #                 INSERT INTO taxon_grid(
+    #                 taxon_id, zoom, year, slot_id, x, y,
+    #                 observations_count, taxa_count,
+    #                 bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon,
+    #                 fetched_at_utc
+    #                 ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);
+    #                 """,
+    #                 insert_rows,
+    #             )
 
-        return len(layers)
+    #     return len(layers)
     
     def _run_raw_rebuild_job(job_id: str, spec: dict[str, Any]) -> dict[str, Any]:
         conn = storage.connect(cfg.geomap_db_path)
@@ -1687,6 +1753,11 @@ def make_app() -> Flask:
                 ).fetchall()
 
                 taxon_ids_scope = sorted({int(r[0]) for r in rows})
+                _upsert_taxon_dim_from_sources(
+                    conn,
+                    taxon_ids_scope,
+                    cfg,
+                )
                 years_scope = sorted({int(r[1]) for r in rows})
                 zooms_scope = sorted({int(r[2]) for r in rows}, reverse=True)
                 slot_ids_scope = sorted({int(r[3]) for r in rows})
@@ -1702,15 +1773,18 @@ def make_app() -> Flask:
                 current_step=f"taxa={len(taxon_ids_scope)} years={len(years_scope)} slots={len(slot_ids_scope)}",
             )
 
-            layers_written = consolidate_taxon_grid_from_raw(
-                conn,
-                taxon_ids=taxon_ids_scope,
-                years=years_scope or None,
-                slot_ids=slot_ids_scope or None,
-                zooms=zooms_scope or None,
-                include_slot0=bool(spec.get("include_slot0", True)),
+            layers_written = _timed_log(
+                "consolidate_taxon_grid_from_raw_bulk_tile_bbox",
+                lambda: consolidate_taxon_grid_from_raw_bulk_tile_bbox(
+                    conn,
+                    taxon_ids=taxon_ids_scope,
+                    years=years_scope or None,
+                    slot_ids=slot_ids_scope or None,
+                    zooms=zooms_scope or None,
+                    include_slot0=bool(spec.get("include_slot0", True)),
+                ),
             )
-
+            
             all_year_layers_written = 0
             if bool(spec.get("include_all_years", True)):
                 JOB_MANAGER.set_phase(
@@ -1722,13 +1796,16 @@ def make_app() -> Flask:
                     ),
                 )
                 
-                all_year_layers_written = _consolidate_taxon_grid_year_all_from_raw(
-                    conn,
-                    taxon_ids=taxon_ids_scope,
-                    years=years_scope,
-                    slot_ids=slot_ids_scope,
-                    zooms=zooms_scope,
-                    include_slot0=bool(spec.get("include_slot0", True)),
+                all_year_layers_written = _timed_log(
+                    "consolidate_taxon_grid_year_all_from_raw",
+                    lambda: consolidate_taxon_grid_year_all_from_grid(
+                        conn,
+                        taxon_ids=taxon_ids_scope,
+                        years=years_scope,
+                        slot_ids=slot_ids_scope,
+                        zooms=zooms_scope,
+                        include_slot0=bool(spec.get("include_slot0", True)),
+                    ),
                 )
 
             raw_rows_count = conn.execute(
@@ -1819,7 +1896,7 @@ def make_app() -> Flask:
                         }
                     )
             else:
-                taxa_rows = read_taxa_rows(cfg.missing_species_csv, int(spec["n"]))
+                taxa_rows = storage.read_taxa_rows(cfg.missing_species_csv, int(spec["n"]))
                 taxon_ids = [int(t["taxon_id"]) for t in taxa_rows]
                 if not taxon_ids:
                     raise RuntimeError("No taxon ids found in CSV")
