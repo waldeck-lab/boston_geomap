@@ -139,6 +139,20 @@ export default function App() {
   const apiUrl = useCallback((path: string) => (API_BASE ? `${API_BASE}${path}` : path), []);
   const [slotCoverage, setSlotCoverage] = useState<SlotCoverage[]>([]);
 
+  // Color-coding threasholds for hotmap
+  const [speciesStopsText, setSpeciesStopsText] =
+    useState("1,2,3,5,8,13,21,34,55,89")
+
+  const speciesStops = useMemo(
+    () =>
+      speciesStopsText
+        .split(",")
+        .map((x) => Number(x.trim()))
+        .filter((x) => Number.isFinite(x) && x > 0)
+        .sort((a, b) => a - b),
+    [speciesStopsText]
+  );
+
   const fetchSlotCoverage = useCallback(
     async (zoom: number, yearFrom?: number, yearTo?: number) => {
       try {
@@ -395,9 +409,21 @@ export default function App() {
             />
           </div>
         </div>
-
         <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 8 }}>
           slot_id=0 means all seasonal slots within {yearFrom}–{yearTo}
+        </div>
+
+
+        <label>
+          Species color stops
+          <input
+            value={speciesStopsText}
+            onChange={(e) => setSpeciesStopsText(e.target.value)}
+            placeholder="1,2,5,10,20,30,40,50"
+          />
+        </label>
+        <div style={{ fontSize: 12, opacity: 0.7 }}>
+          Colors use coverage = number of species per geobox.
         </div>
 
 
@@ -699,6 +725,7 @@ export default function App() {
           selected={clicked}
           fitRequestId={fitRequestId}
           onCellClick={onCellClick}
+          speciesStops={speciesStops}
         />
       </div>
     </div>
