@@ -7,11 +7,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MapView } from "./MapView";
 
+
 type Taxon = {
   taxon_id: number;
   swedish_name: string;
   scientific_name: string;
   observations_count: number;
+  first_observed?: string | null;
+  last_observed?: string | null;
 };
 
 type JobSnapshot = {
@@ -100,7 +103,12 @@ function formatEta(seconds: number | null): string {
 }
 
 
-
+function formatObservedRange(first?: string | null, last?: string | null): string {
+  if (!first && !last) return "";
+  if (first && last && first === last) return first;
+  if (first && last) return `${first} – ${last}`;
+  return first || last || "";
+}
 
 export default function App() {
   // Build/view controls
@@ -697,16 +705,23 @@ export default function App() {
               {!taxaLoading && taxa.length > 0 && (
                 <ul style={{ paddingLeft: 18, margin: 0 }}>
                   {taxa.slice(0, 80).map((t) => (
-                    <li key={t.taxon_id} style={{ marginBottom: 6 }}>
+                    <li key={t.taxon_id} style={{ marginBottom: 8 }}>
                       <div>
                         <b className="latin">{t.scientific_name || String(t.taxon_id)}</b>
                         <span style={{ opacity: 0.75 }}> : {t.observations_count}</span>
                       </div>
+
                       {t.swedish_name && (
                         <div style={{ fontSize: 12, opacity: 0.8 }}>{t.swedish_name}</div>
                       )}
-                    </li>
-                  ))}
+
+                      {(t.first_observed || t.last_observed) && (
+                        <div style={{ fontSize: 11, opacity: 0.65 }}>
+                          observed: {formatObservedRange(t.first_observed, t.last_observed)}
+                        </div>
+                      )}
+                    </li>)
+                  )}
                 </ul>
               )}
             </div>

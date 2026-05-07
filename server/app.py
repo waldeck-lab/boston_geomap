@@ -2402,7 +2402,7 @@ def make_app() -> Flask:
             return jsonify({"type": "FeatureCollection", "features": features})
         finally:
             conn.close()
-
+        
     @app.get("/api/cell/taxa")
     def cell_taxa():
         zoom = int(request.args.get("zoom", "15"))
@@ -2411,39 +2411,59 @@ def make_app() -> Flask:
         y = int(request.args["y"])
         limit = int(request.args.get("limit", "200"))
         year_from, year_to = parse_year_range_args(request.args)
-
+        
         conn = storage.connect(cfg.geomap_db_path)
         conn.isolation_level = None
         try:
             storage.ensure_schema(conn)
-
+            
             if year_from == YEAR_ALL and year_to == YEAR_ALL:
                 rows = conn.execute(
                     """
-                    SELECT taxon_id, scientific_name, swedish_name, observations_count
-                    FROM grid_hotmap_taxa_names_v
-                    WHERE zoom=? AND year=? AND slot_id=? AND x=? AND y=?
-                    ORDER BY observations_count DESC, taxon_id
+                    SELECT
+                    r.taxon_id,
+                    COALESCE(MAX(d.scientific_name), '') AS scientific_name,
+                    COALESCE(MAX(d.swedish_name), '') AS swedish_name,
+                    COUNT(*) AS observations_count,
+                    MIN(r.observation_date) AS first_observed,
+                    MAX(r.observation_date) AS last_observed
+                    FROM observations_raw r
+                    LEFT JOIN taxon_dim d
+                    ON d.taxon_id = r.taxon_id
+                    WHERE r.zoom=?
+                    AND r.year=?
+                    AND r.tile_x=?
+                    AND r.tile_y=?
+                    AND (? = 0 OR r.slot_id = ?)
+                    GROUP BY r.taxon_id
+                    ORDER BY observations_count DESC, r.taxon_id
                     LIMIT ?;
                     """,
-                    (zoom, YEAR_ALL, slot_id, x, y, limit),
+                    (zoom, YEAR_ALL, x, y, slot_id, slot_id, limit),
                 ).fetchall()
             else:
-                # Aggregate across years for the same cell
                 rows = conn.execute(
                     """
                     SELECT
-                    taxon_id,
-                    COALESCE(MAX(scientific_name), '') AS scientific_name,
-                    COALESCE(MAX(swedish_name), '') AS swedish_name,
-                    SUM(observations_count) AS observations_count
-                    FROM grid_hotmap_taxa_names_v
-                    WHERE zoom=? AND slot_id=? AND x=? AND y=? AND year BETWEEN ? AND ?
-                    GROUP BY taxon_id
-                    ORDER BY observations_count DESC, taxon_id
+                    r.taxon_id,
+                    COALESCE(MAX(d.scientific_name), '') AS scientific_name,
+                    COALESCE(MAX(d.swedish_name), '') AS swedish_name,
+                    COUNT(*) AS observations_count,
+                    MIN(r.observation_date) AS first_observed,
+                    MAX(r.observation_date) AS last_observed
+                    FROM observations_raw r
+                    LEFT JOIN taxon_dim d
+                    ON d.taxon_id = r.taxon_id
+                    WHERE r.zoom=?
+                    AND r.tile_x=?
+                    AND r.tile_y=?
+                    AND r.year BETWEEN ? AND ?
+                    AND (? = 0 OR r.slot_id = ?)
+                    GROUP BY r.taxon_id
+                    ORDER BY observations_count DESC, r.taxon_id
                     LIMIT ?;
                     """,
-                    (zoom, slot_id, x, y, year_from, year_to, limit),
+                    (zoom, x, y, year_from, year_to, slot_id, slot_id, limit),
                 ).fetchall()
 
             out = []
@@ -2454,12 +2474,14 @@ def make_app() -> Flask:
                         "scientific_name": r[1] or "",
                         "swedish_name": r[2] or "",
                         "observations_count": int(r[3] or 0),
+                        "first_observed": r[4] or None,
+                        "last_observed": r[5] or None,
                     }
                 )
             return jsonify(out)
         finally:
             conn.close()
-            
+
 
     @app.get("/api/cell/taxa_window")
     def cell_taxa_window():
@@ -2469,12 +2491,12 @@ def make_app() -> Flask:
         y = int(request.args["y"])
         limit = int(request.args.get("limit", "200"))
         year_from, year_to = parse_year_range_args(request.args)
-
+        
         conn = storage.connect(cfg.geomap_db_path)
         conn.isolation_level = None
         try:
             storage.ensure_schema(conn)
-
+            
             if not slot_ids:
                 return jsonify([])
 
@@ -2484,14 +2506,22 @@ def make_app() -> Flask:
                 rows = conn.execute(
                     f"""
                     SELECT
-                    taxon_id,
-                    COALESCE(MAX(scientific_name), '') AS scientific_name,
-                    COALESCE(MAX(swedish_name), '') AS swedish_name,
-                    SUM(observations_count) AS observations_count
-                    FROM grid_hotmap_taxa_names_v
-                    WHERE zoom=? AND year=? AND x=? AND y=? AND slot_id IN ({placeholders})
-                    GROUP BY taxon_id
-                    ORDER BY observations_count DESC, taxon_id
+                    r.taxon_id,
+                    COALESCE(MAX(d.scientific_name), '') AS scientific_name,
+                    COALESCE(MAX(d.swedish_name), '') AS swedish_name,
+                    COUNT(*) AS observations_count,
+                    MIN(r.observation_date) AS first_observed,
+                    MAX(r.observation_date) AS last_observed
+                    FROM observations_raw r
+                    LEFT JOIN taxon_dim d
+                    ON d.taxon_id = r.taxon_id
+                    WHERE r.zoom=?
+                    AND r.year=?
+                    AND r.tile_x=?
+                    AND r.tile_y=?
+                    AND r.slot_id IN ({placeholders})
+                    GROUP BY r.taxon_id
+                    ORDER BY observations_count DESC, r.taxon_id
                     LIMIT ?;
                     """,
                     (zoom, YEAR_ALL, x, y, *slot_ids, limit),
@@ -2500,19 +2530,27 @@ def make_app() -> Flask:
                 rows = conn.execute(
                     f"""
                     SELECT
-                    taxon_id,
-                    COALESCE(MAX(scientific_name), '') AS scientific_name,
-                    COALESCE(MAX(swedish_name), '') AS swedish_name,
-                    SUM(observations_count) AS observations_count
-                    FROM grid_hotmap_taxa_names_v
-                    WHERE zoom=? AND x=? AND y=? AND year BETWEEN ? AND ? AND slot_id IN ({placeholders})
-                    GROUP BY taxon_id
-                    ORDER BY observations_count DESC, taxon_id
+                    r.taxon_id,
+                    COALESCE(MAX(d.scientific_name), '') AS scientific_name,
+                    COALESCE(MAX(d.swedish_name), '') AS swedish_name,
+                    COUNT(*) AS observations_count,
+                    MIN(r.observation_date) AS first_observed,
+                    MAX(r.observation_date) AS last_observed
+                    FROM observations_raw r
+                    LEFT JOIN taxon_dim d
+                    ON d.taxon_id = r.taxon_id
+                    WHERE r.zoom=?
+                    AND r.tile_x=?
+                    AND r.tile_y=?
+                    AND r.year BETWEEN ? AND ?
+                    AND r.slot_id IN ({placeholders})
+                    GROUP BY r.taxon_id
+                    ORDER BY observations_count DESC, r.taxon_id
                     LIMIT ?;
                     """,
                     (zoom, x, y, year_from, year_to, *slot_ids, limit),
                 ).fetchall()
-
+                
             logger.info(
                 "cell_taxa_window zoom=%d x=%d y=%d year=%s slots=%s rows=%d",
                 zoom, x, y,
@@ -2529,12 +2567,13 @@ def make_app() -> Flask:
                         "scientific_name": r[1] or "",
                         "swedish_name": r[2] or "",
                         "observations_count": int(r[3] or 0),
+                        "first_observed": r[4] or None,
+                        "last_observed": r[5] or None,
                     }
                 )
             return jsonify(out)
         finally:
             conn.close()
-
 
     @app.get("/api/slots/coverage")
     def slots_coverage():
