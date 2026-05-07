@@ -49,7 +49,7 @@ def post_with_backoff(
     body: Dict[str, Any],
     *,
     timeout_s: int = 180,
-    min_interval_s: float = 15.0,
+    min_interval_s: float = 2.0,  # Default = 15.0
     max_retries: int = 8,
 ) -> requests.Response:
     last = None

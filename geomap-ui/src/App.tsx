@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: MIT
  *
  * Copyright (c) 2025 Jonas Waldeck
+ *
+ * File: geomap-ui/src/App.tsx
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -113,7 +115,7 @@ function formatObservedRange(first?: string | null, last?: string | null): strin
 export default function App() {
   // Build/view controls
   const [slotId, setSlotId] = useState(0);
-  const [yearFrom, setYearFrom] = useState(2020);
+  const [yearFrom, setYearFrom] = useState(2000);
   const [yearTo, setYearTo] = useState(2026);
   const [zooms, setZooms] = useState("15,14,13");
   const [zoom, setZoom] = useState(15);
@@ -122,7 +124,7 @@ export default function App() {
   const [beta, setBeta] = useState(0.5);
 
   // Upstream mature controls
-  const [forceRebuild, setForceRebuild] = useState(false);
+  const [useCachedExports, setUseCachedExports] = useState(true);
   const [autoFit, setAutoFit] = useState(true);
   const [fitRequestId, setFitRequestId] = useState(0);
 
@@ -259,8 +261,8 @@ export default function App() {
     prevBusyRef.current = jobsBusy;
   }, [jobsBusy, lastJob, autoFit]);
 
-  const build = useCallback(async () => {
-    setStatus("Starting rebuild…");
+  const refreshData = useCallback(async () => {
+    setStatus(useCachedExports ? "Starting cached refresh…" : "Starting forced SOS refresh…");
     setTaxa([]);
     setClicked(null);
 
@@ -269,23 +271,32 @@ export default function App() {
         throw new Error("No valid zooms. Example: 15,14,13");
       }
 
-      const slotsToBuild =
-        slotId === 0 ? Array.from({ length: 48 }, (_, i) => i + 1) : [slotId];
+      const allSlots = Array.from({ length: 48 }, (_, i) => i + 1);
 
-      const res = await fetch(apiUrl("/api/jobs/rebuild"), {
+      const res = await fetch(apiUrl("/api/jobs/sos_import"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          slot_ids: slotsToBuild,
-          zooms: parsedZooms,
-          n,
-          alpha,
-          beta,
-          force: forceRebuild,
           year_from: yearFrom,
           year_to: yearTo,
+          zooms: parsedZooms,
+          slot_ids: allSlots,
+
           include_slot0: true,
           include_all_years: true,
+
+          occurrence_status: "present",
+          output_field_set: "All",
+
+          batch_size: 100,
+          min_batch_size: 1,
+          adaptive_split: true,
+
+          alpha,
+          beta,
+
+          // Backend force=true means: ignore cached ZIPs and re-fetch from SOS.
+          force: !useCachedExports,
         }),
       });
 
@@ -298,18 +309,28 @@ export default function App() {
       }
 
       if (!res.ok || !j.ok) {
-        console.error("Build failed", { status: res.status, body: text });
+        console.error("Refresh failed", { status: res.status, body: text });
         throw new Error(j?.error || `HTTP ${res.status}: ${text.slice(0, 200)}`);
       }
 
       setActiveJobId(j.job_id ?? null);
       setZoom(parsedZooms[0]);
-      setStatus(`Job queued: ${j.job_id}`);
+      setStatus(`Refresh queued: ${j.job_id}`);
       await refreshJobStatus();
     } catch (e: any) {
       setStatus(`Error: ${e?.message || String(e)}`);
     }
-  }, [apiUrl, alpha, beta, forceRebuild, n, parsedZooms, refreshJobStatus, slotId, yearFrom, yearTo]);
+  }, [
+    apiUrl,
+    alpha,
+    beta,
+    parsedZooms,
+    refreshJobStatus,
+    useCachedExports,
+    yearFrom,
+    yearTo,
+  ]);
+
   const cancelJob = useCallback(async () => {
     if (!currentJob) return;
     try {
@@ -457,17 +478,6 @@ export default function App() {
           <label>Zooms</label>
           <input value={zooms} onChange={(e) => setZooms(e.target.value)} disabled={jobsBusy} />
           <div style={{ fontSize: 12, opacity: 0.7 }}>Example: 15,14,13</div>
-        </div>
-
-        <div>
-          <label>N species (0 = all)</label>
-          <input
-            type="number"
-            value={n}
-            min={0}
-            onChange={(e) => setN(Number(e.target.value))}
-            disabled={jobsBusy}
-          />
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
@@ -648,16 +658,20 @@ export default function App() {
           </label>
         </div>
 
+
         <div style={{ marginTop: 8 }}>
           <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <input
               type="checkbox"
-              checked={forceRebuild}
-              onChange={(e) => setForceRebuild(e.target.checked)}
+              checked={useCachedExports}
+              onChange={(e) => setUseCachedExports(e.target.checked)}
               disabled={jobsBusy}
             />
-            Force rebuild
+            Use cached SOS exports when available
           </label>
+          <div style={{ fontSize: 12, opacity: 0.7 }}>
+            Uncheck to force download fresh ZIP exports from SOS.
+          </div>
         </div>
 
         <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
@@ -665,9 +679,10 @@ export default function App() {
             Fit now
           </button>
 
-          <button disabled={jobsBusy} onClick={build} style={{ flex: 1 }}>
-            {jobsBusy ? "Job running…" : "Build / Refresh"}
+          <button disabled={jobsBusy} onClick={refreshData} style={{ flex: 1 }}>
+            {jobsBusy ? "Job running…" : useCachedExports ? "Refresh from cache" : "Force SOS refresh"}
           </button>
+
         </div>
 
         {currentJob && (

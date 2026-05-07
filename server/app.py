@@ -245,6 +245,12 @@ class JobManager:
             job.total_steps = max(int(total_steps), 0)
             job.updated_at = local_now_ts()
 
+    def add_total_steps(self, job_id: str, extra_steps: int) -> None:
+        with self._state_lock:
+            job = self._jobs[job_id]
+            job.total_steps = max(job.total_steps + max(int(extra_steps), 0), job.completed_steps)
+            job.updated_at = local_now_ts()
+            
     def set_phase(self, job_id: str, phase: str, current_step: str = "") -> None:
         with self._state_lock:
             job = self._jobs[job_id]
@@ -1278,7 +1284,8 @@ def make_app() -> Flask:
                                     "year_to": batch_year_to,
                                     "split_depth": split_depth + 1,
                                 })
-
+                                JOB_MANAGER.add_total_steps(job_id, 6)
+                                                                
                                 summary["taxon_splits"] += 1
                                 summary["exports_split"] += 1
 
@@ -1307,7 +1314,7 @@ def make_app() -> Flask:
                                     "year_to": a_to,
                                     "split_depth": split_depth + 1,
                                 })
-
+                                JOB_MANAGER.add_total_steps(job_id, 6)
                                 summary["year_splits"] += 1
                                 summary["exports_split"] += 1
 
