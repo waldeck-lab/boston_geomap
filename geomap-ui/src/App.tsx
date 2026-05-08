@@ -19,6 +19,32 @@ type Taxon = {
   last_observed?: string | null;
 };
 
+
+
+const zoomInfo: Record<number, string> = {
+  1: "12000 km",
+  2: "6000 km",
+  3: "3000 km",
+  4: "1500 km",
+  5: "750 km",
+  6: "360 km",
+  7: "180 km",
+  8: "90 km",
+  9: "45 km",
+  10: "23 km",
+  11: "11 km",
+  12: "6 km",
+  13: "3 km",
+  14: "1400 m",
+  15: "700 m",
+  16: "350 m",
+  17: "180 m",
+  18: "90 m",
+  19: "45 m",
+  20: "22 m",
+  21: "11 m",
+};
+
 type JobSnapshot = {
   job_id: string;
   kind: string;
@@ -62,9 +88,9 @@ type SlotCoverage = {
   cells: number;
 };
 
-// In dev: prefer proxy (/api -> vite proxy -> backend)
+// In dev: prefer proxy (/geomap-api -> vite proxy -> backend)
 // Only set VITE_API_BASE if you explicitly want direct mode.
-const API_BASE = import.meta.env.VITE_API_BASE ? String(import.meta.env.VITE_API_BASE) : "";
+const API_BASE = import.meta.env.VITE_GEOMAP_API_BASE || "";
 
 function normalizeSlot(s: number) {
   // slots 1..48 wrap
@@ -119,7 +145,6 @@ export default function App() {
   const [yearTo, setYearTo] = useState(2026);
   const [zooms, setZooms] = useState("15,14,13");
   const [zoom, setZoom] = useState(15);
-  const [n, setN] = useState(5);
   const [alpha, setAlpha] = useState(2.0);
   const [beta, setBeta] = useState(0.5);
 
@@ -166,7 +191,7 @@ export default function App() {
   const fetchSlotCoverage = useCallback(
     async (zoom: number, yearFrom?: number, yearTo?: number) => {
       try {
-        const u = new URL(apiUrl("/api/slots/coverage"), window.location.origin);
+        const u = new URL(apiUrl("/geomap-api/slots/coverage"), window.location.origin);
         u.searchParams.set("zoom", String(zoom));
         if (yearFrom !== undefined && yearTo !== undefined) {
           u.searchParams.set("year_from", String(yearFrom));
@@ -219,7 +244,7 @@ export default function App() {
 
   const refreshJobStatus = useCallback(async () => {
     try {
-      const res = await fetch(apiUrl("/api/jobs/status"));
+      const res = await fetch(apiUrl("/geomap-api/jobs/status"));
       const j = (await res.json()) as JobsStatusResponse;
       if (!res.ok || !j.ok) {
         throw new Error("Failed to fetch job status");
@@ -273,7 +298,7 @@ export default function App() {
 
       const allSlots = Array.from({ length: 48 }, (_, i) => i + 1);
 
-      const res = await fetch(apiUrl("/api/jobs/sos_import"), {
+      const res = await fetch(apiUrl("/geomap-api/jobs/sos_import"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -334,7 +359,7 @@ export default function App() {
   const cancelJob = useCallback(async () => {
     if (!currentJob) return;
     try {
-      const res = await fetch(apiUrl(`/api/jobs/${currentJob.job_id}/cancel`), {
+      const res = await fetch(apiUrl(`/geomap-api/jobs/${currentJob.job_id}/cancel`), {
         method: "POST",
       });
       const j = await res.json();
@@ -359,7 +384,7 @@ export default function App() {
           Array.isArray(slotIdsForView) && slotIdsForView.length > 0 && !slotIdsForView.includes(0);
 
         const u = new URL(
-          apiUrl(usingWindow ? "/api/cell/taxa_window" : "/api/cell/taxa"),
+          apiUrl(usingWindow ? "/geomap-api/cell/taxa_window" : "/geomap-api/cell/taxa"),
           window.location.origin
         );
 
@@ -699,6 +724,11 @@ export default function App() {
           <label>View zoom</label>
           <input type="number" value={zoom} onChange={(e) => setZoom(Number(e.target.value))} />
         </div>
+
+        <div style={{ fontSize: 12, opacity: 0.75, marginTop: 4 }}>
+          Approximate grid size: ~{zoomInfo[zoom]}
+        </div>
+
 
         <hr />
 

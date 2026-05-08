@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": {
+      "/geomap-api": {
         target: process.env.VITE_API_BASE || "http://127.0.0.1:8088",
         changeOrigin: true,
       },

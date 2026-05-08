@@ -729,7 +729,7 @@ def make_app() -> Flask:
         )
 
 
-    @app.get("/api/health")
+    @app.get("/geomap-api/health")
     def health():
         return jsonify({"ok": True})
 
@@ -2127,18 +2127,18 @@ def make_app() -> Flask:
         finally:
             conn.close()
 
-    @app.get("/api/jobs/status")
+    @app.get("/geomap-api/jobs/status")
     def jobs_status():
         return jsonify(JOB_MANAGER.get_status())
 
-    @app.get("/api/jobs/<job_id>")
+    @app.get("/geomap-api/jobs/<job_id>")
     def jobs_get(job_id: str):
         snap = JOB_MANAGER.get_job(job_id)
         if snap is None:
             return jsonify({"ok": False, "code": "not_found", "error": f"Unknown job_id: {job_id}"}), 404
         return jsonify({"ok": True, "busy": JOB_MANAGER.busy(), "job": snap})
 
-    @app.post("/api/jobs/<job_id>/cancel")
+    @app.post("/geomap-api/jobs/<job_id>/cancel")
     def jobs_cancel(job_id: str):
         ok = JOB_MANAGER.cancel(job_id)
         if not ok:
@@ -2148,7 +2148,7 @@ def make_app() -> Flask:
             return jsonify({"ok": False, "code": "invalid_state", "error": f"Cannot cancel job in state={snap['status']}"}), 409
         return jsonify({"ok": True, "job_id": job_id, "status": "cancelling"}), 202
 
-    @app.post("/api/jobs/rebuild")
+    @app.post("/geomap-api/jobs/rebuild")
     def jobs_rebuild():
         body = request.get_json(force=True) or {}
         spec = _normalize_rebuild_spec(body, default_n=0, default_all_slots=True)
@@ -2171,12 +2171,12 @@ def make_app() -> Flask:
             "ok": True,
             "job_id": job.job_id,
             "status": "queued",
-            "status_url": f"/api/jobs/{job.job_id}",
+            "status_url": f"/geomap-api/jobs/{job.job_id}",
             "busy": True,
             "spec": spec,
         }), 202
 
-    @app.post("/api/jobs/sos_import")
+    @app.post("/geomap-api/jobs/sos_import")
     def jobs_sos_import():
         body = request.get_json(force=True) or {}
         spec = _normalize_sos_import_spec(body)
@@ -2200,13 +2200,13 @@ def make_app() -> Flask:
             "ok": True,
             "job_id": job.job_id,
             "status": "queued",
-            "status_url": f"/api/jobs/{job.job_id}",
+            "status_url": f"/geomap-api/jobs/{job.job_id}",
             "busy": True,
             "spec": spec,
         }), 202
 
     
-    @app.post("/api/pipeline/build")
+    @app.post("/geomap-api/pipeline/build")
     def pipeline_build():
         body = request.get_json(force=True) or {}
         spec = _normalize_rebuild_spec(body, default_n=5, default_all_slots=True)
@@ -2229,7 +2229,7 @@ def make_app() -> Flask:
             "ok": True,
             "job_id": job.job_id,
             "status": "queued",
-            "status_url": f"/api/jobs/{job.job_id}",
+            "status_url": f"/geomap-api/jobs/{job.job_id}",
             "busy": True,
             "spec": spec,
         }), 202
@@ -2257,7 +2257,7 @@ def make_app() -> Flask:
             return jsonify({"ok": False, "code": "db_locked", "error": str(e), "status": 503}), 503
         return jsonify({"ok": False, "code": "db_error", "error": str(e), "status": 500}), 500
 
-    @app.get("/api/hotmap")
+    @app.get("/geomap-api/hotmap")
     def hotmap_geojson():
         zoom = int(request.args.get("zoom", "15"))
         slot_id = parse_slot_id(request.args.get("slot_id", SLOT_ALL))
@@ -2351,7 +2351,7 @@ def make_app() -> Flask:
         finally:
             conn.close()
 
-    @app.get("/api/hotmap_window")
+    @app.get("/geomap-api/hotmap_window")
     def hotmap_window_geojson():
         zoom = int(request.args.get("zoom", "15"))
         slot_ids = parse_slot_ids_arg(request.args.get("slot_ids", None), name="slot_ids")
@@ -2435,7 +2435,7 @@ def make_app() -> Flask:
         finally:
             conn.close()
         
-    @app.get("/api/cell/taxa")
+    @app.get("/geomap-api/cell/taxa")
     def cell_taxa():
         zoom = int(request.args.get("zoom", "15"))
         slot_id = parse_slot_id(request.args.get("slot_id", SLOT_ALL))
@@ -2515,7 +2515,7 @@ def make_app() -> Flask:
             conn.close()
 
 
-    @app.get("/api/cell/taxa_window")
+    @app.get("/geomap-api/cell/taxa_window")
     def cell_taxa_window():
         zoom = int(request.args.get("zoom", "15"))
         slot_ids = parse_slot_ids_arg(request.args.get("slot_ids", None), name="slot_ids")
@@ -2607,7 +2607,7 @@ def make_app() -> Flask:
         finally:
             conn.close()
 
-    @app.get("/api/slots/coverage")
+    @app.get("/geomap-api/slots/coverage")
     def slots_coverage():
         zoom = int(request.args.get("zoom", "15"))
         year_from, year_to = parse_year_range_args(request.args)
@@ -2653,7 +2653,7 @@ def make_app() -> Flask:
         finally:
             conn.close()
             
-    @app.get("/api/rank_nearby")
+    @app.get("/geomap-api/rank_nearby")
     def rank_nearby():
         lat = float(request.args.get("lat", "55.667"))
         lon = float(request.args.get("lon", "13.350"))
