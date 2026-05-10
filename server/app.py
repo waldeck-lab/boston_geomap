@@ -2605,8 +2605,8 @@ def make_app() -> Flask:
                 )
             return jsonify(out)
         finally:
-            conn.close()
-
+            conn.close()        
+            
     @app.get("/geomap-api/slots/coverage")
     def slots_coverage():
         zoom = int(request.args.get("zoom", "15"))
@@ -2652,6 +2652,116 @@ def make_app() -> Flask:
 
         finally:
             conn.close()
+
+    @app.get("/geomap-api/cell/phenology")
+    def cell_phenology():
+         zoom = int(request.args.get("zoom", "15"))
+         x = int(request.args["x"])
+         y = int(request.args["y"])
+         year_from, year_to = parse_year_range_args(request.args)
+
+         conn = storage.connect(cfg.geomap_db_path)
+         conn.isolation_level = None
+         try:
+             storage.ensure_schema(conn)
+
+             if year_from == YEAR_ALL and year_to == YEAR_ALL:
+                 rows = conn.execute(
+                     """
+                     SELECT
+                         r.slot_id,
+                         COUNT(*) AS observations_count,
+                         COUNT(DISTINCT r.taxon_id) AS taxa_count,
+                         MIN(r.observation_date) AS first_observed,
+                         MAX(r.observation_date) AS last_observed
+                     FROM observations_raw r
+                     WHERE r.zoom=?
+                       AND r.year BETWEEN ? AND ?
+                       AND r.tile_x=?
+                       AND r.tile_y=?
+                       AND r.slot_id BETWEEN 1 AND 48
+                     GROUP BY r.slot_id
+                     ORDER BY r.slot_id;
+                     """,
+                     (zoom, YEAR_MIN, YEAR_MAX, x, y),
+                 ).fetchall()
+             else:
+                 rows = conn.execute(
+                     """
+                     SELECT
+                         r.slot_id,
+                         COUNT(*) AS observations_count,
+                         COUNT(DISTINCT r.taxon_id) AS taxa_count,
+                         MIN(r.observation_date) AS first_observed,
+                         MAX(r.observation_date) AS last_observed
+                     FROM observations_raw r
+                     WHERE r.zoom=?
+                       AND r.tile_x=?
+                       AND r.tile_y=?
+                       AND r.year BETWEEN ? AND ?
+                       AND r.slot_id BETWEEN 1 AND 48
+                     GROUP BY r.slot_id
+                     ORDER BY r.slot_id;
+                     """,
+                     (zoom, x, y, year_from, year_to),
+                 ).fetchall()
+
+             by_slot = {
+                 int(r[0]): {
+                     "slot_id": int(r[0]),
+                     "observations_count": int(r[1] or 0),
+                     "taxa_count": int(r[2] or 0),
+                     "first_observed": r[3] or None,
+                     "last_observed": r[4] or None,
+                 }
+                 for r in rows
+             }
+
+             max_obs = max(
+                 [v["observations_count"] for v in by_slot.values()] or [0]
+             )
+
+             slots = []
+             for slot_id in range(1, 49):
+                 item = by_slot.get(
+                     slot_id,
+                     {
+                         "slot_id": slot_id,
+                         "observations_count": 0,
+                         "taxa_count": 0,
+                         "first_observed": None,
+                         "last_observed": None,
+                     },
+                 )
+                 item["normalized"] = (
+                     float(item["observations_count"]) / float(max_obs)
+                     if max_obs > 0
+                     else 0.0
+                 )
+                 slots.append(item)
+
+             logger.info(
+                 "cell_phenology zoom=%d x=%d y=%d year=%s rows=%d max_obs=%d",
+                 zoom,
+                 x,
+                 y,
+                 "0" if (year_from == YEAR_ALL and year_to == YEAR_ALL) else f"{year_from}..{year_to}",
+                 len(rows),
+                 max_obs,
+             )
+
+             return jsonify({
+                 "ok": True,
+                 "zoom": int(zoom),
+                 "x": int(x),
+                 "y": int(y),
+                 "year_from": None if year_from == YEAR_ALL else int(year_from),
+                 "year_to": None if year_to == YEAR_ALL else int(year_to),
+                 "max_observations_count": int(max_obs),
+                 "slots": slots,
+             })
+         finally:
+             conn.close()    
             
     @app.get("/geomap-api/rank_nearby")
     def rank_nearby():
