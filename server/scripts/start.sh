@@ -8,6 +8,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 export APP_ENV="prod"
 
+
 # # Mandatory fields in local settings
 # # set this in local settings.env, example: 
 # export GEOMAP_DB_DIR=/proj/boston/boston/stage/db
@@ -22,6 +23,10 @@ source "${REPO_ROOT}/../settings.env"
 : "${ARTDATABANKEN_SUBSCRIPTION_KEY:?ARTDATABANKEN_SUBSCRIPTION_KEY missing}"
 
 export ARTDATABANKEN_SUBSCRIPTION_KEY
+export WCR_INTERNAL_AUTH_SECRET
+export WCR_INTROSPECT_URL
+export AUTH_CLIENT_KEY="geomap"
+
 
 echo "ARTDATABANKEN_SUBSCRIPTION_KEY is set, length=${#ARTDATABANKEN_SUBSCRIPTION_KEY}" >&2
 

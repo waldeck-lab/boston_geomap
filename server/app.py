@@ -33,6 +33,7 @@ import uuid
 import traceback
 import hashlib
 
+from auth_client import require_grant
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -2128,10 +2129,12 @@ def make_app() -> Flask:
             conn.close()
 
     @app.get("/geomap-api/jobs/status")
+    @require_grant("jobs.read")
     def jobs_status():
         return jsonify(JOB_MANAGER.get_status())
 
     @app.get("/geomap-api/jobs/<job_id>")
+    @require_grant("jobs.read")
     def jobs_get(job_id: str):
         snap = JOB_MANAGER.get_job(job_id)
         if snap is None:
@@ -2139,6 +2142,7 @@ def make_app() -> Flask:
         return jsonify({"ok": True, "busy": JOB_MANAGER.busy(), "job": snap})
 
     @app.post("/geomap-api/jobs/<job_id>/cancel")
+    @require_grant("jobs.read")
     def jobs_cancel(job_id: str):
         ok = JOB_MANAGER.cancel(job_id)
         if not ok:
@@ -2149,6 +2153,7 @@ def make_app() -> Flask:
         return jsonify({"ok": True, "job_id": job_id, "status": "cancelling"}), 202
 
     @app.post("/geomap-api/jobs/rebuild")
+    @require_grant("jobs.read")
     def jobs_rebuild():
         body = request.get_json(force=True) or {}
         spec = _normalize_rebuild_spec(body, default_n=0, default_all_slots=True)
@@ -2177,6 +2182,7 @@ def make_app() -> Flask:
         }), 202
 
     @app.post("/geomap-api/jobs/sos_import")
+    @require_grant("jobs.read")
     def jobs_sos_import():
         body = request.get_json(force=True) or {}
         spec = _normalize_sos_import_spec(body)
@@ -2207,6 +2213,7 @@ def make_app() -> Flask:
 
     
     @app.post("/geomap-api/pipeline/build")
+    @require_grant("jobs.read")
     def pipeline_build():
         body = request.get_json(force=True) or {}
         spec = _normalize_rebuild_spec(body, default_n=5, default_all_slots=True)
