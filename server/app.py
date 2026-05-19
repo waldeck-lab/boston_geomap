@@ -2128,6 +2128,52 @@ def make_app() -> Flask:
         finally:
             conn.close()
 
+    
+    def _hotmap_score(coverage: int, obs_total: int) -> float:
+        return (float(coverage) ** float(cfg.hotmap_alpha)) / (
+            (float(obs_total or 0) + 1.0) ** float(cfg.hotmap_beta)
+        )
+
+
+    def _hotmap_feature(row, zoom, year_from, year_to):
+        (
+            slot_id_db,
+            x,
+            y,
+            coverage,
+            obs_total,
+            top_lat,
+            left_lon,
+            bottom_lat,
+            right_lon,
+        ) = row
+        
+        score = _hotmap_score(int(coverage), int(obs_total or 0))
+
+        poly = [
+            [float(left_lon), float(top_lat)],
+            [float(right_lon), float(top_lat)],
+            [float(right_lon), float(bottom_lat)],
+            [float(left_lon), float(bottom_lat)],
+            [float(left_lon), float(top_lat)],
+        ]
+
+        return {
+            "type": "Feature",
+            "properties": {
+                "zoom": int(zoom),
+                "slot_id": int(slot_id_db),
+                "year_from": None if year_from == YEAR_ALL else int(year_from),
+                "year_to": None if year_to == YEAR_ALL else int(year_to),
+                "x": int(x),
+                "y": int(y),
+                "coverage": int(coverage),
+                "score": float(score),
+                "obs_total": int(obs_total or 0),
+            },
+            "geometry": {"type": "Polygon", "coordinates": [poly]},
+        }
+
     @app.get("/geomap-api/jobs/status")
     @require_grant("jobs.read")
     def jobs_status():
@@ -2264,183 +2310,303 @@ def make_app() -> Flask:
             return jsonify({"ok": False, "code": "db_locked", "error": str(e), "status": 503}), 503
         return jsonify({"ok": False, "code": "db_error", "error": str(e), "status": 500}), 500
 
+
     @app.get("/geomap-api/hotmap")
     def hotmap_geojson():
         zoom = int(request.args.get("zoom", "15"))
         slot_id = parse_slot_id(request.args.get("slot_id", SLOT_ALL))
         year_from, year_to = parse_year_range_args(request.args)
-
+        
         conn = storage.connect(cfg.geomap_db_path)
         conn.isolation_level = None
+        
         try:
             storage.ensure_schema(conn)
-
+        
             if year_from == YEAR_ALL and year_to == YEAR_ALL:
-                nrows = conn.execute(
-                    "SELECT COUNT(*) FROM grid_hotmap WHERE zoom=? AND year=? AND slot_id=?;",
-                    (zoom, YEAR_ALL, slot_id),
-                ).fetchone()[0]
-
-                logger.info("hotmap request zoom=%d slot=%d year=0 rows=%d", zoom, slot_id, int(nrows))
-
-                rows = conn.execute(
-                    """
-                    SELECT slot_id, x, y, coverage, score,
-                        bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
-                    FROM grid_hotmap
-                    WHERE zoom=? AND year=? AND slot_id=?
-                    ORDER BY coverage DESC, score DESC;
-                    """,
-                    (zoom, YEAR_ALL, slot_id),
-                ).fetchall()
-
-            else:
-                nrows = conn.execute(
-                    """
-                    SELECT COUNT(*) FROM (
-                        SELECT 1
-                        FROM grid_hotmap
-                        WHERE zoom=? AND slot_id=? AND year BETWEEN ? AND ?
-                        GROUP BY slot_id, x, y
-                    );
-                    """,
-                    (zoom, slot_id, year_from, year_to),
-                ).fetchone()[0]
-
-                logger.info(
-                    "hotmap request zoom=%d slot=%d year=%d..%d rows=%d",
-                    zoom, slot_id, year_from, year_to, int(nrows)
-                )
-
-                # Important: aggregate across years to avoid duplicate tiles
                 rows = conn.execute(
                     """
                     SELECT
-                    slot_id, x, y,
-                    MAX(coverage) AS coverage,
-                    MAX(score)    AS score,
-                    bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
-                    FROM grid_hotmap
-                    WHERE zoom=? AND slot_id=? AND year BETWEEN ? AND ?
-                    GROUP BY slot_id, x, y, bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
-                    ORDER BY coverage DESC, score DESC;
+                        h.slot_id,
+                        h.x,
+                        h.y,
+                        h.coverage,
+                        COALESCE(SUM(v.observations_count), 0) AS obs_total,
+                        h.bbox_top_lat,
+                        h.bbox_left_lon,
+                        h.bbox_bottom_lat,
+                        h.bbox_right_lon
+                    FROM grid_hotmap h
+                    LEFT JOIN grid_hotmap_taxa_names_v v
+                      ON v.zoom = h.zoom
+                     AND v.year = h.year
+                     AND v.slot_id = h.slot_id
+                     AND v.x = h.x
+                     AND v.y = h.y
+                    WHERE h.zoom = ?
+                      AND h.year = ?
+                      AND h.slot_id = ?
+                    GROUP BY
+                        h.slot_id, h.x, h.y, h.coverage,
+                        h.bbox_top_lat, h.bbox_left_lon,
+                        h.bbox_bottom_lat, h.bbox_right_lon
+                    ORDER BY h.coverage DESC, obs_total DESC;
                     """,
-                    (zoom, slot_id, year_from, year_to),
+                    (zoom, YEAR_ALL, slot_id),
                 ).fetchall()
-
-            features = []
-            for (slot_id_db, x, y, coverage, score, top_lat, left_lon, bottom_lat, right_lon) in rows:
-                poly = [
-                    [float(left_lon), float(top_lat)],
-                    [float(right_lon), float(top_lat)],
-                    [float(right_lon), float(bottom_lat)],
-                    [float(left_lon), float(bottom_lat)],
-                    [float(left_lon), float(top_lat)],
-                ]
-                features.append(
-                    {
-                        "type": "Feature",
-                        "properties": {
-                            "zoom": int(zoom),
-                            "slot_id": int(slot_id_db),
-                            "year_from": None if (year_from == YEAR_ALL) else int(year_from),
-                            "year_to": None if (year_to == YEAR_ALL) else int(year_to),
-                            "x": int(x),
-                            "y": int(y),
-                            "coverage": int(coverage),
-                            "score": float(score),
-                        },
-                        "geometry": {"type": "Polygon", "coordinates": [poly]},
-                    }
+        
+                logger.info(
+                    "hotmap request zoom=%d slot=%d year=ALL rows=%d",
+                    zoom,
+                    slot_id,
+                    len(rows),
                 )
-
-            return jsonify({"type": "FeatureCollection", "features": features})
+        
+            else:
+                rows = conn.execute(
+                    """
+                    WITH taxa AS (
+                        SELECT
+                            v.slot_id,
+                            v.x,
+                            v.y,
+                            COUNT(DISTINCT v.taxon_id) AS coverage,
+                            SUM(v.observations_count) AS obs_total
+                        FROM grid_hotmap_taxa_names_v v
+                        WHERE v.zoom = ?
+                          AND v.year BETWEEN ? AND ?
+                          AND (? = 0 OR v.slot_id = ?)
+                        GROUP BY v.slot_id, v.x, v.y
+                    ),
+                    bbox AS (
+                        SELECT
+                            h.slot_id,
+                            h.x,
+                            h.y,
+                            MAX(h.bbox_top_lat) AS bbox_top_lat,
+                            MIN(h.bbox_left_lon) AS bbox_left_lon,
+                            MIN(h.bbox_bottom_lat) AS bbox_bottom_lat,
+                            MAX(h.bbox_right_lon) AS bbox_right_lon
+                        FROM grid_hotmap h
+                        WHERE h.zoom = ?
+                          AND h.year BETWEEN ? AND ?
+                          AND (? = 0 OR h.slot_id = ?)
+                        GROUP BY h.slot_id, h.x, h.y
+                    )
+                    SELECT
+                        taxa.slot_id,
+                        taxa.x,
+                        taxa.y,
+                        taxa.coverage,
+                        taxa.obs_total,
+                        bbox.bbox_top_lat,
+                        bbox.bbox_left_lon,
+                        bbox.bbox_bottom_lat,
+                        bbox.bbox_right_lon
+                    FROM taxa
+                    JOIN bbox
+                      ON bbox.slot_id = taxa.slot_id
+                     AND bbox.x = taxa.x
+                     AND bbox.y = taxa.y
+                    ORDER BY taxa.coverage DESC, taxa.obs_total DESC;
+                    """,
+                    (
+                        zoom,
+                        year_from,
+                        year_to,
+                        slot_id,
+                        slot_id,
+                        zoom,
+                        year_from,
+                        year_to,
+                        slot_id,
+                        slot_id,
+                    ),
+                ).fetchall()
+        
+                logger.info(
+                    "hotmap request zoom=%d slot=%d year=%d..%d rows=%d",
+                    zoom,
+                    slot_id,
+                    year_from,
+                    year_to,
+                    len(rows),
+                )
+        
+            return jsonify({
+                "type": "FeatureCollection",
+                "features": [
+                    _hotmap_feature(row, zoom, year_from, year_to)
+                    for row in rows
+                ],
+            })
+        
         finally:
             conn.close()
 
+        
     @app.get("/geomap-api/hotmap_window")
     def hotmap_window_geojson():
         zoom = int(request.args.get("zoom", "15"))
         slot_ids = parse_slot_ids_arg(request.args.get("slot_ids", None), name="slot_ids")
         year_from, year_to = parse_year_range_args(request.args)
-
+        
+        if not slot_ids:
+            return jsonify({"type": "FeatureCollection", "features": []})
+        
+        placeholders = ",".join(["?"] * len(slot_ids))
+        window_slot_id = slot_ids[len(slot_ids) // 2]
+        
         conn = storage.connect(cfg.geomap_db_path)
         conn.isolation_level = None
+        
         try:
             storage.ensure_schema(conn)
-
-            if not slot_ids:
-                return jsonify({"type": "FeatureCollection", "features": []})
-
-            placeholders = ",".join(["?"] * len(slot_ids))
-
+        
             if year_from == YEAR_ALL and year_to == YEAR_ALL:
                 rows = conn.execute(
                     f"""
-                    SELECT slot_id, x, y, coverage, score,
-                        bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
-                    FROM grid_hotmap
-                    WHERE zoom=? AND year=? AND slot_id IN ({placeholders})
-                    ORDER BY slot_id ASC, coverage DESC, score DESC;
+                    WITH taxa AS (
+                        SELECT
+                            v.x,
+                            v.y,
+                            COUNT(DISTINCT v.taxon_id) AS coverage,
+                            SUM(v.observations_count) AS obs_total
+                        FROM grid_hotmap_taxa_names_v v
+                        WHERE v.zoom = ?
+                          AND v.year = ?
+                          AND v.slot_id IN ({placeholders})
+                        GROUP BY v.x, v.y
+                    ),
+                    bbox AS (
+                        SELECT
+                            h.x,
+                            h.y,
+                            MAX(h.bbox_top_lat) AS bbox_top_lat,
+                            MIN(h.bbox_left_lon) AS bbox_left_lon,
+                            MIN(h.bbox_bottom_lat) AS bbox_bottom_lat,
+                            MAX(h.bbox_right_lon) AS bbox_right_lon
+                        FROM grid_hotmap h
+                        WHERE h.zoom = ?
+                          AND h.year = ?
+                          AND h.slot_id IN ({placeholders})
+                        GROUP BY h.x, h.y
+                    )
+                    SELECT
+                        ? AS slot_id,
+                        taxa.x,
+                        taxa.y,
+                        taxa.coverage,
+                        taxa.obs_total,
+                        bbox.bbox_top_lat,
+                        bbox.bbox_left_lon,
+                        bbox.bbox_bottom_lat,
+                        bbox.bbox_right_lon
+                    FROM taxa
+                    JOIN bbox
+                      ON bbox.x = taxa.x
+                     AND bbox.y = taxa.y
+                    ORDER BY taxa.coverage DESC, taxa.obs_total DESC;
                     """,
-                    (zoom, YEAR_ALL, *slot_ids),
+                    (
+                        zoom,
+                        YEAR_ALL,
+                        *slot_ids,
+                        zoom,
+                        YEAR_ALL,
+                        *slot_ids,
+                        window_slot_id,
+                    ),
                 ).fetchall()
-
+        
                 logger.info(
-                    "hotmap_window request zoom=%d year=0 slots=%s rows=%d",
-                    zoom, ",".join(map(str, slot_ids)), len(rows)
+                    "hotmap_window request zoom=%d year=ALL slots=%s center_slot=%d rows=%d",
+                    zoom,
+                    ",".join(map(str, slot_ids)),
+                    window_slot_id,
+                    len(rows),
                 )
-
+        
             else:
                 rows = conn.execute(
                     f"""
+                    WITH taxa AS (
+                        SELECT
+                            v.x,
+                            v.y,
+                            COUNT(DISTINCT v.taxon_id) AS coverage,
+                            SUM(v.observations_count) AS obs_total
+                        FROM grid_hotmap_taxa_names_v v
+                        WHERE v.zoom = ?
+                          AND v.year BETWEEN ? AND ?
+                          AND v.slot_id IN ({placeholders})
+                        GROUP BY v.x, v.y
+                    ),
+                    bbox AS (
+                        SELECT
+                            h.x,
+                            h.y,
+                            MAX(h.bbox_top_lat) AS bbox_top_lat,
+                            MIN(h.bbox_left_lon) AS bbox_left_lon,
+                            MIN(h.bbox_bottom_lat) AS bbox_bottom_lat,
+                            MAX(h.bbox_right_lon) AS bbox_right_lon
+                        FROM grid_hotmap h
+                        WHERE h.zoom = ?
+                          AND h.year BETWEEN ? AND ?
+                          AND h.slot_id IN ({placeholders})
+                        GROUP BY h.x, h.y
+                    )
                     SELECT
-                    slot_id, x, y,
-                    MAX(coverage) AS coverage,
-                    MAX(score)    AS score,
-                    bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
-                    FROM grid_hotmap
-                    WHERE zoom=? AND year BETWEEN ? AND ? AND slot_id IN ({placeholders})
-                    GROUP BY slot_id, x, y, bbox_top_lat, bbox_left_lon, bbox_bottom_lat, bbox_right_lon
-                    ORDER BY slot_id ASC, coverage DESC, score DESC;
+                        ? AS slot_id,
+                        taxa.x,
+                        taxa.y,
+                        taxa.coverage,
+                        taxa.obs_total,
+                        bbox.bbox_top_lat,
+                        bbox.bbox_left_lon,
+                        bbox.bbox_bottom_lat,
+                        bbox.bbox_right_lon
+                    FROM taxa
+                    JOIN bbox
+                      ON bbox.x = taxa.x
+                     AND bbox.y = taxa.y
+                    ORDER BY taxa.coverage DESC, taxa.obs_total DESC;
                     """,
-                    (zoom, year_from, year_to, *slot_ids),
+                    (
+                        zoom,
+                        year_from,
+                        year_to,
+                        *slot_ids,
+                        zoom,
+                        year_from,
+                        year_to,
+                        *slot_ids,
+                        window_slot_id,
+                    ),
                 ).fetchall()
-
+        
                 logger.info(
-                    "hotmap_window request zoom=%d year=%d..%d slots=%s rows=%d",
-                    zoom, year_from, year_to, ",".join(map(str, slot_ids)), len(rows)
+                    "hotmap_window request zoom=%d year=%d..%d slots=%s center_slot=%d rows=%d",
+                    zoom,
+                    year_from,
+                    year_to,
+                    ",".join(map(str, slot_ids)),
+                    window_slot_id,
+                    len(rows),
                 )
-
-            features = []
-            for (slot_id_db, x, y, coverage, score, top_lat, left_lon, bottom_lat, right_lon) in rows:
-                poly = [
-                    [float(left_lon), float(top_lat)],
-                    [float(right_lon), float(top_lat)],
-                    [float(right_lon), float(bottom_lat)],
-                    [float(left_lon), float(bottom_lat)],
-                    [float(left_lon), float(top_lat)],
-                ]
-                features.append(
-                    {
-                        "type": "Feature",
-                        "properties": {
-                            "zoom": int(zoom),
-                            "slot_id": int(slot_id_db),
-                            "year_from": None if (year_from == YEAR_ALL) else int(year_from),
-                            "year_to": None if (year_to == YEAR_ALL) else int(year_to),
-                            "x": int(x),
-                            "y": int(y),
-                            "coverage": int(coverage),
-                            "score": float(score),
-                        },
-                        "geometry": {"type": "Polygon", "coordinates": [poly]},
-                    }
-                )
-
-            return jsonify({"type": "FeatureCollection", "features": features})
+        
+            return jsonify({
+                "type": "FeatureCollection",
+                "features": [
+                    _hotmap_feature(row, zoom, year_from, year_to)
+                    for row in rows
+                ],
+            })
+        
         finally:
             conn.close()
+            
+
         
     @app.get("/geomap-api/cell/taxa")
     def cell_taxa():
