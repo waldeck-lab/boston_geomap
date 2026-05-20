@@ -2175,7 +2175,6 @@ def make_app() -> Flask:
         }
 
     @app.get("/geomap-api/jobs/status")
-    @require_grant("jobs.read")
     def jobs_status():
         return jsonify(JOB_MANAGER.get_status())
 
