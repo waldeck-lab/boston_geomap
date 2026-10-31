@@ -21,3 +21,16 @@ GET /geomap-api/lists/<id>/csv authorizes the owner for private lists, including
 against other administrators, and returns no-store. Other users receive 404.
 All existing legacy writes remain blocked. SOS token/OAuth and geodata generation
 from the controls are not yet implemented.
+
+### Artportalen name exports
+TaxonList.csv's headerless five-column format is supported: Swedish name;
+scientific name; author; redlist category; observation count. Only membership
+in the exported list is used, not the observation count.
+Named ScientificName / SwedishName columns are supported too.
+Names use exact Unicode-normalized, case-insensitive Dyntaxa name/synonym lookup.
+Intersecting scientific and Swedish matches can resolve an otherwise ambiguous
+historical synonym. A name shared with a historical group requires confirmation
+from the second name column. No fuzzy matching or automatic guesses are made.
+Known genus/family/collective-taxon rows are excluded with a preview count.
+Unknown, conflicting or ambiguous names reject the upload and return row details.
+The source CSV remains unretained. Tests run only in temporary beta fixture DBs.

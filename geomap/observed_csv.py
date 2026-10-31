@@ -2,6 +2,7 @@
 import csv
 import hashlib
 import io
+import itertools
 import json
 import re
 import unicodedata
@@ -25,6 +26,23 @@ def normalized_header(value):
     return ''.join(c for c in unicodedata.normalize('NFKD',value).casefold() if c.isalnum())
 
 
+def detect_delimiter(text):
+    # Authors contain unquoted commas in Artportalen's semicolon export.
+    # Prefer a consistent column structure over punctuation frequency.
+    choices=[]
+    for delimiter in [';',',','\t']:
+        try:
+            rows=[r for r in itertools.islice(csv.reader(io.StringIO(text),delimiter=delimiter,strict=True),50) if r]
+        except csv.Error:continue
+        if not rows:continue
+        width=len(rows[0])
+        if width>1:
+            consistent=sum(len(r)==width for r in rows)/len(rows)
+            recognized=any(normalized_header(h) in ID_HEADERS|{'scientificname','vetenskapligtnamn','swedishname','svensktnamn','latinsktnamn','taxonname'} for h in rows[0])
+            choices.append((recognized,consistent,width,delimiter))
+    return max(choices)[-1] if choices else ';'
+
+
 def parse_observed_csv(raw):
     if not raw or len(raw)>MAX_BYTES:
         raise CsvValidationError('Välj en CSV-artlista som är högst 2 MiB.')
@@ -40,17 +58,14 @@ def parse_observed_csv(raw):
     if lines and re.fullmatch(r'sep=[;,\t]',lines[0].strip(),flags=re.I):
         delimiter=lines.pop(0).strip()[-1];text='\n'.join(lines)
     if delimiter is None:
-        try:delimiter=csv.Sniffer().sniff(text[:8192],delimiters=';,\t').delimiter
-        except csv.Error:
-            # A one-column taxon-id list is valid too.
-            delimiter=';'
+        delimiter=detect_delimiter(text)
     try:
         reader=csv.reader(io.StringIO(text,newline=''),delimiter=delimiter,strict=True)
         header=next(reader,None)
         if not header:raise CsvValidationError('CSV-filen saknar kolumnrubriker.')
         columns=[i for i,h in enumerate(header) if normalized_header(h.strip()) in ID_HEADERS]
         if len(columns)!=1:
-            raise CsvValidationError('Filen måste ha exakt en taxon-id-kolumn, exempelvis TaxonId, DyntaxaTaxonId eller taxon_id.')
+            raise CsvValidationError('Filen måste ha exakt en taxon-id-kolumn, exempelvis TaxonId, DyntaxaTaxonId eller taxon_id.',dict(missing_id_column=not columns))
         index=columns[0];ids=set();duplicates=0;row_count=0
         for row in reader:
             if not row or not any(cell.strip() for cell in row):continue
@@ -74,9 +89,77 @@ def parse_observed_csv(raw):
                     encoding=encoding,delimiter='tab' if delimiter=='\t' else delimiter)
 
 
+def normalized_name(value):
+    return ' '.join(unicodedata.normalize('NFKC',value).casefold().split())
+
+
+def parse_observed_names(raw,source):
+    # The size and text-encoding checks already ran in the ID parser.
+    try:text=raw.decode('utf-8-sig');encoding='utf-8'
+    except UnicodeDecodeError:text=raw.decode('cp1252');encoding='windows-1252'
+    lines=text.splitlines();delimiter=None
+    if lines and re.fullmatch(r'sep=[;,\t]',lines[0].strip(),flags=re.I):
+        delimiter=lines.pop(0).strip()[-1];text='\n'.join(lines)
+    if delimiter is None:
+        delimiter=detect_delimiter(text)
+    reader=csv.reader(io.StringIO(text,newline=''),delimiter=delimiter,strict=True)
+    first=next(reader,None)
+    if not first:raise CsvValidationError('Artlistan är tom.')
+    header=[normalized_header(h) for h in first]
+    sci=[i for i,h in enumerate(header) if h in {'scientificname','vetenskapligtnamn','latinsktnamn','taxonname'}]
+    swe=[i for i,h in enumerate(header) if h in {'swedishname','svensktnamn','svensknamn'}]
+    name_index=source.get('name_index',{});groups=set(source.get('non_species_names',[]))
+    if len(sci)>1 or len(swe)>1:
+        raise CsvValidationError('CSV-filen har flera möjliga namnkolumner.')
+    if sci or swe:
+        index=(sci or swe)[0];secondary=swe[0] if sci and swe else None;data=reader;fmt='named-columns'
+    elif len(first)==5 and (normalized_name(first[1]) in name_index or normalized_name(first[1]) in groups):
+        # Artportalen TaxonList: Swedish name; scientific name; author; redlist; count.
+        index=1;secondary=0;data=itertools.chain([first],reader);fmt='artportalen-taxonlist'
+    else:
+        raise CsvValidationError('Filen behöver en taxon-id- eller namnkolumn, eller vara Artportalens femkolumners TaxonList-export utan rubriker.')
+    observed=set();row_count=duplicates=0;ignored=[];issues=[]
+    try:
+        for row in data:
+            if not row or not any(cell.strip() for cell in row):continue
+            row_count+=1
+            if row_count>50000:raise CsvValidationError('För många rader. Exportera en artlista.')
+            if len(row)!=len(first):raise CsvValidationError(f'Fel antal kolumner på rad {reader.line_num}.')
+            value=row[index].strip();key=normalized_name(value)
+            candidates=set(name_index.get(key,[]));conflicting=False
+            if key in groups and not candidates:
+                # A family/genus/species-group observation does not prove any particular species.
+                ignored.append(dict(row=reader.line_num,name=value));continue
+            needs_secondary=key in groups and bool(candidates)
+            if secondary is not None and row[secondary].strip():
+                other=set(name_index.get(normalized_name(row[secondary]),[]))
+                if candidates and other:
+                    candidates=candidates & other
+                    conflicting=not candidates
+                    needs_secondary=False
+            if len(candidates)!=1 or needs_secondary:
+                issues.append(dict(row=reader.line_num,name=value,reason='conflicting' if conflicting else 'ambiguous' if candidates else 'unmatched',candidate_taxon_ids=sorted(candidates)))
+                continue
+            tid=int(next(iter(candidates)))
+            if tid in observed:duplicates+=1
+            observed.add(tid)
+    except csv.Error as exc:
+        raise CsvValidationError('CSV-filen har felaktig citering eller struktur.') from exc
+    if issues:
+        raise CsvValidationError(f'{len(issues)} namn kunde inte kopplas entydigt till en fjärilsart. Ingen lista har sparats.',
+            dict(name_issues=issues[:50],name_issue_count=len(issues),ignored_non_species_rows=len(ignored),matched_species=len(observed)))
+    if not observed:raise CsvValidationError('Inga entydiga fjärilsarter hittades i filen.')
+    return observed,dict(input_rows=row_count,unique_input_taxa=len(observed),duplicate_rows=duplicates,
+        encoding=encoding,delimiter='tab' if delimiter=='\t' else delimiter,input_format=fmt,
+        matched_by_name=True,ignored_non_species_rows=len(ignored),ignored_non_species_preview=ignored[:10])
+
+
 def build_difference(raw,catalogue_path):
-    ids,summary=parse_observed_csv(raw)
     source=json.loads(Path(catalogue_path).read_text(encoding='utf-8'))
+    try:ids,summary=parse_observed_csv(raw)
+    except CsvValidationError as exc:
+        if not exc.details.get('missing_id_column'):raise
+        ids,summary=parse_observed_names(raw,source)
     species={int(r['taxon_id']):r for r in source['species']}
     mapping={int(k):int(v) for k,v in source['species_mapping'].items()}
     unknown=sorted(ids-mapping.keys())

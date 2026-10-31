@@ -22,7 +22,9 @@ class ObservedCsvTests(unittest.TestCase):
         self.catalogue=self.root/'lepidoptera-species.json'
         self.catalogue.write_text(json.dumps(dict(retrieved_at='2026-10-31',source_sha256='fixture',
           species=[dict(taxon_id=i,scientific_name=f'Species {i}',swedish_name='') for i in [1,2,3]],
-          species_mapping={'1':1,'2':2,'3':3,'11':1})))
+          species_mapping={'1':1,'2':2,'3':3,'11':1},
+          name_index={'species one':[1],'art ett':[1],'old synonym':[1], 'species two':[2],
+                      'split name':[1,2],'art två':[2]},non_species_names=['lepidoptera','a genus'])))
         self.app=Flask(__name__)
         with patch.dict(os.environ,{'GEOMAP_SHARED_DB':str(self.db),'GEOMAP_DEFAULT_LISTS_DIR':str(self.root)}):
             register_shared_api(self.app)
@@ -55,6 +57,41 @@ class ObservedCsvTests(unittest.TestCase):
         self.assertEqual(observed,{1});self.assertEqual([r['taxon_id'] for r in rows],[2,3])
         self.assertEqual(summary['mapped_infraspecific_taxa'],1)
         with self.assertRaises(CsvValidationError):build_difference(b'TaxonId\n999',self.catalogue)
+
+    def test_headerless_taxonlist_preserves_first_species_and_ignores_groups(self):
+        raw='Art ett;Species one;(Author, 1758);;2\n;A genus;Author, 1800;;3\n'.encode('utf-8-sig')
+        rows,observed,summary=build_difference(raw,self.catalogue)
+        self.assertEqual(observed,{1});self.assertEqual(summary['input_rows'],2)
+        self.assertEqual(summary['ignored_non_species_rows'],1)
+        self.assertEqual(summary['input_format'],'artportalen-taxonlist')
+
+    def test_synonyms_and_both_names_disambiguate_splits(self):
+        raw='Art två;Split name;(Author, 1758);;2\nArt ett;Old synonym;Author, 1800;;3\n'.encode()
+        _,observed,summary=build_difference(raw,self.catalogue)
+        self.assertEqual(observed,{1,2});self.assertTrue(summary['matched_by_name'])
+        raw=b'ScientificName\nOld synonym\n'
+        _,observed,_=build_difference(raw,self.catalogue);self.assertEqual(observed,{1})
+
+    def test_unknown_ambiguous_and_conflicting_names_are_not_guessed(self):
+        for raw in [b'ScientificName\nUnknown species',b'ScientificName\nSplit name',
+                    'SwedishName;ScientificName\nArt två;Species one'.encode()]:
+            with self.assertRaises(CsvValidationError) as ctx:build_difference(raw,self.catalogue)
+            self.assertEqual(ctx.exception.details['name_issue_count'],1)
+
+    def test_headered_name_delimiters_and_file_save(self):
+        for delimiter in [';',',','\t']:
+            raw=f'ScientificName{delimiter}Notes\nSpecies one{delimiter}text\n'.encode()
+            _,observed,_=build_difference(raw,self.catalogue);self.assertEqual(observed,{1})
+        r=self.post(save=True,raw=b'Art ett;Species one;(Author, 1758);;2\n')
+        self.assertEqual(r.status_code,200);self.assertEqual(r.json['list']['taxa_count'],2)
+
+    def test_name_shared_with_historical_group_needs_second_name(self):
+        source=json.loads(self.catalogue.read_text())
+        source['non_species_names'].append('species one')
+        self.catalogue.write_text(json.dumps(source))
+        with self.assertRaises(CsvValidationError):build_difference(b'ScientificName\nSpecies one',self.catalogue)
+        _,observed,_=build_difference(b'Art ett;Species one;(Author, 1758);;2',self.catalogue)
+        self.assertEqual(observed,{1})
 
     def test_preview_makes_no_changes(self):
         r=self.post();self.assertEqual(r.status_code,200);self.assertEqual(r.json['preview']['missing_species'],2)
