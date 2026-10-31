@@ -738,16 +738,16 @@ def make_app() -> Flask:
     def health():
         return jsonify({"ok": True})
 
+    from server.default_lists import register_default_lists
+    register_default_lists(app, cfg.missing_species_csv.parent / "defaults")
+
     def _taxon_list_build_dir() -> Path:
         return cfg.missing_species_csv.parent / "built_lists"
 
     def _observed_db_for_list_builder() -> Path:
         if cfg.observed_db_path.exists():
             return cfg.observed_db_path
-        legacy = REPO_ROOT.parent / "boston_sos_observatory" / "scripts" / "data" / "db" / "sos_counts.sqlite"
-        if legacy.exists():
-            return legacy
-        return cfg.observed_db_path
+        raise RuntimeError("Beta observations database missing; production fallback disabled")
 
     def _safe_taxon_list_filename(source: str, requested_name: str | None = None) -> str:
         if requested_name:
