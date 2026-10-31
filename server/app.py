@@ -64,8 +64,12 @@ from geomap.csv_import import (
 )
 
 from geomap.taxon_lists import (
-    read_taxon_ids_from_csv,
+    REDLIST_ELEVATED_CATEGORIES,
+    build_personal_missing_list,
+    build_redlist_elevated_list,
     chunked,
+    read_taxon_ids_from_csv,
+    write_taxon_list_csv,
 )
 
 from geomap.sos_filters_ext import make_sos_export_filter
@@ -733,6 +737,129 @@ def make_app() -> Flask:
     @app.get("/geomap-api/health")
     def health():
         return jsonify({"ok": True})
+
+    def _taxon_list_build_dir() -> Path:
+        return cfg.missing_species_csv.parent / "built_lists"
+
+    def _observed_db_for_list_builder() -> Path:
+        if cfg.observed_db_path.exists():
+            return cfg.observed_db_path
+        legacy = REPO_ROOT.parent / "boston_sos_observatory" / "scripts" / "data" / "db" / "sos_counts.sqlite"
+        if legacy.exists():
+            return legacy
+        return cfg.observed_db_path
+
+    def _safe_taxon_list_filename(source: str, requested_name: str | None = None) -> str:
+        if requested_name:
+            name = Path(requested_name).name.strip()
+            if not name:
+                raise BadRequest(description="out_name must not be empty")
+            if not name.lower().endswith(".csv"):
+                name += ".csv"
+            return name
+
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        return f"{stamp}__{source}.csv"
+
+    def _parse_redlist_categories(value: Any) -> list[str]:
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [v.strip() for v in value.split(",") if v.strip()]
+        if isinstance(value, (list, tuple)):
+            return [str(v).strip() for v in value if str(v).strip()]
+        raise BadRequest(description="categories must be a list or comma-separated string")
+
+    def _redlist_category_counts() -> list[dict[str, Any]]:
+        if not cfg.dyntaxa_db_path.exists():
+            return []
+        conn = sqlite3.connect(f"file:{cfg.dyntaxa_db_path}?mode=ro", uri=True)
+        try:
+            rows = conn.execute(
+                """
+                SELECT
+                    COALESCE(json_extract(raw_json, '$.redlistCategory'), '') AS redlist_category,
+                    COUNT(*) AS species_count
+                FROM taxa
+                WHERE is_active = 1
+                  AND category = 'Species'
+                  AND type = 'Taxonomic'
+                  AND status = 'Accepted'
+                GROUP BY redlist_category
+                ORDER BY species_count DESC, redlist_category;
+                """
+            ).fetchall()
+            return [
+                {
+                    "redlist_category": str(category or ""),
+                    "species_count": int(count),
+                }
+                for category, count in rows
+            ]
+        finally:
+            conn.close()
+
+    def _build_taxon_list(source: str, categories: list[str]) -> list[dict[str, Any]]:
+        if source in {"personal_missing", "missing", "personal"}:
+            return build_personal_missing_list(cfg.dyntaxa_db_path, _observed_db_for_list_builder())
+        if source in {"redlist_elevated", "redlist", "red_list"}:
+            return build_redlist_elevated_list(cfg.dyntaxa_db_path, categories=categories)
+        raise BadRequest(description="source must be 'personal_missing' or 'redlist_elevated'")
+
+    @app.get("/geomap-api/taxon-lists/sources")
+    @require_grant("jobs.read")
+    def taxon_list_sources():
+        return jsonify({
+            "ok": True,
+            "sources": [
+                {
+                    "source": "personal_missing",
+                    "label": "Personal missing species",
+                    "description": "Accepted Dyntaxa species not present in the personal SOS species_counts cache.",
+                    "required_paths": [str(cfg.dyntaxa_db_path), str(_observed_db_for_list_builder())],
+                },
+                {
+                    "source": "redlist_elevated",
+                    "label": "Red-list elevated species",
+                    "description": "Accepted Dyntaxa species where raw_json.redlistCategory is set.",
+                    "default_categories": list(REDLIST_ELEVATED_CATEGORIES),
+                    "required_paths": [str(cfg.dyntaxa_db_path)],
+                },
+            ],
+            "redlist_category_counts": _redlist_category_counts(),
+            "output_dir": str(_taxon_list_build_dir()),
+        })
+
+    @app.post("/geomap-api/taxon-lists/build")
+    @require_grant("jobs.read")
+    def taxon_list_build():
+        body = request.get_json(force=True) or {}
+        source = str(body.get("source", "personal_missing")).strip().lower()
+        categories = _parse_redlist_categories(body.get("categories"))
+        write_csv = parse_bool(body.get("write_csv", True), True)
+        preview_limit = max(0, min(int(body.get("preview_limit", 50)), 500))
+
+        rows = _build_taxon_list(source, categories)
+
+        csv_path = None
+        rows_written = 0
+        if write_csv:
+            out_name = _safe_taxon_list_filename(source, body.get("out_name"))
+            out_path = _taxon_list_build_dir() / out_name
+            rows_written = write_taxon_list_csv(rows, out_path)
+            csv_path = str(out_path)
+
+        return jsonify({
+            "ok": True,
+            "source": source,
+            "taxa_total": len(rows),
+            "csv_path": csv_path,
+            "rows_written": rows_written,
+            "preview": rows[:preview_limit],
+            "sos_import_hint": {
+                "taxon_list_csv": csv_path,
+            } if csv_path else None,
+        })
 
     from geomap.timeslots import slot_bounds
 
@@ -2226,6 +2353,84 @@ def make_app() -> Flask:
             "spec": spec,
         }), 202
 
+
+    @app.get("/geomap-api/cell/observations")
+    @require_grant("admin")
+    def cell_observations_geojson():
+        zoom = int(request.args.get("zoom", "15"))
+        x = int(request.args["x"])
+        y = int(request.args["y"])
+        year_from, year_to = parse_year_range_args(request.args)
+        
+        slot_ids_arg = request.args.get("slot_ids")
+        slot_id_arg = request.args.get("slot_id", "0")
+        
+        if slot_ids_arg:
+            slot_ids = parse_slot_ids_arg(slot_ids_arg, name="slot_ids")
+        else:
+            slot_id = parse_slot_id(slot_id_arg)
+            slot_ids = [] if slot_id == 0 else [slot_id]
+        
+        conn = storage.connect(cfg.geomap_db_path)
+        conn.isolation_level = None
+        
+        try:
+            storage.ensure_schema(conn)
+        
+            slot_filter = ""
+            params = [zoom, x, y, year_from, year_to]
+        
+            if slot_ids:
+                placeholders = ",".join(["?"] * len(slot_ids))
+                slot_filter = f"AND slot_id IN ({placeholders})"
+                params.extend(slot_ids)
+        
+            rows = conn.execute(
+                f"""
+                SELECT
+                    taxon_id,
+                    latitude,
+                    longitude,
+                    COUNT(*) AS observations_count
+                FROM observations_raw
+                WHERE zoom = ?
+                  AND tile_x = ?
+                  AND tile_y = ?
+                  AND year BETWEEN ? AND ?
+                  {slot_filter}
+                  AND latitude IS NOT NULL
+                  AND longitude IS NOT NULL
+                GROUP BY taxon_id, latitude, longitude
+                ORDER BY observations_count DESC
+                LIMIT 2000;
+                """,
+                params,
+            ).fetchall()
+        
+            features = []
+            for taxon_id, lat, lon, count in rows:
+                features.append({
+                    "type": "Feature",
+                    "properties": {
+                        "taxon_id": int(taxon_id),
+                        "observations_count": int(count),
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [float(lon), float(lat)],
+                    },
+                })
+        
+            return jsonify({
+                "type": "FeatureCollection",
+                "features": features,
+            })
+        
+        finally:
+            conn.close()
+
+
+    
     @app.post("/geomap-api/jobs/sos_import")
     @require_grant("jobs.read")
     def jobs_sos_import():
