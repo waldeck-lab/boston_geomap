@@ -739,7 +739,10 @@ def make_app() -> Flask:
         return jsonify({"ok": True})
 
     from server.default_lists import register_default_lists
-    register_default_lists(app, cfg.missing_species_csv.parent / "defaults")
+    import os as _shared_os
+    register_default_lists(app, Path(_shared_os.environ.get("GEOMAP_DEFAULT_LISTS_DIR", str(cfg.missing_species_csv.parent / "defaults"))))
+    from server.shared_api import register_shared_api
+    register_shared_api(app)
 
     def _taxon_list_build_dir() -> Path:
         return cfg.missing_species_csv.parent / "built_lists"
