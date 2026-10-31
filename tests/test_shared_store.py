@@ -65,6 +65,17 @@ class SharedStoreTests(unittest.TestCase):
             self.assertEqual(r.status_code,200)
             self.assertEqual(sum(f['properties']['obs_total'] for f in r.json['features']),2)
 
+    def test_same_contents_can_share_cache_without_sharing_permissions(self):
+        register_list(self.db,'private-copy','Private copy',self.root/'redlisted-lepidoptera.csv',2)
+        public=self.client.get('/geomap-api/hotmap').json
+        self.client.set_cookie('session','test-only')
+        with patch('auth_client.introspect_current_request',return_value={'authenticated':True,'user':{'id':2}}):
+            own=self.client.get('/geomap-api/hotmap?list_id=private-copy')
+            self.assertEqual(own.status_code,200)
+            self.assertEqual(own.json,public)
+        with patch('auth_client.introspect_current_request',return_value={'authenticated':True,'user':{'id':3}}):
+            self.assertEqual(self.client.get('/geomap-api/hotmap?list_id=private-copy').status_code,404)
+
     def test_legacy_writes_are_blocked(self):
         self.assertEqual(self.client.post('/geomap-api/jobs/sos_import',json={}).status_code,409)
 

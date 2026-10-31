@@ -137,7 +137,10 @@ def main():
                 rows=[]
                 cache_key=hashlib.sha256(json.dumps(body,sort_keys=True).encode()).hexdigest()
                 if count:
-                    search_body=dict(body,outputFieldSet='Minimum')
+                    search_body=dict(body,output={'fields':[
+                        'occurrence.occurrenceId','taxon.id','event.startDate',
+                        'location.decimalLatitude','location.decimalLongitude',
+                        'occurrence.occurrenceStatus','occurrence.individualCount','modified']})
                     records=[]
                     def get_page(skip):
                         response=post('/Observations/Search',search_body,{'skip':skip,'take':1000,

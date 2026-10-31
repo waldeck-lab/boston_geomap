@@ -102,7 +102,8 @@ def register_shared_api(app):
                     return jsonify(ok=True,lists=[dict(r) for r in rows],default_list_id='redlisted-lepidoptera',data_import=imported_status())
                 chosen=selected(db)
                 revision=db.execute("SELECT value FROM metadata WHERE key='revision'").fetchone()[0]
-                key=(chosen['content_hash'],revision,endpoint,tuple(sorted(request.args.items())))
+                key=(chosen['content_hash'],revision,endpoint,
+                     tuple(sorted((k,v) for k,v in request.args.items() if k!='list_id')))
                 with cache_lock:
                     payload=cache.get(key)
                     if payload is not None:cache.move_to_end(key)
@@ -125,7 +126,7 @@ def register_shared_api(app):
                             score=r['coverage']**2/(r['obs_total']+1)**.5,year_from=a,year_to=b)
                         features.append(dict(type='Feature',properties=properties,geometry=dict(type='Polygon',
                             coordinates=[[[left,top],[right,top],[right,bottom],[left,bottom],[left,top]]])))
-                    result=dict(type='FeatureCollection',features=features,list_id=chosen['id'],data_revision=revision)
+                    result=dict(type='FeatureCollection',features=features,list_content_hash=chosen['content_hash'],data_revision=revision)
                 elif endpoint=='slots/coverage':
                     rows=db.execute('SELECT slot_id,COUNT(*) AS cells FROM (SELECT c.slot_id,(c.x >> ?) AS gx,(c.y >> ?) AS gy'+base+
                         ' GROUP BY c.slot_id,gx,gy) GROUP BY slot_id ORDER BY slot_id',[shift,shift]+bindings).fetchall()

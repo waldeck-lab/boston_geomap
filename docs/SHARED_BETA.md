@@ -19,6 +19,10 @@ Lower zooms group base tiles by integer shift. Species coverage is counted
 distinct across seasons and years, while observation counts are summed.
 Exact points and observed dates come from canonical observation rows.
 No full raw observation row is copied for each list or zoom.
+Identical list contents may share cached read results, but ownership is checked
+before every cache lookup. This cache accepts public source observations only;
+future protected variants must use a separate store or scope-aware identity and
+aggregation keys, never overwrite the public coordinates for the same source ID.
 
 ## Import
 
@@ -62,3 +66,22 @@ Original beta DB remains `stage/db/geomap.sqlite`. The launcher and configuratio
 are saved under `ops/*.before-shared-store`. To revert, restore those two files
 and restart only `wcr-beta-geomap.service`. This restores the old demo read mode.
 Production baseline is in `backups/pre-beta-20261031T174553`.
+
+## Completed exercise (2026-10-31)
+
+Active database: `stage/shared-exercise-20261031/shared.sqlite`.
+Range: 2000-01-01 through 2026-10-31. Rödlistan is the default; the saved
+missing-species list is private to WCR user id 2 (Jonas).
+
+- Red list: 565 species; 504,181 public mappable observations in 524 species.
+- Personal list: 1,030 species; 174,409 observations in 675 species.
+- Shared membership: 297 species, 144,688 observations.
+- Canonical union: 533,902 observations; second list adds only 29,721 rows.
+- Base cells: 460,986; logical SQLite allocation: 122,802,176 bytes.
+- Integrity, foreign keys, unique source IDs and live map totals verified.
+- Fourteen tests passed, including ownership and shared-cache authorization.
+- The active beta environment no longer contains a personal Artportalen token.
+
+Public map: `https://beta.waldeck.se/geomap`.
+Own map (login required): `https://beta.waldeck.se/geomap?list_id=missing-jonas`.
+No popup/menu was added. Original demo beta database and production remain intact.
