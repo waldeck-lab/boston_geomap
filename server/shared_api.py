@@ -46,6 +46,9 @@ def register_shared_api(app):
                 raise NotFound('List not found')
         return row
 
+    from server.observed_upload import register_observed_upload
+    register_observed_upload(app,path,current_auth)
+
     def filters(cell=False, all_slots=False):
         z=int(request.args.get('zoom',15))
         if not 1<=z<=BASE_ZOOM:
@@ -84,6 +87,8 @@ def register_shared_api(app):
         endpoint=request.path[len(prefix):]
         if endpoint=='health':return None
         if endpoint.startswith('taxon-lists/defaults'):return None
+        if endpoint=='lists/from-observed-csv' and request.method=='POST':return None
+        if re.fullmatch(r'lists/[^/]+/csv',endpoint) and request.method in {'GET','HEAD'}:return None
         if endpoint=='jobs/status':
             state=imported_status()
             return jsonify(ok=True,busy=state.get('busy',False),current_job=None,last_job=None,data_import=state)
@@ -97,7 +102,11 @@ def register_shared_api(app):
                 if endpoint=='lists':
                     auth=current_auth();uid=(auth.get('user') or {}).get('id') if auth.get('authenticated') else None
                     rows=db.execute('''SELECT l.id,l.title,l.visibility,l.content_hash,
-                      (SELECT COUNT(*) FROM list_taxa t WHERE t.list_id=l.id) AS taxa_count
+                      (SELECT COUNT(*) FROM list_taxa t WHERE t.list_id=l.id) AS taxa_count,
+                      (SELECT COUNT(*) FROM list_taxa t WHERE t.list_id=l.id AND NOT EXISTS
+                       (SELECT 1 FROM coverage c WHERE c.taxon_id=t.taxon_id
+                        AND c.date_from='2000-01-01' AND c.date_to='2026-10-31'
+                        AND c.source_scope='public-only-start-v1')) AS taxa_needing_import
                       FROM lists l WHERE l.visibility='public' OR l.owner_id=? ORDER BY l.visibility,l.title''',(uid,)).fetchall()
                     return jsonify(ok=True,lists=[dict(r) for r in rows],default_list_id='redlisted-lepidoptera',data_import=imported_status())
                 chosen=selected(db)
