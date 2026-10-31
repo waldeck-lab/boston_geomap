@@ -21,6 +21,11 @@ WCR_INTERNAL_AUTH_SECRET = os.environ.get("WCR_INTERNAL_AUTH_SECRET", "")
 
 
 def introspect_current_request() -> dict[str, Any]:
+    beta_settings = os.environ.get("WCR_BETA_AUTH_SETTINGS")
+    if beta_settings:
+        from beta_accounts import introspect_beta_request
+        return introspect_beta_request(request, beta_settings, AUTH_CLIENT_KEY)
+
     if not WCR_INTERNAL_AUTH_SECRET:
         raise RuntimeError("WCR_INTERNAL_AUTH_SECRET not configured")
 

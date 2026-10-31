@@ -14,4 +14,5 @@ sys.path.insert(0, str(ROOT/'geomap/server'))
 os.chdir(ROOT/'geomap')
 sys.argv = [str(ROOT/'geomap/server/app.py'), '--host', '127.0.0.1', '--port', '8089',
     '--logs-dir', str(ROOT/'stage/logs')]
+sys.path.insert(0, '/proj/boston/beta/wcr/wcr/backend/src/app')
 runpy.run_path(sys.argv[0], run_name='__main__')

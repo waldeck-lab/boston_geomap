@@ -34,3 +34,32 @@ from the second name column. No fuzzy matching or automatic guesses are made.
 Known genus/family/collective-taxon rows are excluded with a preview count.
 Unknown, conflicting or ambiguous names reject the upload and return row details.
 The source CSV remains unretained. Tests run only in temporary beta fixture DBs.
+
+## Independent beta accounts
+Beta registration/login/me/logout/availability are served by the beta gateway,
+using wcr/backend/src/app/beta_accounts.py. stage/auth/accounts.sqlite contains
+only a snapshot of the six WCR auth tables, preserving existing account IDs for
+private-list ownership. No dissection/highlight content is copied. Production
+was opened read-only. Runtime settings in ops/auth-settings.json contain a fresh
+beta-only session secret and internal secret; do not commit this file.
+The host-only Secure/HttpOnly/SameSite=Lax cookie is __Host-wcr_beta_session.
+Users must sign in again after activation. Existing copied password hashes work.
+New registrations join only the users group, can never request admin rights, and
+remain exclusive to beta. Username normalization is NFKC plus casefold, enforced
+by a unique DB index. Registration rechecks uniqueness transactionally.
+The Guest menu first opens password confirmation, then submits registration
+when both passwords match (8–256 characters). Registration signs in immediately.
+No email confirmation or password-reset UI is implemented.
+Availability and auth attempts have database-backed per-client-IP limits.
+Neither request passwords nor confirmation values are logged by frontend API helpers.
+GeoMap validates the same beta cookie locally against the shared auth module and
+reads current users/groups from the isolated auth DB. This avoids an HTTP call
+back into the gateway while its workers proxy GeoMap requests.
+Production WCR content is fetched anonymously: the gateway strips Cookie and
+Authorization for production reads, preventing old beta production-auth cookies
+from carrying over into another beta identity. Production writes stay blocked.
+prepare_beta_auth.py refuses to replace an existing store or settings file.
+Snapshot ops/snapshots/before-beta-auth-* has the old gateway, launcher and env
+for rollback. Restoring only code does not erase the isolated account DB.
+Before promotion, account IDs and list ownership need an explicit migration plan;
+do not merge two independently allocated numeric user-ID spaces blindly.

@@ -1,5 +1,6 @@
 """Beta-only gateway: isolated GeoMap, explicitly limited production WCR access."""
 import re
+import sys
 import http.client
 from pathlib import Path
 from urllib.parse import urlsplit, urlencode
@@ -10,6 +11,9 @@ ROOT = Path('/proj/boston/beta/wcr')
 DIST = ROOT / 'wcr/frontend/dist'
 app = Flask(__name__, static_folder=None)
 app.config['MAX_CONTENT_LENGTH'] = 64 * 1024 * 1024
+sys.path.insert(0, str(ROOT / 'wcr/backend/src/app'))
+from beta_accounts import register_beta_accounts
+register_beta_accounts(app, ROOT / 'ops/auth-settings.json')
 HOP = {'connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization',
        'te', 'trailer', 'transfer-encoding', 'upgrade', 'content-length'}
 
@@ -22,6 +26,9 @@ def forward(base, path):
     headers['X-Forwarded-Proto'] = 'https'
     headers['X-Forwarded-Host'] = 'beta.waldeck.se'
     target = urlsplit(base)
+    if target.port == 5000:
+        # Beta identities and old production session cookies never authorize WCR reads.
+        headers = {k: v for k, v in headers.items() if k.lower() not in {'cookie', 'authorization'}}
     connection = http.client.HTTPConnection(target.hostname, target.port, timeout=120)
     try:
         query = urlencode(list(request.args.items(multi=True)))
@@ -55,8 +62,6 @@ def beta_headers(response):
 def wcr_api(path):
     if any(part in {'.', '..'} for part in path.split('/')) or '%' in path or '\\' in path:
         return jsonify(error='Invalid API path'), 400
-    auth = (path in {'auth/me'} and request.method in {'GET', 'HEAD'}) or (
-        path in {'auth/login', 'auth/logout'} and request.method == 'POST')
     read = request.method in {'GET', 'HEAD'} and (
         re.fullmatch(r'(dissections|highlights)(/\d+)?', path) or
         re.fullmatch(r'(dissections|highlights)/\d+/images', path) or
@@ -64,7 +69,7 @@ def wcr_api(path):
         re.fullmatch(r'(dissections|highlights)/select', path) or
         re.fullmatch(r'dissections/tag/[^/]+', path) or
         re.fullmatch(r'images/(dissections|highlights)/.+', path))
-    if not (auth or read):
+    if not read:
         return jsonify(error='Production WCR operation blocked in beta'), 403
     # Production thumbnail GETs may generate files. Serve original images instead.
     path = re.sub(r'^images/(dissections|highlights)/thumbs/', r'images/\1/', path)
