@@ -63,3 +63,18 @@ Snapshot ops/snapshots/before-beta-auth-* has the old gateway, launcher and env
 for rollback. Restoring only code does not erase the isolated account DB.
 Before promotion, account IDs and list ownership need an explicit migration plan;
 do not merge two independently allocated numeric user-ID spaces blindly.
+
+## Selected-cell species popup
+Authenticated beta users get a map-anchored, independently scrolling species list.
+It shares the same selected-cell taxa response as the retained controls list.
+A different grid cell replaces the selection; the same x/y/grid-zoom toggles it off,
+clearing observation points and x/y from the bookmark while retaining list_id.
+The close button does the same. Grid-zoom changes clear an incompatible selection.
+Public SOS observation points are available to authenticated users (not only admins);
+private-list ownership is still checked before all reads. Anonymous callers get 403.
+Exact point results are never cached. The response reports truncated=true when its
+2,000 grouped-location cap is exceeded, and the popup explains that limit.
+Old fetches are aborted and checked again before committing results to React state.
+The selected popup uses a React portal inside MapLibre, preserving its scroll
+position on updates. MapLibre hover labels are suppressed while the list is open.
+User list titles/taxon names remain unchanged. New popup text supports sv/en.

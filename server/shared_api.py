@@ -155,12 +155,12 @@ def register_shared_api(app):
                     raw_base=' FROM observations c JOIN list_taxa l ON l.taxon_id=c.taxon_id WHERE l.list_id=? AND '+raw_where
                     if endpoint=='cell/observations':
                         auth=current_auth()
-                        if not auth.get('authenticated') or not (auth.get('user') or {}).get('is_admin'):
-                            raise Forbidden('Administrator access required for exact points')
+                        if not auth.get('authenticated'):
+                            raise Forbidden('Sign in to view observation points.')
                         rows=db.execute('SELECT c.taxon_id,c.latitude,c.longitude,COUNT(*) AS observations_count'+raw_base+
-                            ' GROUP BY c.taxon_id,c.latitude,c.longitude LIMIT 2000',bindings).fetchall()
-                        result=dict(type='FeatureCollection',features=[dict(type='Feature',properties=dict(taxon_id=r['taxon_id'],
-                            observations_count=r['observations_count']),geometry=dict(type='Point',coordinates=[r['longitude'],r['latitude']])) for r in rows])
+                            ' GROUP BY c.taxon_id,c.latitude,c.longitude ORDER BY c.taxon_id,c.latitude,c.longitude LIMIT 2001',bindings).fetchall()
+                        result=dict(type='FeatureCollection',truncated=len(rows)>2000,limit=2000,features=[dict(type='Feature',properties=dict(taxon_id=r['taxon_id'],
+                            observations_count=r['observations_count']),geometry=dict(type='Point',coordinates=[r['longitude'],r['latitude']])) for r in rows[:2000]])
                     else:
                         limit=max(1,min(2000,int(request.args.get('limit',200))))
                         rows=db.execute('''SELECT c.taxon_id,MAX(t.scientific_name) AS scientific_name,

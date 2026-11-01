@@ -87,7 +87,7 @@ class SharedStoreTests(unittest.TestCase):
         self.assertNotIn('taxa_total',status['data_import'])
         self.assertEqual(status['data_import']['phase'],'importing')
 
-    def test_exact_point_cache_never_bypasses_admin_authorization(self):
+    def test_exact_point_cache_never_bypasses_authentication(self):
         x,y=lonlat_to_tile_xy(13.2,55.7,15)
         path=f'/geomap-api/cell/observations?zoom=15&x={x}&y={y}'
         self.client.set_cookie('session','test-only')
@@ -95,6 +95,30 @@ class SharedStoreTests(unittest.TestCase):
             self.assertEqual(self.client.get(path).status_code,200)
         self.client.delete_cookie('session')
         self.assertEqual(self.client.get(path).status_code,403)
+
+    def test_regular_user_points_follow_list_and_private_owner_permissions(self):
+        x,y=lonlat_to_tile_xy(13.2,55.7,15)
+        path=f'/geomap-api/cell/observations?zoom=15&x={x}&y={y}'
+        self.client.set_cookie('session','test-only')
+        with patch('auth_client.introspect_current_request',return_value={'authenticated':True,'user':{'id':2,'is_admin':False}}):
+            r=self.client.get(path)
+            self.assertEqual(r.status_code,200)
+            self.assertEqual({f['properties']['taxon_id'] for f in r.json['features']},{1,2})
+            self.assertFalse(r.json['truncated'])
+            r=self.client.get(path+'&list_id=private')
+            self.assertEqual({f['properties']['taxon_id'] for f in r.json['features']},{2,3})
+        with patch('auth_client.introspect_current_request',return_value={'authenticated':True,'user':{'id':3,'is_admin':False}}):
+            self.assertEqual(self.client.get(path+'&list_id=private').status_code,404)
+
+    def test_point_limit_is_explicit_in_response(self):
+        rows=[dict(self.rows[0],OccurrenceId='cap-'+str(i),DecimalLongitude=str(13.2+i*1e-9)) for i in range(2001)]
+        with connect(self.db) as db:apply_rows(db,rows)
+        x,y=lonlat_to_tile_xy(13.2,55.7,15)
+        self.client.set_cookie('session','test-only')
+        with patch('auth_client.introspect_current_request',return_value={'authenticated':True,'user':{'id':2,'is_admin':False}}):
+            r=self.client.get(f'/geomap-api/cell/observations?zoom=15&x={x}&y={y}')
+            self.assertEqual(r.status_code,200)
+            self.assertTrue(r.json['truncated']);self.assertEqual(len(r.json['features']),2000)
 
     def test_parent_tile_matches_direct_projection(self):
         x,y=lonlat_to_tile_xy(13.2,55.7,21)

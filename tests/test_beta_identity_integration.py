@@ -42,6 +42,10 @@ class BetaIdentityIntegrationTests(unittest.TestCase):
                 self.assertEqual(other.get('/geomap-api/lists',base_url='https://beta.waldeck.se').json['lists'],[])
                 self.assertEqual(other.get('/geomap-api/lists/'+list_id+'/csv',base_url='https://beta.waldeck.se').status_code,404)
                 self.assertEqual(other.get('/geomap-api/hotmap?list_id='+list_id,base_url='https://beta.waldeck.se').status_code,404)
+                points='/geomap-api/cell/observations?zoom=15&x=17585&y=10249&list_id='+list_id
+                self.assertEqual(owner.get(points,base_url='https://beta.waldeck.se').status_code,200)
+                self.assertEqual(other.get(points,base_url='https://beta.waldeck.se').status_code,404)
+
                 with connect(shared,readonly=True) as db:
                     self.assertEqual(db.execute('SELECT owner_id FROM lists').fetchone()[0],1)
 
