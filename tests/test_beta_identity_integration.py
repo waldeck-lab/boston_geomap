@@ -43,6 +43,13 @@ class BetaIdentityIntegrationTests(unittest.TestCase):
                 response=owner.post('/geomap-api/lists/from-observed-csv',data={'file':(io.BytesIO(b'TaxonId\n1'),'fixture.csv'),'title':'Private fixture','save':'true'},base_url='https://beta.waldeck.se')
                 self.assertEqual(response.status_code,200)
                 list_id=response.json['list']['id']
+                state=dict(version=1,list_id=list_id,camera=dict(center=[16.4,56.2],zoom=10,bearing=0,pitch=0),grid_zoom=15,
+                    year_from=2000,year_to=2026,slot_center=23,slot_radius=1,use_window=True,show_phenology=True,base_layer='osm',species_stops=[1,2,5],selected=None)
+                view=owner.post('/geomap-api/views',json={'title':'Private view','state':state,'owner_id':2},base_url='https://beta.waldeck.se')
+                self.assertEqual(view.status_code,201);view_id=view.json['view']['id']
+                self.assertEqual(other.get('/geomap-api/views',base_url='https://beta.waldeck.se').json['views'],[])
+                self.assertEqual(other.get('/geomap-api/views/'+view_id,base_url='https://beta.waldeck.se').status_code,404)
+                self.assertEqual(other.delete('/geomap-api/views/'+view_id,base_url='https://beta.waldeck.se').status_code,404)
                 self.assertEqual(owner.get('/geomap-api/lists',base_url='https://beta.waldeck.se').json['lists'][0]['id'],list_id)
                 self.assertEqual(other.get('/geomap-api/lists',base_url='https://beta.waldeck.se').json['lists'],[])
                 self.assertEqual(other.get('/geomap-api/lists/'+list_id+'/csv',base_url='https://beta.waldeck.se').status_code,404)
@@ -53,11 +60,13 @@ class BetaIdentityIntegrationTests(unittest.TestCase):
                 temporary=re.search(r'Tillfälligt lösenord: (\S+)',messages[-1])[1]
                 recovered=owner.post('/api/auth/login',json={'email':'fixture-owner@example.test','password':temporary},base_url='https://beta.waldeck.se')
                 self.assertTrue(recovered.json['password_change_required'])
+                self.assertEqual(owner.get('/geomap-api/views/'+view_id,base_url='https://beta.waldeck.se').status_code,401)
                 self.assertNotEqual(owner.get('/geomap-api/lists/'+list_id+'/csv',base_url='https://beta.waldeck.se').status_code,200)
                 changed=owner.post('/api/auth/password-reset/complete',json={'password':'new-fixture-password','password_confirmation':'new-fixture-password'},base_url='https://beta.waldeck.se')
                 self.assertEqual(changed.status_code,200)
                 login=owner.post('/api/auth/login',json={'email':'fixture-owner@example.test','password':'new-fixture-password'},base_url='https://beta.waldeck.se')
                 self.assertEqual(login.json['user']['id'],1)
+                self.assertEqual(owner.get('/geomap-api/views/'+view_id,base_url='https://beta.waldeck.se').json['view']['state'],state)
                 self.assertEqual(owner.get('/geomap-api/lists/'+list_id+'/csv',base_url='https://beta.waldeck.se').status_code,200)
 
 if __name__=='__main__':unittest.main()

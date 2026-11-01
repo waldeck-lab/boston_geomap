@@ -54,6 +54,8 @@ def register_shared_api(app):
 
     from server.observed_upload import register_observed_upload
     register_observed_upload(app,path,current_auth)
+    from server.saved_views import register_saved_views
+    register_saved_views(app,path,current_auth)
 
     def filters(cell=False, all_slots=False):
         z=int(request.args.get('zoom',15))
@@ -91,6 +93,7 @@ def register_shared_api(app):
         prefix='/geomap-api/'
         if not request.path.startswith(prefix):return None
         endpoint=request.path[len(prefix):]
+        if endpoint=='views' or re.fullmatch(r'views/[^/]+',endpoint):return None
         if endpoint=='health':return None
         if endpoint.startswith('taxon-lists/defaults'):return None
         if endpoint=='lists/from-observed-csv' and request.method=='POST':return None
