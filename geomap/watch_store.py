@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS candidates(id INTEGER PRIMARY KEY,scientific_name TEX
 CREATE TABLE IF NOT EXISTS candidate_assessments(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),classification TEXT NOT NULL,checked_at TEXT NOT NULL,rationale TEXT NOT NULL,evidence_json TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS search_guides(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),version TEXT NOT NULL,guide_json TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS vernacular_names(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),name TEXT NOT NULL,language TEXT NOT NULL CHECK(language='sv'),source_id TEXT NOT NULL REFERENCES sources(id),source_taxon_name TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS expansion_assessments(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),version TEXT NOT NULL,assessment_json TEXT NOT NULL);
+INSERT OR IGNORE INTO schema_versions VALUES(4,'Cited range-expansion assessments and evidence-based interest flag');
 INSERT OR IGNORE INTO schema_versions VALUES(3,'Cited search guidance separate from Swedish habitat hypotheses');
 INSERT OR IGNORE INTO schema_versions VALUES(2,'Source-screened candidate assessments and separate Swedish references');
 CREATE TABLE IF NOT EXISTS host_associations(candidate_id INTEGER NOT NULL REFERENCES candidates(id),plant_name TEXT NOT NULL,plant_rank TEXT NOT NULL,is_primary INTEGER CHECK(is_primary IN (0,1) OR is_primary IS NULL),region TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES sources(id),source_field TEXT NOT NULL,review_status TEXT NOT NULL DEFAULT 'unreviewed',PRIMARY KEY(candidate_id,plant_name,region,source_id));
@@ -112,6 +114,18 @@ def import_occurrences(db,records,uid,source_id):
         if occurrence['candidate_id']!=uid:rejected+=1;continue
         db.execute('INSERT OR IGNORE INTO occurrence_records VALUES(?,?,?,?,?)',('GBIF',record,occurrence['id'],r['datasetKey'],original));accepted+=1
     return dict(accepted_records=accepted,rejected_records=rejected)
+def import_expansion_assessments(db,path):
+    data=json.loads(Path(path).read_text(encoding='utf-8'));prepared=[]
+    for a in data['assessments']:
+        row=db.execute('SELECT id FROM candidates WHERE scientific_name=?',(a['scientific_name'],)).fetchone()
+        if not row:continue
+        if type(a['high_interest']) is not bool:raise ValueError('Interest must be an explicit boolean')
+        if a['high_interest'] and (a['status']!='documented_range_expansion' or not a['sources'] or not a['direction'] or not a['period']):raise ValueError('High interest requires dated expansion evidence')
+        if any(urlsplit(s['url']).scheme!='https' or not urlsplit(s['url']).hostname for s in a['sources']):raise ValueError('Invalid expansion source URL')
+        prepared.append((row['id'],data['version'],json.dumps(a,ensure_ascii=False)))
+    db.executemany('INSERT OR REPLACE INTO expansion_assessments VALUES(?,?,?)',prepared)
+    return len(prepared)
+
 def import_swedish_names(db,path,source_id):
     taxa={normalized(r['scientific_name']):r for r in json.loads(Path(path).read_text(encoding='utf-8'))['species']}
     # Explicit nomenclatural variants only; never fuzzy-match an epithet or genus.
@@ -141,6 +155,8 @@ def profile(db,uid):
     row=db.execute('SELECT * FROM candidates WHERE id=?',(uid,)).fetchone()
     if not row:return None
     out=dict(row)
+    expansion=db.execute('SELECT assessment_json FROM expansion_assessments WHERE candidate_id=?',(uid,)).fetchone()
+    out['expansion']=json.loads(expansion[0]) if expansion else None
     vernacular=db.execute('SELECT name,source_id,source_taxon_name FROM vernacular_names WHERE candidate_id=?',(uid,)).fetchone()
     out['swedish_name']=vernacular['name'] if vernacular else None
     out['swedish_name_source']=dict(vernacular) if vernacular else None

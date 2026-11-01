@@ -20,10 +20,11 @@ URLS={
  'update-2025.pdf':'https://www.entomologiskforening.no/wp-content/uploads/2025/08/nje-vol72-no1-94-107.pdf',
  'bab-2025.html':'https://et-online.nu/index.php/contents/article/view/234',
  'bab-2024.html':'https://et-online.nu/index.php/contents/article/view/206',
+ 'macro-2024.html':'https://et-online.nu/index.php/contents/article/view/211',
  'bab-2022.pdf':'https://et-online.nu/index.php/contents/article/download/129/135/365'}
 # Positive Swedish records explicitly enumerated in the open original 2025 abstract.
 BAB_2025={'Eriocrania marci','Caloptilia honoratella','Phyllonorycter issikii','Phyllonorycter mespilella','Phyllonorycter mespilellus','Phyllonorycter medicaginella','Phyllonorycter medicaginellus','Phyllocnistis xenia','Choreutis nemorana','Aproaerema cinctelloides','Aproaerema vinella','Agonopterix putridella','Endothenia ustulana','Epiblema turbidana'}
-PRIORITY=['Parectopa robiniella','Macrosaccus robiniella','Stigmella rhamnella','Trifurcula beirnei','Trifurcula squamatella','Dialectica imperialella','Phyllonorycter messaniella','Phyllonorycter scopariella','Stigmella stettinensis','Isotrias rectifasciana','Rhagades pruni','Zygaena trifolii','Metalampra italica','Batia lambdella','Agonopterix umbellana','Monochroa divisella','Mirificarma interrupta','Gelechia senticetella','Scrobipalpa costella','Scrobipalpa ocellatella','Scrobipalpa instabilella','Xenolechia aethiops','Blastobasis phycidella','Endotricha flammealis','Idaea degeneraria','Idaea rusticata','Idaea subsericeata','Scopula imitaria','Scopula emutaria','Horisme corticata','Stegania trimaculata','Gastropacha populifolia','Odonestis pruni','Proserpinus proserpina','Drymonia obliterata','Ptilodon cucullina']
+PRIORITY=['Theria primaria','Brenthis daphne','Caradrina kadenii','Clepsis dumicolana','Lithophane leautieri','Eudonia angustea','Carcharodus alceae','Pyronia tithonus','Melanargia galathea','Lycaena dispar','Lycaena tityrus','Euplagia quadripunctaria','Eilema caniola','Aporophyla australis','Phaiogramma etruscaria','Aleucis distinctata','Cerura erminea','Horisme radicaria','Eucarta amethystina','Omphaloscelis lunosa','Aporophyla nigra','Eccopisa effractella','Gymnancyla hornigii','Udea costalis','Parectopa robiniella','Macrosaccus robiniella','Stigmella rhamnella','Trifurcula beirnei','Trifurcula squamatella','Dialectica imperialella','Phyllonorycter messaniella','Phyllonorycter scopariella','Stigmella stettinensis','Isotrias rectifasciana','Rhagades pruni','Zygaena trifolii','Metalampra italica','Batia lambdella','Agonopterix umbellana','Monochroa divisella','Mirificarma interrupta','Gelechia senticetella','Scrobipalpa costella','Scrobipalpa ocellatella','Scrobipalpa instabilella','Xenolechia aethiops','Blastobasis phycidella','Endotricha flammealis','Idaea degeneraria','Idaea rusticata','Idaea subsericeata','Scopula imitaria','Scopula emutaria','Horisme corticata','Stegania trimaculata','Gastropacha populifolia','Odonestis pruni','Proserpinus proserpina','Drymonia obliterata','Ptilodon cucullina']
 def baseline(text,validate=True):
     genus=None;rows={}
     for line in text.splitlines():
@@ -50,7 +51,7 @@ def add_updates(rows,text,label):
         row['countries']=sorted(set(row['countries'])|set(countries));row['sources'].append(label)
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--count',type=int,default=14);args=ap.parse_args();stage=args.stage.resolve()
-    if not 10<=args.count<=20:raise ValueError('Pilot count must be 10..20')
+    if not 10<=args.count<=100:raise ValueError('Pilot count must be 10..100')
     if not stage.is_relative_to(Path('/proj/boston/beta/wcr/stage')) or not stage.name.startswith('watch-pilot-'):raise ValueError('Not a pilot stage')
     raw=stage/'source/review';raw.mkdir(exist_ok=True);cache=raw/'gbif';cache.mkdir(exist_ok=True)
     session=requests.Session();session.headers['User-Agent']='WCR-watch-country-review/0.2 (cached bounded queries)'
@@ -60,8 +61,8 @@ def main():
         if file.endswith('.pdf'):subprocess.run(['pdftotext','-layout' if file=='checklist-2017.pdf' else '-raw',str(path),str(path.with_suffix('.txt'))],check=True)
     rows=baseline((raw/'checklist-2017.txt').read_text())
     for label in ['update-2021.pdf','update-2025.pdf']:add_updates(rows,(raw/label).with_suffix('.txt').read_text(),label)
-    for name in BAB_2025:
-        row=rows.setdefault(name,dict(number=None,countries=[],sources=[]));row['countries']=sorted(set(row['countries'])|{'S'});row['sources'].append('bab-2025.html')
+    for name in BAB_2025|{'Luffia lapidella','Catephia alchymista','Acontia candefacta'}:
+        row=rows.setdefault(name,dict(number=None,countries=[],sources=[]));row['countries']=sorted(set(row['countries'])|{'S'});row['sources'].append('bab-2025.html' if name in BAB_2025 else 'macro-2024.html')
     matrix=next((stage/'source').glob('Lepidoptera*csv'))
     with matrix.open(encoding='utf-8-sig',newline='') as stream:
         reader=csv.reader(stream,delimiter=';');next(reader);host_names={r[0].strip() for r in reader}

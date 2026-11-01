@@ -9,7 +9,7 @@ from datetime import datetime,timezone
 from pathlib import Path
 import requests
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from geomap.watch_store import connect,initialize,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,inventory,profile,normalized
+from geomap.watch_store import connect,initialize,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,import_expansion_assessments,inventory,profile,normalized
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--offline',action='store_true');args=ap.parse_args()
@@ -29,7 +29,7 @@ def main():
     item=next(f for f in record['files'] if f['key']==matrix.name);algorithm,digest=item['checksum'].split(':')
     if hashlib.file_digest(matrix.open('rb'),algorithm).hexdigest()!=digest:raise RuntimeError('Matrix checksum mismatch')
     selection=json.loads((stage/'selection-review.json').read_text());names=selection['names']
-    if not 10<=len(names)<=20 or any(selection['assessments'][n]['classification']!='watch_candidate' for n in names):raise RuntimeError('Candidate screening is required before import')
+    if not 10<=len(names)<=100 or any(selection['assessments'][n]['classification']!='watch_candidate' for n in names):raise RuntimeError('Candidate screening is required before import')
     for name in names:
         assessment=selection['assessments'][name]
         if 'S' in assessment['checklist']['countries'] or assessment.get('gbif_sweden_count')!=0 or assessment.get('front_2015_2026_count',0)<1:raise RuntimeError('Swedish record or missing front evidence in candidate list: '+name)
@@ -69,6 +69,7 @@ def main():
                 report['occurrences'][name]=dict(**counts,total_matching_query=data.get('count'),sample_limit=300,complete=data.get('endOfRecords',False))
                 print(name,counts,flush=True)
             report['search_guides']=import_search_guides(db,Path(__file__).resolve().parents[1]/'data/watch/search-guides.json')
+            report['expansion_assessments']=import_expansion_assessments(db,Path(__file__).resolve().parents[1]/'data/watch/expansion-evidence.json')
             if taxon_file.exists():
                 name_source='dyntaxa-names-'+hashlib.sha256(taxon_file.read_bytes()).hexdigest()[:16]
                 source(db,name_source,'SLU Artdatabanken / Dyntaxa – svenska namn i lokal taxonomikatalog','https://www.dyntaxa.se/','Taxon names; source attribution','cached snapshot',taxon_file)
