@@ -1,5 +1,7 @@
 # Framtida arter / På väg hit — första datapiloten
 
+> Det första arturvalet nedan är historiskt. Korrigerat urval och aktuell metod finns i [WATCH_SELECTION_REVIEW.md](WATCH_SELECTION_REVIEW.md).
+
 ## Säkrad beta före piloten
 
 Gemensam annoterad tagg i båda repona: `beta-pre-pavag-20261101T195255Z`.

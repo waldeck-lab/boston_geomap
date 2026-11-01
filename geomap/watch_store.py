@@ -19,6 +19,8 @@ INSERT OR IGNORE INTO schema_versions VALUES(1,'Independent future-species knowl
 CREATE TABLE IF NOT EXISTS sources(id TEXT PRIMARY KEY,title TEXT NOT NULL,url TEXT NOT NULL,license TEXT NOT NULL,version TEXT NOT NULL,sha256 TEXT NOT NULL,retrieved_at TEXT DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS import_runs(id INTEGER PRIMARY KEY,started_at TEXT DEFAULT CURRENT_TIMESTAMP,completed_at TEXT,status TEXT NOT NULL,report_json TEXT);
 CREATE TABLE IF NOT EXISTS candidates(id INTEGER PRIMARY KEY,scientific_name TEXT NOT NULL UNIQUE,role TEXT NOT NULL,swedish_status TEXT NOT NULL DEFAULT 'unknown',review_status TEXT NOT NULL DEFAULT 'unreviewed',review_notes TEXT,dyntaxa_id INTEGER,gbif_key INTEGER);
+CREATE TABLE IF NOT EXISTS candidate_assessments(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),classification TEXT NOT NULL,checked_at TEXT NOT NULL,rationale TEXT NOT NULL,evidence_json TEXT NOT NULL);
+INSERT OR IGNORE INTO schema_versions VALUES(2,'Source-screened candidate assessments and separate Swedish references');
 CREATE TABLE IF NOT EXISTS host_associations(candidate_id INTEGER NOT NULL REFERENCES candidates(id),plant_name TEXT NOT NULL,plant_rank TEXT NOT NULL,is_primary INTEGER CHECK(is_primary IN (0,1) OR is_primary IS NULL),region TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES sources(id),source_field TEXT NOT NULL,review_status TEXT NOT NULL DEFAULT 'unreviewed',PRIMARY KEY(candidate_id,plant_name,region,source_id));
 CREATE TABLE IF NOT EXISTS habitat_requirements(candidate_id INTEGER NOT NULL REFERENCES candidates(id),property TEXT NOT NULL,value TEXT NOT NULL,is_primary INTEGER CHECK(is_primary IN (0,1) OR is_primary IS NULL),region TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES sources(id),source_field TEXT NOT NULL,review_status TEXT NOT NULL DEFAULT 'unreviewed',PRIMARY KEY(candidate_id,property,region,source_id));
 CREATE TABLE IF NOT EXISTS phenology(candidate_id INTEGER NOT NULL REFERENCES candidates(id),life_stage TEXT NOT NULL,month INTEGER NOT NULL CHECK(month BETWEEN 1 AND 12),region TEXT NOT NULL,evidence_type TEXT NOT NULL,source_id TEXT NOT NULL REFERENCES sources(id),source_field TEXT NOT NULL,PRIMARY KEY(candidate_id,life_stage,month,region,source_id));
@@ -111,6 +113,9 @@ def profile(db,uid):
     row=db.execute('SELECT * FROM candidates WHERE id=?',(uid,)).fetchone()
     if not row:return None
     out=dict(row)
+    assessment=db.execute('SELECT * FROM candidate_assessments WHERE candidate_id=?',(uid,)).fetchone()
+    out['assessment']=dict(assessment) if assessment else None
+    if out['assessment']:out['assessment']['evidence']=json.loads(out['assessment'].pop('evidence_json'))
     for field,table in [('hosts','host_associations'),('habitats','habitat_requirements'),('phenology','phenology'),('other_requirements','ecological_requirements')]:
         out[field]=[dict(r) for r in db.execute('SELECT * FROM '+table+' WHERE candidate_id=?',(uid,))]
     out['observed_months']=[dict(r) for r in db.execute('SELECT country,life_stage,month,count(*) AS n FROM occurrences WHERE candidate_id=? GROUP BY country,life_stage,month ORDER BY month',(uid,))]

@@ -11,7 +11,6 @@ import requests
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from geomap.watch_store import connect,initialize,source,import_matrix,import_traits,import_occurrences,inventory,profile,normalized
 
-NAMES=['Cameraria ohridella','Macrosaccus robiniella','Parectopa robiniella','Phyllonorycter issikii','Phyllonorycter leucographella','Phyllonorycter platani','Phyllocnistis citrella','Cydalima perspectalis','Cacoecimorpha pronubana','Chrysodeixis chalcites','Etiella zinckenella','Thysanoplusia orichalcea','Trigonophora flammea','Vanessa cardui','Saturnia pavonia']
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--offline',action='store_true');args=ap.parse_args()
     stage=args.stage.resolve()
@@ -29,6 +28,11 @@ def main():
     if record['metadata']['license']['id']!='cc-by-4.0':raise RuntimeError('Unexpected source license')
     item=next(f for f in record['files'] if f['key']==matrix.name);algorithm,digest=item['checksum'].split(':')
     if hashlib.file_digest(matrix.open('rb'),algorithm).hexdigest()!=digest:raise RuntimeError('Matrix checksum mismatch')
+    selection=json.loads((stage/'selection-review.json').read_text());names=selection['names']
+    if not 10<=len(names)<=20 or any(selection['assessments'][n]['classification']!='watch_candidate' for n in names):raise RuntimeError('Candidate screening is required before import')
+    for name in names:
+        assessment=selection['assessments'][name]
+        if 'S' in assessment['checklist']['countries'] or assessment.get('gbif_sweden_count')!=0 or assessment.get('front_2015_2026_count',0)<1:raise RuntimeError('Swedish record or missing front evidence in candidate list: '+name)
     initialize(stage/'future-species.sqlite');db=connect(stage/'future-species.sqlite')
     run=db.execute("INSERT INTO import_runs(status) VALUES('running') RETURNING id").fetchone()[0];db.commit()
     try:
@@ -39,9 +43,18 @@ def main():
             taxon_file=raw/'dyntaxa-lepidoptera.json';taxa=json.loads(taxon_file.read_text())['species'] if taxon_file.exists() else []
             taxon_ids={normalized(t['scientific_name']):t['taxon_id'] for t in taxa}
             ids={}
-            for name in NAMES:
-                db.execute('INSERT INTO candidates(scientific_name,role,dyntaxa_id) VALUES(?,?,?) ON CONFLICT(scientific_name) DO UPDATE SET dyntaxa_id=excluded.dyntaxa_id',(name,'reference-control' if name in NAMES[-2:] else 'exploratory',taxon_ids.get(name)))
+            for name in names:
+                db.execute('INSERT INTO candidates(scientific_name,role,dyntaxa_id) VALUES(?,?,?) ON CONFLICT(scientific_name) DO UPDATE SET dyntaxa_id=COALESCE(candidates.dyntaxa_id,excluded.dyntaxa_id)',(name,'watch_candidate',taxon_ids.get(name)))
                 ids[name]=db.execute('SELECT id FROM candidates WHERE scientific_name=?',(name,)).fetchone()[0]
+            for filename,url in selection['source_urls'].items():
+                source(db,'review-'+filename,'Country-status review: '+filename,url,'Copyright retained; source citation and factual screening only','review-2026-11-01',raw/'review'/filename)
+            for name,assessment in selection['assessments'].items():
+                candidate=db.execute('SELECT id FROM candidates WHERE scientific_name=?',(name,)).fetchone()
+                if not candidate:continue
+                classification=assessment['classification'];status={'watch_candidate':'not_listed_in_reviewed_sources','swedish_record':'recorded','swedish_record_to_review':'public_record_unverified'}.get(classification,'unknown')
+                role='reference-control' if classification.startswith('swedish_record') else classification
+                db.execute('UPDATE candidates SET role=?,swedish_status=?,review_status=?,review_notes=? WHERE id=?',(role,status,'source-screened; expert review pending',assessment.get('reason'),candidate['id']))
+                db.execute('INSERT OR REPLACE INTO candidate_assessments VALUES(?,?,?,?,?)',(candidate['id'],classification,assessment['checked_at'],assessment.get('reason','Further review required'),json.dumps(assessment,ensure_ascii=False)))
             report=dict(matrix=import_matrix(db,matrix,ids,matrix_source),traits=import_traits(db,raw/'uk-traits-dataset.zip',ids,traits_source),occurrences={})
             if report['matrix']['missing']:raise RuntimeError('Pilot names absent from host matrix')
             for name,uid in ids.items():
@@ -59,7 +72,7 @@ def main():
             db.execute("UPDATE import_runs SET status='complete',completed_at=CURRENT_TIMESTAMP,report_json=? WHERE id=?",(json.dumps(report,ensure_ascii=False),run))
         if db.execute('PRAGMA quick_check').fetchone()[0]!='ok' or db.execute('PRAGMA foreign_key_check').fetchall():raise RuntimeError('Database integrity failure')
         (stage/'inventory.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
-        export=dict(generated_at=datetime.now(timezone.utc).isoformat(),pilot=True,notice='Technical source-coverage pilot; Swedish status and expansion unreviewed. Bounded GBIF samples are not complete histories.',inventory=inventory(db),profiles=[profile(db,r['id']) for r in db.execute('SELECT id FROM candidates ORDER BY id')],sources=[dict(r) for r in db.execute('SELECT * FROM sources')])
+        export=dict(generated_at=datetime.now(timezone.utc).isoformat(),pilot=True,notice='Source-screened watch candidates, not proof of national absence or an establishment forecast. Bounded GBIF samples are not complete histories.',inventory=inventory(db),profiles=[profile(db,ids[name]) for name in names],references=[profile(db,r['id']) for r in db.execute("SELECT id FROM candidates WHERE role='reference-control' ORDER BY scientific_name")],screening_limitations=selection['limitations'],sources=[dict(r) for r in db.execute('SELECT * FROM sources')])
         (stage/'pilot-export.json').write_text(json.dumps(export,ensure_ascii=False,indent=2))
         print('Pilot database:',stage/'future-species.sqlite','species:',len(ids))
     except BaseException:
