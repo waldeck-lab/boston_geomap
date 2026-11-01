@@ -1,0 +1,25 @@
+{
+  "version": "2026-11-01-v1",
+  "guides": [{
+    "scientific_name": "Proserpinus proserpina",
+    "swedish_name": "Dunörtssvärmare",
+    "review_status": "Redaktionellt utkast – biologisk expertgranskning återstår",
+    "sources": [
+      {"id": "dk2017", "title": "Aarhus universitet: dansk inventeringshandledning (2017), s. 2–4 och 9", "url": "https://ecos.au.dk/fileadmin/ecos/Fagdatacentre/Biodiversitet/TA11_Proserpina_160517.pdf"},
+      {"id": "bfn", "title": "Bundesamt für Naturschutz: artporträtt", "url": "https://www.bfn.de/artenportraits/proserpinus-proserpina"}
+    ],
+    "documented": [
+      {"kind": "documented", "title": "Fjäril – maj till juni", "text": "Dansk metod: blomspaning kring skymningen under ljumma, vindsvaga kvällar. Sök vid syren, blåeld, lavendel och kaprifolväxter. Även ljuslockning används; torrt, vindstilla och minst 10 °C anges för ljusmetoden. Flygtoppen är kort och väderberoende.", "region": "Danmark", "source_ids": ["dk2017"]},
+      {"kind": "documented", "title": "Larv – normalt juli till augusti", "text": "Sök med pannlampa på mjölkört och andra dunörter, mer sällan nattljus. Större larver är huvudsakligen nattaktiva; dagtid gömmer de sig vid växtbasen. Larvutvecklingen kan gå fort, så återbesök behövs.", "region": "Danmark", "source_ids": ["dk2017"]},
+      {"kind": "documented", "title": "Solvarma miljöer med värdväxter", "text": "Handledningen beskriver torra ruderatmarker, sandiga trädor och skogsbryn samt fuktiga diken och strandbräm. År 2017 angavs danska kolonier främst från torra miljöer, med kända förekomster på Lolland, Falster och Møn.", "region": "Danmark; kunskapsläge 2017", "source_ids": ["dk2017"]},
+      {"kind": "documented", "title": "Leta efter spår också", "text": "Tyska sökråd lyfter bladgnag och spillning som ledtrådar. Larverna gömmer sig dagtid och äter främst i skymning och mörker. Dunörter är centrala värdväxter.", "region": "Tyskland", "source_ids": ["bfn"]}
+    ],
+    "swedish_hypotheses": [
+      {"kind": "hypothesis", "title": "Börja vid sydkusten i Skåne", "text": "Som första sökområde föreslår vi kustnära södra och sydöstra Skåne: solvarma ruderatmarker, hamnarnas tillgängliga ytterområden, gamla banmiljöer och sandiga igenväxningsmarker. Motivet är läget mot de dokumenterade danska områdena och möjlig förekomst av liknande miljöer. Detta är en geografisk sökhypotes, inte en prognos för en viss lokal.", "region": "Sverige – föreslaget sökområde", "source_ids": ["dk2017"]},
+      {"kind": "hypothesis", "title": "Värdväxten måste kontrolleras på plats", "text": "Prioritera solbelysta, vindskyddade bestånd av mjölkört (Chamaenerion angustifolium) eller andra dunörter (Epilobium). Bestånd av nattljus (Oenothera) är ett alternativ. Kontrollera både växternas identitet och att beståndet finns kvar under larvperioden; växtförekomsten på föreslagna svenska lokaler har inte kartlagts.", "region": "Sverige – habitatbedömning", "source_ids": ["dk2017", "bfn"]},
+      {"kind": "hypothesis", "title": "Nästa områden att undersöka", "text": "Blekinges kust och södra Öland kan prövas som en andra, mer osäker sökomgång där solvärme, värdväxter och blomresurser sammanfaller. Även skyddade dikeskanter med dunört kan vara värda ett försök. Områdena är redaktionella förslag, utan beräknad spridningsväg eller lokal lämplighetsmodell.", "region": "Sverige – svagare geografisk hypotes", "source_ids": ["dk2017", "bfn"]}
+    ],
+    "limitations": "Svenska områden och växtbestånd har inte inventerats eller modellerats. Dansk och tysk fenologi är utgångspunkter, inte ett fast svenskt schema. Ett inflyget vuxet djur visar inte att arten kan övervintra; larvfynd visar reproduktion men inte varaktig etablering. Svenska hypoteser ritas inte som fyndpunkter på kartan.",
+    "follow_up": "Fotografera djuret och eventuell värdväxt. Anteckna datum, stadium, plats, biotop och växtnamn samt om det gäller ett flygande djur, ägg eller larv. Återbesök kan skilja enstaka besök från återkommande reproduktion."
+  }]
+}

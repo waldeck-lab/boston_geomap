@@ -9,7 +9,7 @@ from datetime import datetime,timezone
 from pathlib import Path
 import requests
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from geomap.watch_store import connect,initialize,source,import_matrix,import_traits,import_occurrences,inventory,profile,normalized
+from geomap.watch_store import connect,initialize,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,inventory,profile,normalized
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--offline',action='store_true');args=ap.parse_args()
@@ -68,6 +68,11 @@ def main():
                 counts=import_occurrences(db,data.get('results',[]),uid,sid)
                 report['occurrences'][name]=dict(**counts,total_matching_query=data.get('count'),sample_limit=300,complete=data.get('endOfRecords',False))
                 print(name,counts,flush=True)
+            report['search_guides']=import_search_guides(db,Path(__file__).resolve().parents[1]/'data/watch/search-guides.json')
+            if taxon_file.exists():
+                name_source='dyntaxa-names-'+hashlib.sha256(taxon_file.read_bytes()).hexdigest()[:16]
+                source(db,name_source,'SLU Artdatabanken / Dyntaxa – svenska namn i lokal taxonomikatalog','https://www.dyntaxa.se/','Taxon names; source attribution','cached snapshot',taxon_file)
+                import_swedish_names(db,taxon_file,name_source)
             report['inventory']=inventory(db)
             db.execute("UPDATE import_runs SET status='complete',completed_at=CURRENT_TIMESTAMP,report_json=? WHERE id=?",(json.dumps(report,ensure_ascii=False),run))
         if db.execute('PRAGMA quick_check').fetchone()[0]!='ok' or db.execute('PRAGMA foreign_key_check').fetchall():raise RuntimeError('Database integrity failure')

@@ -1,10 +1,11 @@
 import csv
 import io
+import json
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
-from geomap.watch_store import initialize,connect,source,import_matrix,import_traits,import_occurrences,profile
+from geomap.watch_store import initialize,connect,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,profile
 
 class WatchStoreTests(unittest.TestCase):
     def setUp(self):
@@ -49,5 +50,26 @@ class WatchStoreTests(unittest.TestCase):
         p=self.root/'bad.csv';p.write_text('SPECIES;Plant alpha\nSpecies alpha;probably\n')
         with self.assertRaises(ValueError):import_matrix(self.db,p,{'Species alpha':1},'fixture')
         self.assertEqual(self.db.execute('PRAGMA foreign_key_check').fetchall(),[])
+
+    def test_guidance_cannot_turn_hypothesis_into_documented_fact(self):
+        p=self.root/'guides.json'
+        guide=dict(scientific_name='Species alpha',sources=[dict(id='s',url='https://example.test')],documented=[],swedish_hypotheses=[dict(kind='hypothesis',source_ids=['s'],title='Test',text='Proposed habitat',region='Sverige')])
+        p.write_text(json.dumps(dict(version='v1',guides=[guide])))
+        for _ in range(2):import_search_guides(self.db,p)
+        self.assertEqual(self.db.execute('SELECT count(*) FROM search_guides').fetchone()[0],1)
+        self.assertEqual(profile(self.db,1)['search_guide']['swedish_hypotheses'][0]['kind'],'hypothesis')
+        guide['swedish_hypotheses'][0]['kind']='documented'
+        p.write_text(json.dumps(dict(version='v2',guides=[guide])))
+        with self.assertRaises(ValueError):import_search_guides(self.db,p)
+        self.assertEqual(self.db.execute('SELECT version FROM search_guides').fetchone()[0],'v1')
+
+    def test_swedish_names_use_exact_species_and_preserve_provenance(self):
+        p=self.root/'names.json';p.write_text(json.dumps(dict(species=[dict(scientific_name='Species alpha',swedish_name='testnamn'),dict(scientific_name='Species beta',swedish_name='fel namn')])))
+        import_swedish_names(self.db,p,'fixture')
+        self.assertEqual(profile(self.db,1)['swedish_name'],'testnamn')
+        self.assertEqual(profile(self.db,1)['swedish_name_source']['source_taxon_name'],'Species alpha')
+        self.db.execute("INSERT INTO candidates(id,scientific_name,role) VALUES(2,'Species gamma','exploratory')")
+        import_swedish_names(self.db,p,'fixture')
+        self.assertIsNone(profile(self.db,2)['swedish_name'])
 
 if __name__=='__main__':unittest.main()
