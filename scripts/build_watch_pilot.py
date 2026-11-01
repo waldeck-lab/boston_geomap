@@ -74,6 +74,14 @@ def main():
                 name_source='dyntaxa-names-'+hashlib.sha256(taxon_file.read_bytes()).hexdigest()[:16]
                 source(db,name_source,'SLU Artdatabanken / Dyntaxa – svenska namn i lokal taxonomikatalog','https://www.dyntaxa.se/','Taxon names; source attribution','cached snapshot',taxon_file)
                 import_swedish_names(db,taxon_file,name_source)
+            overrides=Path(__file__).resolve().parents[1]/'data/watch/swedish-name-overrides.json'
+            name_data=json.loads(overrides.read_text(encoding='utf-8'))
+            for item in name_data['names']:
+                row=db.execute('SELECT id FROM candidates WHERE scientific_name=?',(item['scientific_name'],)).fetchone()
+                if not row:continue
+                sid='sv-name-override-'+str(row['id'])+'-'+name_data['version']
+                source(db,sid,item['attribution'],'','User-supplied taxon name',name_data['version'],overrides)
+                db.execute('INSERT OR REPLACE INTO vernacular_names VALUES(?,?,?,?,?)',(row['id'],item['swedish_name'],'sv',sid,item['scientific_name']))
             report['inventory']=inventory(db)
             db.execute("UPDATE import_runs SET status='complete',completed_at=CURRENT_TIMESTAMP,report_json=? WHERE id=?",(json.dumps(report,ensure_ascii=False),run))
         if db.execute('PRAGMA quick_check').fetchone()[0]!='ok' or db.execute('PRAGMA foreign_key_check').fetchall():raise RuntimeError('Database integrity failure')
