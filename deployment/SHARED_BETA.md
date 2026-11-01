@@ -78,3 +78,41 @@ Old fetches are aborted and checked again before committing results to React sta
 The selected popup uses a React portal inside MapLibre, preserving its scroll
 position on updates. MapLibre hover labels are suppressed while the list is open.
 User list titles/taxon names remain unchanged. New popup text supports sv/en.
+
+## Species documentation register
+Independent SQLite catalogue: stage/documentation/documentation.sqlite.
+The builder scripts/build_documentation.py reads the accepted-species Dyntaxa
+snapshot and the cached NRM index, storing all 3217 species and a row per provider.
+Artfakta links use https://artfakta.se/taxa/<Dyntaxa-ID>/information; this route
+was verified in the rendered Artfakta application. NRM links are taken from its
+actual species index, including scientific-name aliases and updated Latin
+gender endings that differ from historical filenames. No fuzzy matching is used.
+The initial build matched 3175 NRM pages; 42 species have no confirmed indexed
+match and retain an explicit not_indexed status and a null URL.
+Provider rows store match method/name and source provenance; metadata stores
+taxonomy/index hashes and retrieval/build times. Page contents are not copied.
+NRM's provided legacy service is reachable via HTTP; HTTPS was unavailable.
+
+The builder defaults to the saved index. --refresh-index refreshes it. It builds
+a separate temporary DB, validates quick_check and minimum index size, then
+atomically replaces the catalogue. Read API caches include the catalogue file
+revision so updates appear without rebuilding observation data or restarting.
+Do not edit live documentation rows as a workflow: preserve changes in matching
+inputs or add a reviewed override mechanism before introducing manual corrections.
+
+GEOMAP_DOCUMENTATION_DB points only to this beta-stage database.
+GET /geomap-api/documentation/<taxon_id> returns a species and its references.
+GET /geomap-api/documentation?taxon_ids=... returns a batch (up to 2000 IDs).
+Both are public read-only taxonomy/reference metadata, unrelated to user lists.
+Cell taxa responses are enriched by a batched read from the same catalogue.
+Private list authorization still runs before those taxa can be returned.
+Only recognized provider hosts and species URL patterns are exposed.
+
+The shared SpeciesReferences component displays nrm/artfakta next to each
+scientific name in the selected-cell popup and retained controls list. Anchors
+use target=_blank and rel=noopener noreferrer; clicking does not toggle the
+cell. Missing references are disabled with a translated explanation.
+Frontend tests: npm run test:documentation; existing i18n and geomap tests remain.
+Database backups/release packaging should include stage/documentation and its
+source snapshots alongside the observation store; source code does not embed URLs
+for individual taxa, authentication details or SQLite database binaries.

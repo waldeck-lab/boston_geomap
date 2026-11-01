@@ -15,6 +15,7 @@ from flask import jsonify, request, Response
 from werkzeug.exceptions import BadRequest, NotFound, Forbidden
 
 from geomap.shared_store import connect, BASE_ZOOM
+from geomap.documentation import read_references, version as documentation_version
 from geomap.tiles import tile_xy_to_bbox
 
 
@@ -25,6 +26,11 @@ def register_shared_api(app):
     path=Path(path)
     if not path.resolve().is_relative_to(Path('/proj/boston/beta/wcr/stage')):
         raise RuntimeError('Shared database must be inside beta stage')
+    documentation_path=os.environ.get('GEOMAP_DOCUMENTATION_DB')
+    if documentation_path and not Path(documentation_path).resolve().is_relative_to(Path('/proj/boston/beta/wcr/stage')):
+        raise RuntimeError('Documentation database must be inside beta stage')
+    from server.documentation_api import register_documentation_api
+    register_documentation_api(app,documentation_path)
     cache=OrderedDict()
     cache_size=0
     cache_lock=threading.RLock()
@@ -89,6 +95,7 @@ def register_shared_api(app):
         if endpoint.startswith('taxon-lists/defaults'):return None
         if endpoint=='lists/from-observed-csv' and request.method=='POST':return None
         if re.fullmatch(r'lists/[^/]+/csv',endpoint) and request.method in {'GET','HEAD'}:return None
+        if (endpoint=='documentation' or re.fullmatch(r'documentation/[0-9]+',endpoint)) and request.method in {'GET','HEAD'}:return None
         if endpoint=='jobs/status':
             state=imported_status()
             return jsonify(ok=True,busy=state.get('busy',False),current_job=None,last_job=None,data_import=state)
@@ -111,7 +118,7 @@ def register_shared_api(app):
                     return jsonify(ok=True,lists=[dict(r) for r in rows],default_list_id='redlisted-lepidoptera',data_import=imported_status())
                 chosen=selected(db)
                 revision=db.execute("SELECT value FROM metadata WHERE key='revision'").fetchone()[0]
-                key=(chosen['content_hash'],revision,endpoint,
+                key=(chosen['content_hash'],revision,endpoint,documentation_version(documentation_path) if endpoint in {'cell/taxa','cell/taxa_window'} else None,
                      tuple(sorted((k,v) for k,v in request.args.items() if k!='list_id')))
                 with cache_lock:
                     payload=cache.get(key)
@@ -170,6 +177,9 @@ def register_shared_api(app):
                            JOIN taxa t ON t.taxon_id=c.taxon_id WHERE l.list_id=? AND '''+raw_where+
                            ' GROUP BY c.taxon_id ORDER BY observations_count DESC LIMIT ?',bindings+[limit]).fetchall()
                         result=[dict(r) for r in rows]
+                if endpoint in {'cell/taxa','cell/taxa_window'}:
+                    references=read_references(documentation_path,[row['taxon_id'] for row in result])
+                    for row in result:row['documentation']=references.get(row['taxon_id'],{})
                 payload=app.json.dumps(result).encode()
                 # Exact points are never served from a cache before authorization.
                 if endpoint!='cell/observations' and len(payload)<=2*1024*1024:
