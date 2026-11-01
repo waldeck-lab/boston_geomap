@@ -116,3 +116,19 @@ Frontend tests: npm run test:documentation; existing i18n and geomap tests remai
 Database backups/release packaging should include stage/documentation and its
 source snapshots alongside the observation store; source code does not embed URLs
 for individual taxa, authentication details or SQLite database binaries.
+
+## Email account identity and recovery
+The beta gateway now uses email-keyed accounts and optional editable display
+names. Existing numeric account IDs and private list ownership are retained.
+Legacy usernames work until their owner binds and verifies an email. New users
+must verify their mailbox before a full session is issued. A temporary recovery
+password gives only a restricted password-change session; GeoMap introspection
+returns unauthenticated until the password has been replaced and the user signs
+in normally. Completing a reset revokes older sessions.
+
+Migration, private SMTP configuration and rollback are documented in the WCR
+checkout at backend/BETA_ACCOUNTS.md. The migration script is versioned there as
+backend/scripts/migrate_beta_email_accounts.py. Neither SMTP secrets nor the
+accounts database are tracked. Missing SMTP credentials disable mail actions but
+preserve legacy login. The identity integration test covers private list denial
+during reset and retained ownership after recovery.
