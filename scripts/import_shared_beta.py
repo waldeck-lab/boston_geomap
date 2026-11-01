@@ -26,7 +26,8 @@ from geomap.shared_store import connect, initialize, register_list, apply_rows, 
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--directory',type=Path,required=True)
-    parser.add_argument('--owner-id',type=int,required=True)
+    parser.add_argument('--owner-id',type=int)
+    parser.add_argument('--list-id',action='append',help='Import missing coverage for an existing list; never alter membership')
     parser.add_argument('--date-from',default='2000-01-01')
     parser.add_argument('--date-to',required=True)
     args=parser.parse_args()
@@ -49,12 +50,19 @@ def main():
             tmp=status_path.with_suffix('.tmp');tmp.write_text(json.dumps(progress));tmp.replace(status_path)
 
     initialize(store)
+    if not args.list_id and args.owner_id is None:
+        parser.error('--owner-id is required when seeding the demonstration lists')
     definitions=[('redlisted-lepidoptera','Rödlistade fjärilar i Sverige',
         ROOT/'stage/lists/defaults/redlisted-lepidoptera/redlisted_lepidoptera.csv',None),
         ('missing-jonas','Mina saknade arter',ROOT/'stage/lists/missing_species.csv',args.owner_id)]
+    if args.list_id:
+        definitions=[(list_id,None,None,None) for list_id in dict.fromkeys(args.list_id)]
     for list_id,title,path,owner in definitions:
         with connect(store,readonly=True) as db:
             exists=db.execute('SELECT 1 FROM lists WHERE id=?',(list_id,)).fetchone()
+        if path is None:
+            if not exists:raise RuntimeError('Requested list does not exist')
+            continue
         if not exists:
             register_list(store,list_id,title,path,owner)
         else:
