@@ -127,6 +127,11 @@ def import_species_supplements(db,path):
         if set(p['notes'])!={'habitat','hosts','search','locations','uncertainties'}:raise ValueError('Supplement categories must remain separate')
         if any(not isinstance(v,list) or any(not isinstance(x,str) for x in v) for v in p['notes'].values()):raise ValueError('Only textual source notes; no observation import')
         if p['summary_status']=='section_inventory_only' and any(p['notes'].values()):raise ValueError('Inventory is not a reviewed biological summary')
+        for record in p.get('additional_records',[]):
+            if record.get('country')=='SE' or 'latitude' in record or 'longitude' in record:raise ValueError('Literature examples must remain foreign text records, not map coordinates')
+            date.fromisoformat(record['event_date'])
+            u=urlsplit(record['source_url'])
+            if u.scheme!='https' or not u.hostname or not record['source_title'] or not record['locality']:raise ValueError('Literature example requires a source and locality')
         prepared.append((row['id'],data['version'],json.dumps(p,ensure_ascii=False)))
     db.executemany('INSERT OR REPLACE INTO species_supplements VALUES(?,?,?)',prepared)
     return len(prepared)

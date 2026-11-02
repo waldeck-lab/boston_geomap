@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v1",
+  "version": "2026-11-02-v2",
   "profiles": [
     {
       "notes": {
@@ -52,7 +52,27 @@
       "source_sha256": "615aa953d6ff03baf6bb5d647c756284a58e3584f54cfaa02838c6c9345b78b2",
       "checked_at": "2026-11-02",
       "source_url": "https://lepiforum.org/wiki/page/Parectopa_robiniella",
-      "summary_status": "editorial_summary"
+      "summary_status": "editorial_summary",
+      "additional_records": [
+        {
+          "country": "DK",
+          "source_url": "https://www.researchgate.net/publication/400572677_Data_vedrorende_nogle_nye_danske_smasommerfugle",
+          "note": "Publicerat originalbelägg från Bornholm. Uppgiften anger inga exakta koordinater och har inte lagts till som kartpunkt.",
+          "event_date": "2024-09-24",
+          "host": "Robinia pseudoacacia",
+          "locality": "Balka och V. Sømarken, Bornholm",
+          "observer": "Per Falck",
+          "life_stage": "Larver",
+          "source_title": "Falck (2026): Data vedrørende nogle nye danske småsommerfugle. Entomologiske Meddelelser 92(1–2), s. 31–32; fynduppgift s. 31, figur 4 s. 32.",
+          "abundance": "I antal (originalrapportens formulering)"
+        }
+      ],
+      "distribution_review": {
+        "locality": "Köpenhamn",
+        "note": "Uppgiften om fynd i Köpenhamn har inte kunnat bekräftas i den granskade litteraturen eller i de riktade publika fyndkontrollerna. Detta utesluter inte opublicerade fynd.",
+        "status": "unconfirmed",
+        "checked_at": "2026-11-02"
+      }
     },
     {
       "notes": {

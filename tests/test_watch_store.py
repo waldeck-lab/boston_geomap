@@ -98,4 +98,16 @@ class WatchStoreTests(unittest.TestCase):
         with self.assertRaises(ValueError):import_species_supplements(self.db,p)
         self.assertEqual(self.db.execute('SELECT version FROM species_supplements').fetchone()[0],'v1')
 
+    def test_literature_record_requires_citation_and_cannot_create_map_coordinates(self):
+        p=self.root/'records.json'
+        record=dict(locality='Bornholm',country='DK',event_date='2024-09-24',source_url='https://example.test/original',source_title='Original report')
+        item=dict(scientific_name='Species alpha',source_url='https://lepiforum.org/wiki/page/Species_alpha',summary_status='editorial_summary',notes=dict(habitat=[],hosts=[],search=[],locations=[],uncertainties=[]),additional_records=[record])
+        p.write_text(json.dumps(dict(version='v1',profiles=[item])))
+        import_species_supplements(self.db,p)
+        self.assertEqual(profile(self.db,1)['supplement']['additional_records'][0]['event_date'],'2024-09-24')
+        self.assertEqual(self.db.execute('SELECT count(*) FROM occurrences').fetchone()[0],0)
+        record['latitude']=55
+        p.write_text(json.dumps(dict(version='v2',profiles=[item])))
+        with self.assertRaises(ValueError):import_species_supplements(self.db,p)
+
 if __name__=='__main__':unittest.main()
