@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v3",
+  "version": "2026-11-02-v4",
   "guides": [
     {
       "scientific_name": "Proserpinus proserpina",
@@ -467,6 +467,105 @@
       ],
       "limitations": "Svenska sökplatser och värdväxtbestånd har inte verifierats. Utländska flygtider är försöksunderlag. Inga hypoteser ritas som fyndpunkter. Följ tillträdes- och insamlingsregler.",
       "follow_up": "Dokumentera datum, stadium, metod, biotop och eventuell födoväxt. Fotografera tydligt och be om expertkontroll. Följ upp vuxenfynd med eftersök av tidigare stadier."
+    },
+    {
+      "scientific_name": "Nemophora fasciella",
+      "swedish_name": "",
+      "review_status": "Redaktionellt utkast – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "feike2022",
+          "title": "Feike (2022): Erstnachweis … in Mecklenburg-Vorpommern, Virgo 25: 11–14",
+          "url": "https://www.entomologie-mv.de/wp-content/uploads/2022_virgo_25_kl.pdf#page=11"
+        },
+        {
+          "id": "wood2018",
+          "title": "Simon Wood: A garden breeding record, Essex Moth Group Newsletter 2018, s. 11",
+          "url": "https://www.essexfieldclub.org.uk/resource/essex_moth_group_newsletter_2018.pdf#page=11"
+        },
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Nemophora fasciella, biologi och larvvärdväxter",
+          "url": "https://lepiforum.org/wiki/page/Nemophora_fasciella"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Hermannshagen-Heide – återkommande fynd",
+          "text": "Feike rapporterar fjärilar i juli 2018, 2020 och 2021 i Vorpommern-Rügen, nära Östersjökusten. Artbestämningen stöddes av genitalundersökning. Stickprovsfynden visar återkomst på lokalen, men ingen kvantifierad expansion.",
+          "region": "Mecklenburg-Vorpommern, Tyskland",
+          "source_ids": [
+            "feike2022"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "habitat",
+          "title": "Ruderatmosaik med näringsrika fläckar",
+          "text": "Lokalen var ett tidigare militärt område med öppningar i tallskog på sandmark, men också näringsrik påförd jord och fyllnadsmassor. Bosyska växte glest vid fyndplatsen och rikligare cirka 250 meter bort. Enbart etiketten ”torr sandmark” missar därför en viktig del av miljön.",
+          "region": "Mecklenburg-Vorpommern, Tyskland",
+          "source_ids": [
+            "feike2022"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "habitat",
+          "title": "Även en varm trädgård kan vara relevant",
+          "text": "Wood beskriver äggläggning vid bosyska i ett varmt, skyddat hörn av en liten halvurban trädgård i Heybridge. Observationen visar att sökandet inte behöver begränsas till stora ruderatmarker; fullbordad larvutveckling dokumenteras inte i rapporten.",
+          "region": "Essex, England",
+          "source_ids": [
+            "wood2018"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "search",
+          "title": "Vuxna fjärilar – dagspaning i juni–juli",
+          "text": "I den nordtyska rapporten sågs fjärilar på eftermiddagar i juli, länge sittande på Jacobaea vulgaris och Achillea millefolium. Dessa är dokumenterade blomresurser för vuxna, inte belagda larvvärdväxter.",
+          "region": "Mecklenburg-Vorpommern, Tyskland",
+          "source_ids": [
+            "feike2022"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "search",
+          "title": "Spana också direkt på bosyska",
+          "text": "Wood följde en hona som lade ägg nära de övre bladen den 12 juni under en varm dag. Dagspaning vid värdväxten kan därför komplettera blomspaning. Datumet är ett enskilt engelskt exempel, inte en svensk flygkalender.",
+          "region": "Essex, England",
+          "source_ids": [
+            "wood2018"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Värdväxt först – varm ruderatmark i söder",
+          "text": "Pröva vindskyddade by- och gårdskanter samt tillgängliga gamla ban- och industrimiljöer i södra och östra Skåne eller längs Blekingekusten, där bosyska verkligen har verifierats. Prioritera en mosaik av värdväxt, blomresurser och ostörd markförna framför en viss jordart. Områdesvalet är ett redaktionellt sökförslag utifrån närbelägna utländska miljöer.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "feike2022",
+            "wood2018"
+          ]
+        },
+        {
+          "kind": "hypothesis",
+          "title": "Kombinera sommarspaning med återbesök",
+          "text": "Börja med dagbesök i juni–juli vid bosyska och omgivande blommor. Återbesök värdväxtbestånd på hösten eller våren för larvsäckar. Svensk fenologi och lämpliga bestånd har inte fastställts; detta är ett försöksupplägg, inte en prognos.",
+          "region": "Sverige – föreslagen sökmetod",
+          "source_ids": [
+            "feike2022",
+            "wood2018",
+            "lepi"
+          ]
+        }
+      ],
+      "limitations": "Svenska växtbestånd och lokaler har inte verifierats. Återkommande vuxenfynd är inte i sig bevis på lokal reproduktion; Feikes larveftersök gav inget fynd. Ett nytt regionalt belägg bevisar inte expansion, och underlaget motiverar ingen automatisk flagga som högintressant. Sökförslagen ritas inte som fyndpunkter.",
+      "follow_up": "Dokumentera datum, stadium, värdväxt och habitat samt tydliga bilder av fjäril eller larvsäck. Be om expertkontroll av Nemophora-bestämningen; blomval eller ett allmänt färgintryck räcker inte. Skilj vuxnas blomresurser från larvens värdväxt."
     }
   ]
 }

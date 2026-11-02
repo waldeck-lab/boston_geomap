@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v4",
+  "version": "2026-11-02-v5",
   "profiles": [
     {
       "notes": {
@@ -538,11 +538,21 @@
     },
     {
       "notes": {
-        "uncertainties": [],
-        "locations": [],
-        "hosts": [],
-        "habitat": [],
-        "search": []
+        "habitat": [
+          "Källexemplen omfattar ruderatmarker vid gruv-, järnvägs- och tidigare militärmark samt ett stenbrott. Det är exempel på förekomstmiljöer, inte ett krav på en viss markanvändning."
+        ],
+        "hosts": [
+          "Bosyska (Ballota nigra) anges som säkert viktig larvvärdväxt. Uppgifterna om Marrubium vulgare och Clinopodium vulgare ifrågasätts uttryckligen; brännässlor (Urtica) ska inte räknas som larvvärdväxter."
+        ],
+        "search": [
+          "Höst och vår: sök vid marken bland bosyska efter platta, långsträckta larvsäckar med insnörd mitt. Säckfynd behöver artbestämmas."
+        ],
+        "locations": [
+          "St. Margarethen, Burgenland: stenbrott, habitatfoto 6 juni 2013. Reichwalde, Sachsen: ruderatmark vid dagbrott, habitatfoto 28 juni 2014. Biesenhorster Sand, Berlin: tidigare militär- och järnvägsmark, habitatfoto 2 augusti 2017."
+        ],
+        "uncertainties": [
+          "Värdväxtens förekomst innebär inte att fjärilen finns där. Habitatbildernas datum är inte självständiga daterade fjärilsfynd."
+        ]
       },
       "availability": {
         "hosts": true,
@@ -550,10 +560,10 @@
         "dated_captions": true
       },
       "scientific_name": "Nemophora fasciella",
-      "source_sha256": "e1eff3052379366510799d2070ba3d34dfd199b23d8ebcdfaccbf5d13476b1ef",
+      "source_sha256": "1ff9cecb51df0b3cb9ec8685f1eea7d0991d9d447ab803ea268af3d7c2e1976b",
       "checked_at": "2026-11-02",
       "source_url": "https://lepiforum.org/wiki/page/Nemophora_fasciella",
-      "summary_status": "section_inventory_only"
+      "summary_status": "editorial_summary"
     },
     {
       "notes": {
