@@ -5,7 +5,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
-from geomap.watch_store import initialize,connect,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,import_expansion_assessments,profile
+from geomap.watch_store import initialize,connect,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,import_expansion_assessments,import_species_supplements,profile
 
 class WatchStoreTests(unittest.TestCase):
     def setUp(self):
@@ -83,5 +83,19 @@ class WatchStoreTests(unittest.TestCase):
         for _ in range(2):import_expansion_assessments(self.db,p)
         self.assertTrue(profile(self.db,1)['expansion']['high_interest'])
         self.assertEqual(self.db.execute('SELECT count(*) FROM expansion_assessments').fetchone()[0],1)
+
+    def test_supplements_keep_habitat_and_localities_separate_without_map_import(self):
+        p=self.root/'facts.json'
+        item=dict(scientific_name='Species alpha',source_url='https://lepiforum.org/wiki/page/Species_alpha',summary_status='editorial_summary',notes=dict(habitat=['Habitat description'],hosts=[],search=[],locations=['Named locality; habitat photo'],uncertainties=[]))
+        p.write_text(json.dumps(dict(version='v1',profiles=[item])))
+        for _ in range(2):import_species_supplements(self.db,p)
+        supplement=profile(self.db,1)['supplement']
+        self.assertEqual(supplement['notes']['habitat'],['Habitat description'])
+        self.assertEqual(supplement['notes']['locations'],['Named locality; habitat photo'])
+        self.assertEqual(self.db.execute('SELECT count(*) FROM occurrences').fetchone()[0],0)
+        item['summary_status']='section_inventory_only'
+        p.write_text(json.dumps(dict(version='v2',profiles=[item])))
+        with self.assertRaises(ValueError):import_species_supplements(self.db,p)
+        self.assertEqual(self.db.execute('SELECT version FROM species_supplements').fetchone()[0],'v1')
 
 if __name__=='__main__':unittest.main()

@@ -9,7 +9,7 @@ from datetime import datetime,timezone
 from pathlib import Path
 import requests
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from geomap.watch_store import connect,initialize,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,import_expansion_assessments,inventory,profile,normalized
+from geomap.watch_store import connect,initialize,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,import_expansion_assessments,import_species_supplements,inventory,profile,normalized
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--offline',action='store_true');args=ap.parse_args()
@@ -70,6 +70,7 @@ def main():
                 print(name,counts,flush=True)
             report['search_guides']=import_search_guides(db,Path(__file__).resolve().parents[1]/'data/watch/search-guides.json')
             report['expansion_assessments']=import_expansion_assessments(db,Path(__file__).resolve().parents[1]/'data/watch/expansion-evidence.json')
+            report['species_supplements']=import_species_supplements(db,Path(__file__).resolve().parents[1]/'data/watch/lepiforum-facts.json')
             if taxon_file.exists():
                 name_source='dyntaxa-names-'+hashlib.sha256(taxon_file.read_bytes()).hexdigest()[:16]
                 source(db,name_source,'SLU Artdatabanken / Dyntaxa – svenska namn i lokal taxonomikatalog','https://www.dyntaxa.se/','Taxon names; source attribution','cached snapshot',taxon_file)

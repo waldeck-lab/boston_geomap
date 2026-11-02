@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS candidate_assessments(candidate_id INTEGER PRIMARY KE
 CREATE TABLE IF NOT EXISTS search_guides(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),version TEXT NOT NULL,guide_json TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS vernacular_names(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),name TEXT NOT NULL,language TEXT NOT NULL CHECK(language='sv'),source_id TEXT NOT NULL REFERENCES sources(id),source_taxon_name TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS expansion_assessments(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),version TEXT NOT NULL,assessment_json TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS species_supplements(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),version TEXT NOT NULL,supplement_json TEXT NOT NULL);
+INSERT OR IGNORE INTO schema_versions VALUES(5,'Separate cited habitat, host, search and locality supplements');
 INSERT OR IGNORE INTO schema_versions VALUES(4,'Cited range-expansion assessments and evidence-based interest flag');
 INSERT OR IGNORE INTO schema_versions VALUES(3,'Cited search guidance separate from Swedish habitat hypotheses');
 INSERT OR IGNORE INTO schema_versions VALUES(2,'Source-screened candidate assessments and separate Swedish references');
@@ -114,6 +116,21 @@ def import_occurrences(db,records,uid,source_id):
         if occurrence['candidate_id']!=uid:rejected+=1;continue
         db.execute('INSERT OR IGNORE INTO occurrence_records VALUES(?,?,?,?,?)',('GBIF',record,occurrence['id'],r['datasetKey'],original));accepted+=1
     return dict(accepted_records=accepted,rejected_records=rejected)
+def import_species_supplements(db,path):
+    data=json.loads(Path(path).read_text(encoding='utf-8'));prepared=[]
+    for p in data['profiles']:
+        row=db.execute('SELECT id FROM candidates WHERE scientific_name=?',(p['scientific_name'],)).fetchone()
+        if not row:raise ValueError('Unknown supplement species')
+        url=urlsplit(p['source_url'])
+        if url.scheme!='https' or url.hostname!='lepiforum.org' or not url.path.startswith('/wiki/page/'):raise ValueError('Invalid supplement source')
+        if p['summary_status'] not in {'editorial_summary','section_inventory_only'}:raise ValueError('Invalid summary status')
+        if set(p['notes'])!={'habitat','hosts','search','locations','uncertainties'}:raise ValueError('Supplement categories must remain separate')
+        if any(not isinstance(v,list) or any(not isinstance(x,str) for x in v) for v in p['notes'].values()):raise ValueError('Only textual source notes; no observation import')
+        if p['summary_status']=='section_inventory_only' and any(p['notes'].values()):raise ValueError('Inventory is not a reviewed biological summary')
+        prepared.append((row['id'],data['version'],json.dumps(p,ensure_ascii=False)))
+    db.executemany('INSERT OR REPLACE INTO species_supplements VALUES(?,?,?)',prepared)
+    return len(prepared)
+
 def import_expansion_assessments(db,path):
     data=json.loads(Path(path).read_text(encoding='utf-8'));prepared=[]
     for a in data['assessments']:
@@ -155,6 +172,8 @@ def profile(db,uid):
     row=db.execute('SELECT * FROM candidates WHERE id=?',(uid,)).fetchone()
     if not row:return None
     out=dict(row)
+    supplement=db.execute('SELECT supplement_json FROM species_supplements WHERE candidate_id=?',(uid,)).fetchone()
+    out['supplement']=json.loads(supplement[0]) if supplement else None
     expansion=db.execute('SELECT assessment_json FROM expansion_assessments WHERE candidate_id=?',(uid,)).fetchone()
     out['expansion']=json.loads(expansion[0]) if expansion else None
     vernacular=db.execute('SELECT name,source_id,source_taxon_name FROM vernacular_names WHERE candidate_id=?',(uid,)).fetchone()

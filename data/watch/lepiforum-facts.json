@@ -1,0 +1,1054 @@
+{
+  "version": "2026-11-02-v1",
+  "profiles": [
+    {
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "En historisk källa återger larvfynd i torra svampar på skogsmark."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Den historiska misstanken om föda under gamla tallkottar är en hypotes, inte bekräftad larvföda. Underlaget fastställer inte primär biotop."
+        ]
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Blastobasis phycidella",
+      "source_sha256": "e0b16bf8c9f3347806680981446a08493cbd10f9f610fe14c528b57fbacfae32",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Blastobasis_phycidella",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "habitat": [
+          "Minor dokumenteras på robinia i planteringar, på ungt uppslag och i trädbevuxna miljöer; även ett skuggigt läge finns beskrivet."
+        ],
+        "hosts": [
+          "Robinia pseudoacacia anges som artens europeiska värdväxt."
+        ],
+        "search": [
+          "Sök efter tydliga minor på bladens ovansida. Macrosaccus robiniella kan finnas på samma träd och behöver skiljas ut."
+        ],
+        "locations": [
+          "Tyskland: Hildesheim, habitat dokumenterat 1 september 2018.",
+          "Tyskland: Mardorf vid Steinhuder Meer, minfynd 2 augusti 2023; Seelze, minfynd 5 augusti 2023."
+        ],
+        "uncertainties": [
+          "En namngiven minfyndsplats är ett lokalt belägg, inte ett mått på artens täthet eller expansionstakt."
+        ]
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Parectopa robiniella",
+      "source_sha256": "615aa953d6ff03baf6bb5d647c756284a58e3584f54cfaa02838c6c9345b78b2",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Parectopa_robiniella",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Thysanoplusia orichalcea",
+      "source_sha256": "cb0a0e88747af3f940ba95aa1407249bf7ce4a345efae5c67c1beeb52b41937f",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Thysanoplusia_orichalcea",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Phyllonorycter messaniella",
+      "source_sha256": "605f38bdaf57386df4cab08b347c32cba6b13e2a52caa10301c1976e73bf1f9e",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Phyllonorycter_messaniella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Isotrias rectifasciana",
+      "source_sha256": "46d764c0b599af682d5e14a44a14425fad1eea5a5a3ac01ed4fab817027bba9f",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Isotrias_rectifasciana",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Rhagades pruni",
+      "source_sha256": "0d8a00b1b98d7ca58eed59f10cfd3220c2af0637c3145069dca9417934e54d5a",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Rhagades_pruni",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "habitat": [
+          "Fuktängar, blåtåteläng och andra ängsmiljöer finns bland de dokumenterade habitattyperna."
+        ],
+        "hosts": [
+          "Lotus pedunculatus framhålls som central europeisk födoväxt. Lotus corniculatus och ytterligare Lotus-arter används också regionalt."
+        ],
+        "search": [],
+        "locations": [
+          "Tyskland: Elmpt-Lüsekamp, habitat dokumenterat 21 juni 2009.",
+          "Tyskland: Oerreler Moor, habitat dokumenterat 4 juli 2014."
+        ],
+        "uncertainties": [
+          "Värdväxternas relativa betydelse varierar mellan regioner. Uppgifterna fastställer inte ett svenskt primärhabitat."
+        ]
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Zygaena trifolii",
+      "source_sha256": "c7a3b9b46539334280687db8bfa36a83f7859bd89e90b34ea4b9ad3cdb0db216",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Zygaena_trifolii",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "habitat": [
+          "Liggande ekved med vedlevande svampar samt ekskog finns dokumenterade."
+        ],
+        "hosts": [
+          "Larvgångar har observerats i anslutning till vedlevande svamp och murken bark. Exakt födosubstrat är oklart."
+        ],
+        "search": [],
+        "locations": [
+          "Schweiz: Cornaux, ved- och svampmiljö dokumenterad 30 mars 2008.",
+          "Schweiz: Le Landeron, skogsmiljö dokumenterad 3 mars 2007."
+        ],
+        "uncertainties": [
+          "Det är inte klarlagt om larven äter ved/bark, mycel, svampvävnad eller en kombination. Svampen ska därför inte registreras som säker huvudföda."
+        ]
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Metalampra italica",
+      "source_sha256": "06382ec5edca84f2b7638ad4e06a31bcdce958b88d56e4ea1e939ff492f033e7",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Metalampra_italica",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Scopula emutaria",
+      "source_sha256": "878a9289ac0c306409c1516df24a4fb725101e8efa8dc182f97eb2b5813e8f79",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Scopula_emutaria",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Gastropacha populifolia",
+      "source_sha256": "03c8103672e73e73004a235340655268f1c84eb16c964fa017dffd8e5851f9a6",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Gastropacha_populifolia",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Odonestis pruni",
+      "source_sha256": "8ed744e94119ef3b58c3b84be31ba8d5434b7d2b9b06ab1e6dbbf99be4a365ae",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Odonestis_pruni",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "habitat": [
+          "Larvhabitat dokumenteras i övergivna odlingsmiljöer, fuktiga högörtsbräm vid diken och ruderatmark på jordupplag."
+        ],
+        "hosts": [
+          "Epilobium hirsutum anges vid flera larv- och äggfynd. Ett annat larvhabitat har Epilobium tetragonum/lamyi."
+        ],
+        "search": [
+          "Växtbestånd och gnagspår är användbara sökingångar; håll ägg-, larv- och fjärilsfynd åtskilda."
+        ],
+        "locations": [
+          "Tyskland: Sehnde vid Zweigkanal Hildesheim, larvfynd 6 augusti 2017.",
+          "Tyskland: Landau in der Pfalz, äggfynd 23 maj 2019."
+        ],
+        "uncertainties": [
+          "Exemplen visar använda utländska miljöer, inte vilken svensk biotop som är viktigast."
+        ]
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Proserpinus proserpina",
+      "source_sha256": "886992efefd9334702ef692b93c3be3c4a78bc85ed8df8b59fb6610f61ed1f20",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Proserpinus_proserpina",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Drymonia obliterata",
+      "source_sha256": "c8b5fc7e0492ea6f80bec8c954aa823ba42bec2a357529a2af497090339d0f97",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Drymonia_obliterata",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Ptilodon cucullina",
+      "source_sha256": "4ba15f8b20519af1b1d0074f293a67eda0595fcefd5bd46358cbaefe2c952ea0",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Ptilodontella_cucullina",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "habitat": [
+          "Slån- och hagtornshäckar är dokumenterade livsmiljöer. Ett larvhabitat består av hagtorn på gammal upplagsmark."
+        ],
+        "hosts": [
+          "Slån (Prunus spinosa) och hagtorn (Crataegus monogyna) är knutna till dokumenterade larvfynd och uppfödningar."
+        ],
+        "search": [
+          "Fjärilar kan eftersökas vid häckarna under milda vinternätter."
+        ],
+        "locations": [
+          "Tyskland: Plau am See, vuxen fjäril 11 mars 2011.",
+          "Tyskland: Glentorf, habitat dokumenterat 16 mars 2017; Sehnde, larvhabitat 19 maj 2019."
+        ],
+        "uncertainties": [
+          "Larverna kan enligt Lepiforums diagnos inte säkert skiljas från Theria rupicapraria enbart på utseendet. Odlings- och kläckningsdatum är inte flygdatum i naturen."
+        ]
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Theria primaria",
+      "source_sha256": "646175ceb34f6e7244ef5892350d50a2ebc6648f342df96fa6e7daea7561abc1",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Theria_primaria",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "habitat": [
+          "Torra skogsbryn, angränsande ängar och mindre gläntor med rikligt björnbär. Larvhabitat dokumenteras även längs björnbärsövervuxna skogsvägar."
+        ],
+        "hosts": [
+          "I Centraleuropa anges björnbär (Rubus fruticosa-gruppen) och blåhallon (Rubus caesius)."
+        ],
+        "search": [
+          "Lepiforum beskriver larvsök på björnbär i maj i de aktuella centraleuropeiska miljöerna."
+        ],
+        "locations": [
+          "Tyskland: Ettenheimweiler, larvhabitat dokumenterat 27 juni 2015.",
+          "Tyskland: Emmendingen-Tennenbach, larvhabitat dokumenterat 28 juni 2015."
+        ],
+        "uncertainties": [
+          "Äggläggning, larvutveckling och övervintring varierar regionalt. Ett centraleuropeiskt sökfönster är inte verifierat för Sverige."
+        ]
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Brenthis daphne",
+      "source_sha256": "a482cba46e56a9cabfc94061ff029e96ac432358d6c42f1d9591f05f2e3c8995",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Brenthis_daphne",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "habitat": [
+          "Murgrönshäckar, murgrönstäckta murar och trädgårdsmiljöer är dokumenterade."
+        ],
+        "hosts": [
+          "Hedera helix anges som väl belagd larvföda."
+        ],
+        "search": [
+          "Sök på murgröna; källan beskriver förpuppning i ett hopdraget blad."
+        ],
+        "locations": [
+          "Tyskland: Falkensee-Falkenhöh, habitat dokumenterat 21 september 2015.",
+          "Tyskland: München-Harlaching, habitatfoto 30 mars 2025."
+        ],
+        "uncertainties": [
+          "Habitatfotots datum är inte ett förstafynd eller ett dokumenterat etableringsår."
+        ]
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Clepsis dumicolana",
+      "source_sha256": "e67098dd1758d48ff85cb670ee133e9d4dbbfb16925180ae06f4a220e5a938fd",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Clepsis_dumicolana",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "habitat": [
+          "Larver och ägg dokumenteras i malvarika ängsmiljöer. Andra exempel omfattar trädgårdsmiljöer och återställd grustäkt."
+        ],
+        "hosts": [
+          "Malvaväxter dominerar den europeiska larvfödan. Bland angivna växter finns Malva moschata, Malva alcea, Malva sylvestris och Alcea rosea."
+        ],
+        "search": [
+          "Sök efter larvernas sammanvävda bladskydd och ägg på värdväxterna."
+        ],
+        "locations": [
+          "Tyskland: Rheinstetten-Neuburgweier, ägg och larver dokumenterade 8 september 2004.",
+          "Schweiz: Bolligen vid Bern, larvhabitat 21 september 2008."
+        ],
+        "uncertainties": [
+          "Födouppgifter från andra världsdelar får inte automatiskt behandlas som europeiska värdväxter."
+        ]
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Carcharodus alceae",
+      "source_sha256": "f0139d8667a6f86e3958f4b5ece0dfec3d99cd4f0d8a375230e5fa42bad6ff04",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Carcharodus_alceae",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Pyronia tithonus",
+      "source_sha256": "e97c02907ded7473b2fc32a7aea66d7b81043625f8ab3c6b23ef4d2207d445c5",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Pyronia_tithonus",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Euplagia quadripunctaria",
+      "source_sha256": "a18483fb605e0eac419846844906337a599423d46de80b91664cee3df4dd5d49",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Euplagia_quadripunctaria",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Aleucis distinctata",
+      "source_sha256": "2b662b3afecb4c1f013e2bd9521b4c835348ef970409c0cd23afaf33315ee72a",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Aleucis_distinctata",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Horisme radicaria",
+      "source_sha256": "edffb5c3abaf062354be0d96619402a0182de62bfcd4aba6929c5f700c6eb5b3",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Horisme_radicaria",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Nemophora fasciella",
+      "source_sha256": "e1eff3052379366510799d2070ba3d34dfd199b23d8ebcdfaccbf5d13476b1ef",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Nemophora_fasciella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Adela violella",
+      "source_sha256": "f1cb9367e81a4348da4bb3a41f15f062c459aaf89e13fb80abd78de53ae598d9",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Adela_violella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Calybites quadrisignella",
+      "source_sha256": "52d1935c5f0d646d3112f62f733caeb638dd2083736dc02e5e6f7876b59ae672",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Calybites_quadrisignella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Phyllonorycter muelleriella",
+      "source_sha256": "d28a885760214bb8626becbd5e2b8b48f9fba6ecec73bc8cdf492050e2921f9d",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Phyllonorycter_muelleriella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "habitat": [
+          "Blåeldsbestånd och mager gräsmark finns dokumenterade som habitat."
+        ],
+        "hosts": [
+          "Blåeld (Echium vulgare) anges som larvföda, jämte ytterligare en Echium-taxon i artens vidare utbredning."
+        ],
+        "search": [
+          "Granska blåeldsbestånd. Källan diskuterar fynd i blomdelen och uppgifter om stamminering."
+        ],
+        "locations": [
+          "Belgien: Oostduinkerke, habitat dokumenterat 13 september 2017.",
+          "Tyskland: Hannover-Kugelfangtrift, habitat under larvperioden dokumenterat 23 juli 2020."
+        ],
+        "uncertainties": [
+          "Källorna är motstridiga om exakt födoplats på växten. Detta behöver granskas före detaljerade metodråd."
+        ]
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Tinagma balteolella",
+      "source_sha256": "e93e9ec16b1261c07c1f560ee32b6f465228d048f0472e9154fb74e2142fa5f3",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Tinagma_balteolella",
+      "summary_status": "editorial_summary"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Synanthedon mesiaeformis",
+      "source_sha256": "12c5225a95279d4656ba79ff45f6d19c71906494074f0dc059ae7a32bde69f02",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Synanthedon_mesiaeformis",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Synanthedon soffneri",
+      "source_sha256": "81dd9d4c0ce73c0365d3d66bc4de4d31b6a3e04995bafa1149ee5ad32d7d7ea2",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Synanthedon_soffneri",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Synanthedon conopiformis",
+      "source_sha256": "324b8d8dd02d5b54a3b627304c6bea076485e229b16ce2abab326de74f3c6383",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Synanthedon_conopiformis",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Pyropteron triannuliformis",
+      "source_sha256": "f856e789cde40c3574b99d4fd2061459d1f254504a4b520fb3ec5fda92ddd8eb",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Pyropteron_triannuliformis",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Dichomeris ustalella",
+      "source_sha256": "027a076a298894143e29620e849131f6e9cdbb23cb08e4bc093cee14e6627428",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Dichomeris_ustalella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Dichomeris rasilella",
+      "source_sha256": "6df76cb323b77241182c86057e94f960aa2754d00fb648949fa3914daa0c3236",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Dichomeris_rasilella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": false,
+        "dated_captions": false
+      },
+      "scientific_name": "Elachista herrichii",
+      "source_sha256": "d592804b0fc98b8174d8862c9d30174f5ffc533e399158cd4a87cfcc7e03948e",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Elachista_herrichii",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Elachista rufocinerea",
+      "source_sha256": "db50188ee6e7e1f9d50536db02bfed01d91a2f120f35228ecf0f425f81cf66c5",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Elachista_rufocinerea",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Scythris obscurella",
+      "source_sha256": "701c1245f2ccca55e5c2d5c58cd3038be37fb4e461f5ef51c67725e231c28732",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Scythris_obscurella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Thyris fenestrella",
+      "source_sha256": "7a7450a54adda94f65b91c7843eaeda9396316d63feb52d31908989c3facaaee",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Thyris_fenestrella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Platyptilia nemoralis",
+      "source_sha256": "3218b5cb3161902858d46dffeb849088ad4ee526587fbcd4956240b1ea397f68",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Platyptilia_nemoralis",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Pyrgus serratulae",
+      "source_sha256": "5efb795037386b4957ed8e1eedc0be91998aa3877f818235fbb81a4768383689",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Pyrgus_serratulae",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Colias alfacariensis",
+      "source_sha256": "6e5fda21de94837e664700980e3cf3e7019187c4e0a21210e9e4882d237e71d8",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Colias_alfacariensis",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Boloria titania",
+      "source_sha256": "9a2194d0cfcbeac0c28a6f82a8987e56c7c6f1754e302c6cc920c997258479d8",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Boloria_titania",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Boloria dia",
+      "source_sha256": "388df0463a618c5f12177875ef4ccc1334d38211ecd5385688e0b4d40cd06e2c",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Boloria_dia",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Melitaea phoebe",
+      "source_sha256": "a812bdbc9fba253efbf9ea19814b528f37fa6944348eca3e8a48d3ab33722770",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Melitaea_phoebe",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Hyponephele lycaon",
+      "source_sha256": "f1ab5044fbcab74aa9b25fc49db33fb06b54091b42ec5ec089ac5acd4c582a68",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Hyponephele_lycaon",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Hipparchia statilinus",
+      "source_sha256": "37d5d4d053009efaf821a2440ae08dd703b68485a6b110a67c077cae608a4eee",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Hipparchia_statilinus",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": false,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Lycaena alciphron",
+      "source_sha256": "436b4c9f20f5649f3a17290ab4d8bcc87ded2ce5c9b25b25040588feffb2527d",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Lycaena_alciphron",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Satyrium spini",
+      "source_sha256": "2207349442fa56049c37f70291e8a55d54273d17f0563138efe56893a2145871",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Satyrium_spini",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Acrobasis obtusella",
+      "source_sha256": "2831c3165cfe34ef3fc128f67ca8121dae2aa5740d31f428171f688887196603",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Acrobasis_obtusella",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "scientific_name": "Udea elutalis",
+      "source_sha256": "5be94879d415c87ef6a09e5b9cd1b6f7dadf299d00ead28451fc2501d3896c68",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Udea_elutalis",
+      "summary_status": "section_inventory_only"
+    },
+    {
+      "notes": {
+        "uncertainties": [],
+        "locations": [],
+        "hosts": [],
+        "habitat": [],
+        "search": []
+      },
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "scientific_name": "Eurrhypis pollinalis",
+      "source_sha256": "4bb5c249876661b8d274c6b2292039838aa3134f7c53cc4e812123c06194b44a",
+      "checked_at": "2026-11-02",
+      "source_url": "https://lepiforum.org/wiki/page/Eurrhypis_pollinalis",
+      "summary_status": "section_inventory_only"
+    }
+  ]
+}
