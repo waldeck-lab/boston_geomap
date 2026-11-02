@@ -1,0 +1,5506 @@
+{
+  "checked_at": "2026-11-02",
+  "scope": "2017 Nordic-Baltic checklist with 2021/2025 country updates: F present and S absent; plus Nola estonica and Athetis correpta from Finnish sources",
+  "tested": 159,
+  "prior_front": {
+    "countries": [
+      "DK",
+      "DE",
+      "PL",
+      "LT",
+      "LV",
+      "EE"
+    ],
+    "latitude": [
+      53,
+      60
+    ]
+  },
+  "results": [
+    {
+      "scientific_name": "Acleris scabrana",
+      "checklist": {
+        "number": "925",
+        "countries": [
+          "F",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Acleris+scabrana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1739998&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1739998&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1739998,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Acontia lucida",
+      "checklist": {
+        "number": "3984",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Acontia+lucida&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1763072&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1763072&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1763072,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Actebia squalida",
+      "checklist": {
+        "number": "4560",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Actebia+squalida&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4533820&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4533820&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4533820,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Aedia funesta",
+      "checklist": {
+        "number": "4130",
+        "countries": [
+          "D",
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Aedia+funesta&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5113847&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5113847&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5113847,
+      "sweden_count": 4,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Aethes bilbaensis",
+      "checklist": {
+        "number": "0985a",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Aethes+bilbaensis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1738440&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1738440&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1738440,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Aethes kyrkii",
+      "checklist": {
+        "number": "989",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Aethes+kyrkii&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9004751&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9004751&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9004751,
+      "sweden_count": 0,
+      "finland_recent_count": 31
+    },
+    {
+      "scientific_name": "Agriphila aeneociliella",
+      "checklist": {
+        "number": "3029",
+        "countries": [
+          "D",
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Agriphila+aeneociliella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878946&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878946&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1878946,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Agriphila tolli",
+      "checklist": {
+        "number": "3034a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Agriphila+tolli&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878904&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878904&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1878904,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Alcis deversata",
+      "checklist": {
+        "number": "3504",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Alcis+deversata&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5143453&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5143453&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5143453,
+      "sweden_count": 0,
+      "finland_recent_count": 181
+    },
+    {
+      "scientific_name": "Anarta farnhami",
+      "checklist": {
+        "number": "4465",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Anarta+farnhami&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4534198&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4534198&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4534198,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Ancylis habeleri",
+      "checklist": {
+        "number": "1151",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Ancylis+habeleri&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9021151&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9021151&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9021151,
+      "sweden_count": 0,
+      "finland_recent_count": 611
+    },
+    {
+      "scientific_name": "Aplota nigricans",
+      "checklist": {
+        "number": "1525",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Aplota+nigricans&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1838676&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1838676&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1838676,
+      "sweden_count": 21,
+      "finland_recent_count": 5
+    },
+    {
+      "scientific_name": "Asaphocrita obsoletella",
+      "checklist": {
+        "number": "2304",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Asaphocrita+obsoletella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1852881&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1852881&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1852881,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Aspitates gilvaria",
+      "checklist": {
+        "number": "3593",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Aspitates+gilvaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1967273&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1967273&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1967273,
+      "sweden_count": 0,
+      "finland_recent_count": 245
+    },
+    {
+      "scientific_name": "Aterpia chalybeia",
+      "checklist": {
+        "number": "1022",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Aterpia+chalybeia&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1745032&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1745032&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1745032,
+      "sweden_count": 0,
+      "finland_recent_count": 6
+    },
+    {
+      "scientific_name": "Athetis correpta",
+      "checklist": {
+        "supplement": "Nocturna 2024: new to monitoring, not necessarily new to Finland"
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Athetis+correpta&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11631736&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11631736&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 11631736,
+      "sweden_count": 0,
+      "finland_recent_count": 10
+    },
+    {
+      "scientific_name": "Atypha pulmonaris",
+      "checklist": {
+        "number": "4349",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Atypha+pulmonaris&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782319&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782319&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1782319,
+      "sweden_count": 0,
+      "finland_recent_count": 9
+    },
+    {
+      "scientific_name": "Boloria titania",
+      "checklist": {
+        "number": "2531",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Boloria+titania&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4299597&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4299597&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4299597,
+      "sweden_count": 0,
+      "finland_recent_count": 189
+    },
+    {
+      "scientific_name": "Borearctia menetriesii",
+      "checklist": {
+        "number": "3906",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Borearctia+menetriesii&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Bryopsis muralis",
+      "checklist": {
+        "number": "4166",
+        "countries": [
+          "D",
+          "F",
+          "N"
+        ],
+        "sources": [
+          "update-2021.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Bryopsis+muralis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532811&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532811&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4532811,
+      "sweden_count": 283,
+      "finland_recent_count": 8
+    },
+    {
+      "scientific_name": "Bucculatrix argentisignella",
+      "checklist": {
+        "number": "428",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Bucculatrix+argentisignella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1751353&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1751353&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1751353,
+      "sweden_count": 289,
+      "finland_recent_count": 97
+    },
+    {
+      "scientific_name": "Bucculatrix latviaella",
+      "checklist": {
+        "number": "423",
+        "countries": [
+          "N",
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Bucculatrix+latviaella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4535899&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4535899&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4535899,
+      "sweden_count": 0,
+      "finland_recent_count": 6
+    },
+    {
+      "scientific_name": "Bucculatrix noltei",
+      "checklist": {
+        "number": "425",
+        "countries": [
+          "N",
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Bucculatrix+noltei&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1751464&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1751464&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1751464,
+      "sweden_count": 0,
+      "finland_recent_count": 145
+    },
+    {
+      "scientific_name": "Cabera leptographa",
+      "checklist": {
+        "number": "3570",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cabera+leptographa&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5143677&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5143677&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5143677,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Callima formosella",
+      "checklist": {
+        "number": "1518",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Callima+formosella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5119893&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5119893&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5119893,
+      "sweden_count": 68,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Capperia trichodactyla",
+      "checklist": {
+        "number": "2411",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Capperia+trichodactyla&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1859878&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1859878&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1859878,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Caradrina expansa",
+      "checklist": {
+        "number": "4188b",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Caradrina+expansa&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1764990&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1764990&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1764990,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Caradrina petraea",
+      "checklist": {
+        "number": "4188",
+        "countries": [
+          "E",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Caradrina+petraea&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1765031&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1765031&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1765031,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Caradrina vicina",
+      "checklist": {
+        "number": "4188a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Caradrina+vicina&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11934072&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11934072&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 11934072,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Cerura erminea",
+      "checklist": {
+        "number": "3731",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cerura+erminea&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1825176&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1825176&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1825176,
+      "sweden_count": 1,
+      "finland_recent_count": 249
+    },
+    {
+      "scientific_name": "Chersotis andereggii",
+      "checklist": {
+        "number": "4618",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Chersotis+andereggii&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1766734&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1766734&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1766734,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Chlorissa cloraria",
+      "checklist": {
+        "number": "3623",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Chlorissa+cloraria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1961037&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1961037&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1961037,
+      "sweden_count": 0,
+      "finland_recent_count": 29
+    },
+    {
+      "scientific_name": "Clepsis lindebergi",
+      "checklist": {
+        "number": "829",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Clepsis+lindebergi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737457&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737457&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1737457,
+      "sweden_count": 0,
+      "finland_recent_count": 43
+    },
+    {
+      "scientific_name": "Clepsis rogana",
+      "checklist": {
+        "number": "825",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Clepsis+rogana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737406&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737406&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1737406,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Cnephasia alticolana",
+      "checklist": {
+        "number": "888",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cnephasia+alticolana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1739120&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1739120&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1739120,
+      "sweden_count": 3,
+      "finland_recent_count": 6
+    },
+    {
+      "scientific_name": "Coenonympha glycerion",
+      "checklist": {
+        "number": "2602",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Coenonympha+glycerion&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1911278&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1911278&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1911278,
+      "sweden_count": 1,
+      "finland_recent_count": 5596
+    },
+    {
+      "scientific_name": "Coleophora asteris",
+      "checklist": {
+        "number": "2138",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Coleophora+asteris&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121109&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121109&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5121109,
+      "sweden_count": 58,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Coleophora ibipennella",
+      "checklist": {
+        "number": "2267",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Coleophora+ibipennella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5120696&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5120696&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5120696,
+      "sweden_count": 115,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Coleophora scabrida",
+      "checklist": {
+        "number": "2128",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Coleophora+scabrida&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5120680&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5120680&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5120680,
+      "sweden_count": 293,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Coleophora sirella",
+      "checklist": {
+        "number": "2237a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Coleophora+sirella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9997016&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9997016&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9997016,
+      "sweden_count": 0,
+      "finland_recent_count": 6
+    },
+    {
+      "scientific_name": "Coleophora vulnerariae",
+      "checklist": {
+        "number": "2207",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Coleophora+vulnerariae&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121769&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121769&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5121769,
+      "sweden_count": 82,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Cornutiplusia circumflexa",
+      "checklist": {
+        "number": "4030",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cornutiplusia+circumflexa&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1784349&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1784349&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1784349,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Cosmardia moritzella",
+      "checklist": {
+        "number": "1918",
+        "countries": [
+          "N",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cosmardia+moritzella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1848657&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1848657&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1848657,
+      "sweden_count": 0,
+      "finland_recent_count": 15
+    },
+    {
+      "scientific_name": "Cosmia contusa",
+      "checklist": {
+        "number": "4405",
+        "countries": [
+          "N",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cosmia+contusa&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782628&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782628&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1782628,
+      "sweden_count": 0,
+      "finland_recent_count": 7
+    },
+    {
+      "scientific_name": "Cosmopterix sibirica",
+      "checklist": {
+        "number": "1656",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cosmopterix+sibirica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4529774&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4529774&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4529774,
+      "sweden_count": 0,
+      "finland_recent_count": 79
+    },
+    {
+      "scientific_name": "Cucullia pustulata",
+      "checklist": {
+        "number": "4056",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cucullia+pustulata&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5109662&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5109662&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5109662,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Cucullia virgaureae",
+      "checklist": {
+        "number": "4063a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cucullia+virgaureae&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5109615&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5109615&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5109615,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Cupido alcetas",
+      "checklist": {
+        "number": "2646",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cupido+alcetas&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1920864&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1920864&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1920864,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Cydia oxytropidis",
+      "checklist": {
+        "number": "1315",
+        "countries": [
+          "F",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cydia+oxytropidis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4530046&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4530046&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4530046,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Diachrysia zosimi",
+      "checklist": {
+        "number": "4010",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Diachrysia+zosimi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1785883&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1785883&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1785883,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Dichagyris musiva",
+      "checklist": {
+        "number": "4562a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Dichagyris+musiva&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4533924&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4533924&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4533924,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Dichagyris signifera",
+      "checklist": {
+        "number": "4564",
+        "countries": [
+          "F",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Dichagyris+signifera&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1773904&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1773904&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1773904,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Dichomeris rasilella",
+      "checklist": {
+        "number": "1717",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Dichomeris+rasilella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1847371&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1847371&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1847371,
+      "sweden_count": 0,
+      "finland_recent_count": 169
+    },
+    {
+      "scientific_name": "Dichomeris ustalella",
+      "checklist": {
+        "number": "1714",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Dichomeris+ustalella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1847097&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1847097&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1847097,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Dichrorampha cinerascens",
+      "checklist": {
+        "number": "1297",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Dichrorampha+cinerascens&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1738860&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1738860&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1738860,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Dysgonia algira",
+      "checklist": {
+        "number": "3967",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Dysgonia+algira&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1798504&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1798504&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1798504,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Eccopisa effractella",
+      "checklist": {
+        "number": "2804",
+        "countries": [
+          "D",
+          "E",
+          "F",
+          "Lt",
+          "Lv",
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eccopisa+effractella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1871826&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1871826&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1871826,
+      "sweden_count": 2,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Elachista imatrella",
+      "checklist": {
+        "number": "2029",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+imatrella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1833117&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1833117&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1833117,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Elachista leifi",
+      "checklist": {
+        "number": "2044",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+leifi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9100308&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9100308&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9100308,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Elachista littoricola",
+      "checklist": {
+        "number": "2016",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+littoricola&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1832876&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1832876&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1832876,
+      "sweden_count": 0,
+      "finland_recent_count": 57
+    },
+    {
+      "scientific_name": "Elachista ornithopodella",
+      "checklist": {
+        "number": "2031",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+ornithopodella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1833013&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1833013&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1833013,
+      "sweden_count": 0,
+      "finland_recent_count": 5
+    },
+    {
+      "scientific_name": "Elachista ripula",
+      "checklist": {
+        "number": "1995",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+ripula&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8745243&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8745243&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8745243,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Elachista saarelai",
+      "checklist": {
+        "number": "2028",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+saarelai&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8501247&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8501247&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8501247,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Elatobia montelliella",
+      "checklist": {
+        "number": "371",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elatobia+montelliella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1856060&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1856060&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1856060,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Endothenia gentianaeana",
+      "checklist": {
+        "number": "1115",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Endothenia+gentianaeana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4530424&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4530424&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4530424,
+      "sweden_count": 0,
+      "finland_recent_count": 39
+    },
+    {
+      "scientific_name": "Epatolmis luctifera",
+      "checklist": {
+        "number": "3877",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Epatolmis+luctifera&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=7908344&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=7908344&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 7908344,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Epiblema similana",
+      "checklist": {
+        "number": "1261",
+        "countries": [
+          "F",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Epiblema+similana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1743615&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1743615&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1743615,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Epirrhoe tartuensis",
+      "checklist": {
+        "number": "3199",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Epirrhoe+tartuensis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1964589&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1964589&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1964589,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Erebia euryale",
+      "checklist": {
+        "number": "2615",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Erebia+euryale&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5134469&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5134469&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5134469,
+      "sweden_count": 4,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Erebia medusa",
+      "checklist": {
+        "number": "2619",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Erebia+medusa&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8314088&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8314088&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8314088,
+      "sweden_count": 3,
+      "finland_recent_count": 374
+    },
+    {
+      "scientific_name": "Eriocrania marci",
+      "checklist": {
+        "number": "0024a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eriocrania+marci&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Eublemma candidana",
+      "checklist": {
+        "number": "3954a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eublemma+candidana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532236&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532236&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4532236,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Eublemma parva",
+      "checklist": {
+        "number": "3955",
+        "countries": [
+          "D",
+          "F",
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eublemma+parva&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532206&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532206&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4532206,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Eublemma polygramma",
+      "checklist": {
+        "number": "3957a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eublemma+polygramma&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532260&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532260&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4532260,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Euchalcia modestoides",
+      "checklist": {
+        "number": "4013",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euchalcia+modestoides&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532929&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532929&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4532929,
+      "sweden_count": 0,
+      "finland_recent_count": 18
+    },
+    {
+      "scientific_name": "Euchalcia variabilis",
+      "checklist": {
+        "number": "4012",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euchalcia+variabilis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1770530&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1770530&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1770530,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Euchloe ausonia",
+      "checklist": {
+        "number": "2501",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euchloe+ausonia&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1919320&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1919320&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1919320,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Euchromius bella",
+      "checklist": {
+        "number": "2998a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euchromius+bella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1891190&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1891190&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1891190,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Eucosma flavispecula",
+      "checklist": {
+        "number": "1222",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eucosma+flavispecula&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5103849&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5103849&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5103849,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Eupithecia groenblomi",
+      "checklist": {
+        "number": "3369",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eupithecia+groenblomi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1982980&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1982980&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1982980,
+      "sweden_count": 1,
+      "finland_recent_count": 78
+    },
+    {
+      "scientific_name": "Eupithecia pernotata",
+      "checklist": {
+        "number": "3393",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eupithecia+pernotata&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1982372&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1982372&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1982372,
+      "sweden_count": 4,
+      "finland_recent_count": 69
+    },
+    {
+      "scientific_name": "Euplagia quadripunctaria",
+      "checklist": {
+        "number": "3867",
+        "countries": [
+          "D",
+          "F",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euplagia+quadripunctaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532532&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532532&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4532532,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Euxoa temera",
+      "checklist": {
+        "number": "4568",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euxoa+temera&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8222049&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8222049&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8222049,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Euzophera bigella",
+      "checklist": {
+        "number": "2809",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euzophera+bigella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1875330&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1875330&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1875330,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Eversmannia exornata",
+      "checklist": {
+        "number": "3636",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eversmannia+exornata&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8943343&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8943343&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8943343,
+      "sweden_count": 0,
+      "finland_recent_count": 18
+    },
+    {
+      "scientific_name": "Gastropacha populifolia",
+      "checklist": {
+        "number": "3668",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gastropacha+populifolia&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1732521&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1732521&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1732521,
+      "sweden_count": 0,
+      "finland_recent_count": 97
+    },
+    {
+      "scientific_name": "Gelechia jakovlevi",
+      "checklist": {
+        "number": "1870",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gelechia+jakovlevi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1850374&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1850374&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1850374,
+      "sweden_count": 0,
+      "finland_recent_count": 64
+    },
+    {
+      "scientific_name": "Gelechia rhombelliformis",
+      "checklist": {
+        "number": "1876",
+        "countries": [
+          "D",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gelechia+rhombelliformis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1850325&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1850325&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1850325,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Gnorimoschema streliciella",
+      "checklist": {
+        "number": "1888",
+        "countries": [
+          "N",
+          "D",
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gnorimoschema+streliciella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1851698&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1851698&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1851698,
+      "sweden_count": 0,
+      "finland_recent_count": 35
+    },
+    {
+      "scientific_name": "Grapholita andabatana",
+      "checklist": {
+        "number": "1357",
+        "countries": [
+          "D",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Grapholita+andabatana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736570&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736570&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1736570,
+      "sweden_count": 0,
+      "finland_recent_count": 49
+    },
+    {
+      "scientific_name": "Grapholita cotoneastri",
+      "checklist": {
+        "number": "1357",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Grapholita+cotoneastri&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736522&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736522&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1736522,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Grapholita inopinata",
+      "checklist": {
+        "number": "1360a",
+        "countries": [
+          "D",
+          "F",
+          "Lt"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Grapholita+inopinata&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736535&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736535&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1736535,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Gymnancyla hornigii",
+      "checklist": {
+        "number": "2737a",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gymnancyla+hornigii&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878589&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878589&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1878589,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Gynaephora selenitica",
+      "checklist": {
+        "number": "3817",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gynaephora+selenitica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1822120&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1822120&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1822120,
+      "sweden_count": 0,
+      "finland_recent_count": 115
+    },
+    {
+      "scientific_name": "Helcystogramma albinervis",
+      "checklist": {
+        "number": "1733",
+        "countries": [
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Helcystogramma+albinervis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4528529&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4528529&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4528529,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Heliomata glarearia",
+      "checklist": {
+        "number": "3456",
+        "countries": [
+          "D",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Heliomata+glarearia&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4525068&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4525068&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4525068,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Hypena scabra",
+      "checklist": {
+        "number": "3797a",
+        "countries": [
+          "F",
+          "I"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Hypena+scabra&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9579730&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9579730&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9579730,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Hyponephele lycaon",
+      "checklist": {
+        "number": "2610",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Hyponephele+lycaon&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8208583&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8208583&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8208583,
+      "sweden_count": 0,
+      "finland_recent_count": 27
+    },
+    {
+      "scientific_name": "Iphiclides podalirius",
+      "checklist": {
+        "number": "2459",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Iphiclides+podalirius&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1938214&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1938214&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1938214,
+      "sweden_count": 14,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Laothoe amurensis",
+      "checklist": {
+        "number": "3690",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Laothoe+amurensis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5124029&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5124029&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5124029,
+      "sweden_count": 0,
+      "finland_recent_count": 330
+    },
+    {
+      "scientific_name": "Leucoptera lathyrifoliella",
+      "checklist": {
+        "number": "737",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Leucoptera+lathyrifoliella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5119455&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5119455&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5119455,
+      "sweden_count": 20,
+      "finland_recent_count": 36
+    },
+    {
+      "scientific_name": "Lobesia euphorbiana",
+      "checklist": {
+        "number": "1107",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Lobesia+euphorbiana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=10956447&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=10956447&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 10956447,
+      "sweden_count": 0,
+      "finland_recent_count": 339
+    },
+    {
+      "scientific_name": "Loxostege deliblatica",
+      "checklist": {
+        "number": "2859a",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Loxostege+deliblatica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1882203&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1882203&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1882203,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Lycaena dispar",
+      "checklist": {
+        "number": "2688",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Lycaena+dispar&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1929270&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1929270&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1929270,
+      "sweden_count": 2,
+      "finland_recent_count": 169
+    },
+    {
+      "scientific_name": "Lycaena tityrus",
+      "checklist": {
+        "number": "2690",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Lycaena+tityrus&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1924494&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1924494&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1924494,
+      "sweden_count": 1,
+      "finland_recent_count": 27
+    },
+    {
+      "scientific_name": "Lyonetia padifoliella",
+      "checklist": {
+        "number": "745",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Lyonetia+padifoliella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1829363&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1829363&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1829363,
+      "sweden_count": 234,
+      "finland_recent_count": 238
+    },
+    {
+      "scientific_name": "Metriotes carelica",
+      "checklist": {
+        "number": "2109",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Metriotes+carelica&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Metriotes chrysanthemi",
+      "checklist": {
+        "number": "2150",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Metriotes+chrysanthemi&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Metriotes filaginella",
+      "checklist": {
+        "number": "2158",
+        "countries": [
+          "D",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Metriotes+filaginella&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Metriotes gardesanella",
+      "checklist": {
+        "number": "2131",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Metriotes+gardesanella&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Metriotes inulae",
+      "checklist": {
+        "number": "2110",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Metriotes+inulae&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Metriotes sibiricella",
+      "checklist": {
+        "number": "2252",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Metriotes+sibiricella&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Metriotes silenella",
+      "checklist": {
+        "number": "2120",
+        "countries": [
+          "D",
+          "F",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Metriotes+silenella&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Monochroa simplicella",
+      "checklist": {
+        "number": "1806",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Monochroa+simplicella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1846679&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1846679&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1846679,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Nola estonica",
+      "checklist": {
+        "number": "4695a",
+        "countries": [
+          "E"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ],
+        "supplement": "Finnish checklist 2022 and Nocturna 2024"
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Nola+estonica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11596496&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11596496&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 11596496,
+      "sweden_count": 0,
+      "finland_recent_count": 83
+    },
+    {
+      "scientific_name": "Ochromolopis ictella",
+      "checklist": {
+        "number": "2364",
+        "countries": [
+          "D",
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Ochromolopis+ictella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9760332&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9760332&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9760332,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Odonestis pruni",
+      "checklist": {
+        "number": "3670",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Odonestis+pruni&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5102287&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5102287&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5102287,
+      "sweden_count": 0,
+      "finland_recent_count": 17
+    },
+    {
+      "scientific_name": "Pammene luculentana",
+      "checklist": {
+        "number": "1374",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Pammene+luculentana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1744879&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1744879&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1744879,
+      "sweden_count": 0,
+      "finland_recent_count": 14
+    },
+    {
+      "scientific_name": "Paradiarsia punicea",
+      "checklist": {
+        "number": "4607",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Paradiarsia+punicea&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1786515&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1786515&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1786515,
+      "sweden_count": 0,
+      "finland_recent_count": 67
+    },
+    {
+      "scientific_name": "Pelochrista guentheri",
+      "checklist": {
+        "number": "1218",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Pelochrista+guentheri&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8639434&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8639434&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8639434,
+      "sweden_count": 1,
+      "finland_recent_count": 43
+    },
+    {
+      "scientific_name": "Phyllonorycter gerasimowi",
+      "checklist": {
+        "number": "542",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Phyllonorycter+gerasimowi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1750126&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1750126&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1750126,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Phyllonorycter issikii",
+      "checklist": {
+        "number": "519",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "swedish_public_record_requires_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Phyllonorycter+issikii&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1750166&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1750166&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1750166,
+      "sweden_count": 41,
+      "finland_recent_count": 376
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "checklist": {
+        "number": "537",
+        "countries": [
+          "N",
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Phyllonorycter+lantanella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749762&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749762&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1749762,
+      "sweden_count": 0,
+      "finland_recent_count": 7
+    },
+    {
+      "scientific_name": "Phyllonorycter trifoliella",
+      "checklist": {
+        "number": "573",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Phyllonorycter+trifoliella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749994&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749994&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1749994,
+      "sweden_count": 0,
+      "finland_recent_count": 230
+    },
+    {
+      "scientific_name": "Platyptilia nemoralis",
+      "checklist": {
+        "number": "2378",
+        "countries": [
+          "D",
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Platyptilia+nemoralis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1859144&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1859144&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1859144,
+      "sweden_count": 0,
+      "finland_recent_count": 5
+    },
+    {
+      "scientific_name": "Pontia callidice",
+      "checklist": {
+        "number": "2509",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Pontia+callidice&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1920237&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1920237&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1920237,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Pontia chloridice",
+      "checklist": {
+        "number": "2512",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Pontia+chloridice&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1920247&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1920247&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1920247,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Prochoreutis solaris",
+      "checklist": {
+        "number": "764",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Prochoreutis+solaris&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5769169&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5769169&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5769169,
+      "sweden_count": 0,
+      "finland_recent_count": 5
+    },
+    {
+      "scientific_name": "Proxenus correpta",
+      "checklist": {
+        "number": "4208a",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Proxenus+correpta&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Pyrrhia exprimens",
+      "checklist": {
+        "number": "4144",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Pyrrhia+exprimens&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1779633&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1779633&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1779633,
+      "sweden_count": 0,
+      "finland_recent_count": 23
+    },
+    {
+      "scientific_name": "Resapamea hedeni",
+      "checklist": {
+        "number": "4321",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Resapamea+hedeni&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4534454&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4534454&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4534454,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Rhagades pruni",
+      "checklist": {
+        "number": "1403",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Rhagades+pruni&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1754332&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1754332&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1754332,
+      "sweden_count": 0,
+      "finland_recent_count": 317
+    },
+    {
+      "scientific_name": "Schrankia balneorum",
+      "checklist": {
+        "number": "3938a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Schrankia+balneorum&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5113026&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5113026&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5113026,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Sciota lucipetella",
+      "checklist": {
+        "number": "2728",
+        "countries": [
+          "D",
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Sciota+lucipetella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1873424&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1873424&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1873424,
+      "sweden_count": 0,
+      "finland_recent_count": 277
+    },
+    {
+      "scientific_name": "Sclerocona acutellus",
+      "checklist": {
+        "number": "2885",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Sclerocona+acutellus&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Scolitantides vicrama",
+      "checklist": {
+        "number": "2650",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scolitantides+vicrama&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=6240927&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=6240927&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 6240927,
+      "sweden_count": 0,
+      "finland_recent_count": 114
+    },
+    {
+      "scientific_name": "Scopula caricaria",
+      "checklist": {
+        "number": "3140",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scopula+caricaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9627567&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9627567&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9627567,
+      "sweden_count": 0,
+      "finland_recent_count": 287
+    },
+    {
+      "scientific_name": "Scopula corrivalaria",
+      "checklist": {
+        "number": "3139",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scopula+corrivalaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5145083&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5145083&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5145083,
+      "sweden_count": 0,
+      "finland_recent_count": 66
+    },
+    {
+      "scientific_name": "Scopula frigidaria",
+      "checklist": {
+        "number": "3152",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scopula+frigidaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5145067&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5145067&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5145067,
+      "sweden_count": 0,
+      "finland_recent_count": 36
+    },
+    {
+      "scientific_name": "Scrobipalpa bryophiloides",
+      "checklist": {
+        "number": "1902",
+        "countries": [
+          "D",
+          "E",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scrobipalpa+bryophiloides&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1849875&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1849875&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1849875,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Scythris obscurella",
+      "checklist": {
+        "number": "2314",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scythris+obscurella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841751&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841751&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1841751,
+      "sweden_count": 0,
+      "finland_recent_count": 43
+    },
+    {
+      "scientific_name": "Scythris palustris",
+      "checklist": {
+        "number": "2331",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scythris+palustris&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841588&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841588&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1841588,
+      "sweden_count": 0,
+      "finland_recent_count": 9
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "checklist": {
+        "number": "2323",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scythris+sinensis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841946&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841946&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1841946,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Siederia fennicella",
+      "checklist": {
+        "number": "262",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "taxonomic_review_required",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Siederia+fennicella&strict=true"
+      ]
+    },
+    {
+      "scientific_name": "Smerinthus caecus",
+      "checklist": {
+        "number": "3692a",
+        "countries": [
+          "D",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Smerinthus+caecus&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1862572&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1862572&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1862572,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Stegania cararia",
+      "checklist": {
+        "number": "3451",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Stegania+cararia&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5149836&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5149836&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5149836,
+      "sweden_count": 0,
+      "finland_recent_count": 515
+    },
+    {
+      "scientific_name": "Stenoptilia nolckeni",
+      "checklist": {
+        "number": "2394",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Stenoptilia+nolckeni&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1858823&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1858823&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1858823,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Stenoptilodes taprobanes",
+      "checklist": {
+        "number": "2387",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Stenoptilodes+taprobanes&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1860026&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1860026&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1860026,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Synanthedon mesiaeformis",
+      "checklist": {
+        "number": "1437",
+        "countries": [
+          "F",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Synanthedon+mesiaeformis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1940682&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1940682&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1940682,
+      "sweden_count": 0,
+      "finland_recent_count": 85
+    },
+    {
+      "scientific_name": "Synanthedon soffneri",
+      "checklist": {
+        "number": "1446",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Synanthedon+soffneri&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1940521&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1940521&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1940521,
+      "sweden_count": 0,
+      "finland_recent_count": 56
+    },
+    {
+      "scientific_name": "Syngrapha ain",
+      "checklist": {
+        "number": "4035",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Syngrapha+ain&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1786017&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1786017&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1786017,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Synopsia sociaria",
+      "checklist": {
+        "number": "3491",
+        "countries": [
+          "F",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Synopsia+sociaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1981998&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1981998&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1981998,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Udea elutalis",
+      "checklist": {
+        "number": "2910",
+        "countries": [
+          "F",
+          "E",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": true,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Udea+elutalis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1885529&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1885529&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1885529,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Xanthorhoe uralensis",
+      "checklist": {
+        "number": "3185a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Xanthorhoe+uralensis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4524275&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4524275&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4524275,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Xestia agathina",
+      "checklist": {
+        "number": "4673",
+        "countries": [
+          "D",
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Xestia+agathina&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5112254&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5112254&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5112254,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Xestia brunneopicta",
+      "checklist": {
+        "number": "4657",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Xestia+brunneopicta&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8688267&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8688267&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8688267,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Xylomoia strix",
+      "checklist": {
+        "number": "4327",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Xylomoia+strix&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1772458&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1772458&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1772458,
+      "sweden_count": 0,
+      "finland_recent_count": 11
+    },
+    {
+      "scientific_name": "Ypsolopha blandella",
+      "checklist": {
+        "number": "693",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "no_recent_finnish_gbif_count",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Ypsolopha+blandella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4525512&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4525512&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4525512,
+      "sweden_count": 0,
+      "finland_recent_count": 0
+    },
+    {
+      "scientific_name": "Ypsolopha sarmaticella",
+      "checklist": {
+        "number": "707",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Ypsolopha+sarmaticella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1830940&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1830940&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1830940,
+      "sweden_count": 0,
+      "finland_recent_count": 9
+    }
+  ],
+  "review_queue": [
+    {
+      "scientific_name": "Acleris scabrana",
+      "checklist": {
+        "number": "925",
+        "countries": [
+          "F",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Acleris+scabrana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1739998&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1739998&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1739998,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Acontia lucida",
+      "checklist": {
+        "number": "3984",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Acontia+lucida&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1763072&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1763072&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1763072,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Aethes kyrkii",
+      "checklist": {
+        "number": "989",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Aethes+kyrkii&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9004751&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9004751&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9004751,
+      "sweden_count": 0,
+      "finland_recent_count": 31
+    },
+    {
+      "scientific_name": "Agriphila tolli",
+      "checklist": {
+        "number": "3034a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Agriphila+tolli&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878904&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878904&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1878904,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Alcis deversata",
+      "checklist": {
+        "number": "3504",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Alcis+deversata&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5143453&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5143453&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5143453,
+      "sweden_count": 0,
+      "finland_recent_count": 181
+    },
+    {
+      "scientific_name": "Ancylis habeleri",
+      "checklist": {
+        "number": "1151",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Ancylis+habeleri&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9021151&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9021151&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9021151,
+      "sweden_count": 0,
+      "finland_recent_count": 611
+    },
+    {
+      "scientific_name": "Aspitates gilvaria",
+      "checklist": {
+        "number": "3593",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Aspitates+gilvaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1967273&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1967273&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1967273,
+      "sweden_count": 0,
+      "finland_recent_count": 245
+    },
+    {
+      "scientific_name": "Aterpia chalybeia",
+      "checklist": {
+        "number": "1022",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Aterpia+chalybeia&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1745032&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1745032&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1745032,
+      "sweden_count": 0,
+      "finland_recent_count": 6
+    },
+    {
+      "scientific_name": "Athetis correpta",
+      "checklist": {
+        "supplement": "Nocturna 2024: new to monitoring, not necessarily new to Finland"
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Athetis+correpta&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11631736&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11631736&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 11631736,
+      "sweden_count": 0,
+      "finland_recent_count": 10
+    },
+    {
+      "scientific_name": "Atypha pulmonaris",
+      "checklist": {
+        "number": "4349",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Atypha+pulmonaris&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782319&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782319&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1782319,
+      "sweden_count": 0,
+      "finland_recent_count": 9
+    },
+    {
+      "scientific_name": "Bucculatrix latviaella",
+      "checklist": {
+        "number": "423",
+        "countries": [
+          "N",
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Bucculatrix+latviaella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4535899&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4535899&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4535899,
+      "sweden_count": 0,
+      "finland_recent_count": 6
+    },
+    {
+      "scientific_name": "Bucculatrix noltei",
+      "checklist": {
+        "number": "425",
+        "countries": [
+          "N",
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Bucculatrix+noltei&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1751464&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1751464&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1751464,
+      "sweden_count": 0,
+      "finland_recent_count": 145
+    },
+    {
+      "scientific_name": "Cabera leptographa",
+      "checklist": {
+        "number": "3570",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cabera+leptographa&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5143677&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5143677&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5143677,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Capperia trichodactyla",
+      "checklist": {
+        "number": "2411",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Capperia+trichodactyla&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1859878&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1859878&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1859878,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Caradrina expansa",
+      "checklist": {
+        "number": "4188b",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Caradrina+expansa&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1764990&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1764990&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1764990,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Chersotis andereggii",
+      "checklist": {
+        "number": "4618",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Chersotis+andereggii&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1766734&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1766734&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1766734,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Chlorissa cloraria",
+      "checklist": {
+        "number": "3623",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Chlorissa+cloraria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1961037&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1961037&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1961037,
+      "sweden_count": 0,
+      "finland_recent_count": 29
+    },
+    {
+      "scientific_name": "Clepsis lindebergi",
+      "checklist": {
+        "number": "829",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Clepsis+lindebergi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737457&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737457&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1737457,
+      "sweden_count": 0,
+      "finland_recent_count": 43
+    },
+    {
+      "scientific_name": "Clepsis rogana",
+      "checklist": {
+        "number": "825",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Clepsis+rogana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737406&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737406&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1737406,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Coleophora sirella",
+      "checklist": {
+        "number": "2237a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Coleophora+sirella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9997016&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9997016&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9997016,
+      "sweden_count": 0,
+      "finland_recent_count": 6
+    },
+    {
+      "scientific_name": "Cosmardia moritzella",
+      "checklist": {
+        "number": "1918",
+        "countries": [
+          "N",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cosmardia+moritzella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1848657&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1848657&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1848657,
+      "sweden_count": 0,
+      "finland_recent_count": 15
+    },
+    {
+      "scientific_name": "Cosmia contusa",
+      "checklist": {
+        "number": "4405",
+        "countries": [
+          "N",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cosmia+contusa&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782628&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782628&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1782628,
+      "sweden_count": 0,
+      "finland_recent_count": 7
+    },
+    {
+      "scientific_name": "Cosmopterix sibirica",
+      "checklist": {
+        "number": "1656",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cosmopterix+sibirica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4529774&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4529774&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4529774,
+      "sweden_count": 0,
+      "finland_recent_count": 79
+    },
+    {
+      "scientific_name": "Cucullia pustulata",
+      "checklist": {
+        "number": "4056",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cucullia+pustulata&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5109662&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5109662&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5109662,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Cucullia virgaureae",
+      "checklist": {
+        "number": "4063a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cucullia+virgaureae&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5109615&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5109615&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5109615,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Diachrysia zosimi",
+      "checklist": {
+        "number": "4010",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Diachrysia+zosimi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1785883&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1785883&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1785883,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Dichagyris musiva",
+      "checklist": {
+        "number": "4562a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Dichagyris+musiva&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4533924&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4533924&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4533924,
+      "sweden_count": 0,
+      "finland_recent_count": 3
+    },
+    {
+      "scientific_name": "Dichrorampha cinerascens",
+      "checklist": {
+        "number": "1297",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Dichrorampha+cinerascens&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1738860&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1738860&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1738860,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Dysgonia algira",
+      "checklist": {
+        "number": "3967",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Dysgonia+algira&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1798504&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1798504&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1798504,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Elachista imatrella",
+      "checklist": {
+        "number": "2029",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+imatrella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1833117&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1833117&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1833117,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Elachista leifi",
+      "checklist": {
+        "number": "2044",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+leifi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9100308&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9100308&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9100308,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Elachista littoricola",
+      "checklist": {
+        "number": "2016",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+littoricola&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1832876&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1832876&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1832876,
+      "sweden_count": 0,
+      "finland_recent_count": 57
+    },
+    {
+      "scientific_name": "Elachista ornithopodella",
+      "checklist": {
+        "number": "2031",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+ornithopodella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1833013&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1833013&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1833013,
+      "sweden_count": 0,
+      "finland_recent_count": 5
+    },
+    {
+      "scientific_name": "Elachista saarelai",
+      "checklist": {
+        "number": "2028",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Elachista+saarelai&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8501247&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8501247&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8501247,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Endothenia gentianaeana",
+      "checklist": {
+        "number": "1115",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Endothenia+gentianaeana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4530424&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4530424&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4530424,
+      "sweden_count": 0,
+      "finland_recent_count": 39
+    },
+    {
+      "scientific_name": "Epirrhoe tartuensis",
+      "checklist": {
+        "number": "3199",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Epirrhoe+tartuensis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1964589&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1964589&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1964589,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Eublemma parva",
+      "checklist": {
+        "number": "3955",
+        "countries": [
+          "D",
+          "F",
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eublemma+parva&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532206&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532206&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4532206,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Euchalcia modestoides",
+      "checklist": {
+        "number": "4013",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euchalcia+modestoides&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532929&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532929&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4532929,
+      "sweden_count": 0,
+      "finland_recent_count": 18
+    },
+    {
+      "scientific_name": "Eucosma flavispecula",
+      "checklist": {
+        "number": "1222",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eucosma+flavispecula&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5103849&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5103849&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5103849,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Euzophera bigella",
+      "checklist": {
+        "number": "2809",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euzophera+bigella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1875330&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1875330&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1875330,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Eversmannia exornata",
+      "checklist": {
+        "number": "3636",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eversmannia+exornata&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8943343&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8943343&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 8943343,
+      "sweden_count": 0,
+      "finland_recent_count": 18
+    },
+    {
+      "scientific_name": "Gelechia jakovlevi",
+      "checklist": {
+        "number": "1870",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gelechia+jakovlevi&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1850374&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1850374&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1850374,
+      "sweden_count": 0,
+      "finland_recent_count": 64
+    },
+    {
+      "scientific_name": "Gnorimoschema streliciella",
+      "checklist": {
+        "number": "1888",
+        "countries": [
+          "N",
+          "D",
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gnorimoschema+streliciella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1851698&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1851698&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1851698,
+      "sweden_count": 0,
+      "finland_recent_count": 35
+    },
+    {
+      "scientific_name": "Grapholita andabatana",
+      "checklist": {
+        "number": "1357",
+        "countries": [
+          "D",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Grapholita+andabatana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736570&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736570&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1736570,
+      "sweden_count": 0,
+      "finland_recent_count": 49
+    },
+    {
+      "scientific_name": "Grapholita cotoneastri",
+      "checklist": {
+        "number": "1357",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Grapholita+cotoneastri&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736522&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1736522&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1736522,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Gymnancyla hornigii",
+      "checklist": {
+        "number": "2737a",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gymnancyla+hornigii&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878589&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1878589&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1878589,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Gynaephora selenitica",
+      "checklist": {
+        "number": "3817",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Gynaephora+selenitica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1822120&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1822120&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1822120,
+      "sweden_count": 0,
+      "finland_recent_count": 115
+    },
+    {
+      "scientific_name": "Helcystogramma albinervis",
+      "checklist": {
+        "number": "1733",
+        "countries": [
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Helcystogramma+albinervis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4528529&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4528529&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 4528529,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Laothoe amurensis",
+      "checklist": {
+        "number": "3690",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Laothoe+amurensis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5124029&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5124029&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5124029,
+      "sweden_count": 0,
+      "finland_recent_count": 330
+    },
+    {
+      "scientific_name": "Lobesia euphorbiana",
+      "checklist": {
+        "number": "1107",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Lobesia+euphorbiana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=10956447&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=10956447&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 10956447,
+      "sweden_count": 0,
+      "finland_recent_count": 339
+    },
+    {
+      "scientific_name": "Loxostege deliblatica",
+      "checklist": {
+        "number": "2859a",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Loxostege+deliblatica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1882203&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1882203&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1882203,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Monochroa simplicella",
+      "checklist": {
+        "number": "1806",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Monochroa+simplicella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1846679&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1846679&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1846679,
+      "sweden_count": 0,
+      "finland_recent_count": 4
+    },
+    {
+      "scientific_name": "Nola estonica",
+      "checklist": {
+        "number": "4695a",
+        "countries": [
+          "E"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ],
+        "supplement": "Finnish checklist 2022 and Nocturna 2024"
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Nola+estonica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11596496&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11596496&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 11596496,
+      "sweden_count": 0,
+      "finland_recent_count": 83
+    },
+    {
+      "scientific_name": "Pammene luculentana",
+      "checklist": {
+        "number": "1374",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Pammene+luculentana&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1744879&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1744879&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1744879,
+      "sweden_count": 0,
+      "finland_recent_count": 14
+    },
+    {
+      "scientific_name": "Paradiarsia punicea",
+      "checklist": {
+        "number": "4607",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Paradiarsia+punicea&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1786515&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1786515&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1786515,
+      "sweden_count": 0,
+      "finland_recent_count": 67
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "checklist": {
+        "number": "537",
+        "countries": [
+          "N",
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Phyllonorycter+lantanella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749762&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749762&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1749762,
+      "sweden_count": 0,
+      "finland_recent_count": 7
+    },
+    {
+      "scientific_name": "Phyllonorycter trifoliella",
+      "checklist": {
+        "number": "573",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Phyllonorycter+trifoliella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749994&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749994&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1749994,
+      "sweden_count": 0,
+      "finland_recent_count": 230
+    },
+    {
+      "scientific_name": "Prochoreutis solaris",
+      "checklist": {
+        "number": "764",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Prochoreutis+solaris&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5769169&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5769169&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5769169,
+      "sweden_count": 0,
+      "finland_recent_count": 5
+    },
+    {
+      "scientific_name": "Pyrrhia exprimens",
+      "checklist": {
+        "number": "4144",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Pyrrhia+exprimens&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1779633&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1779633&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1779633,
+      "sweden_count": 0,
+      "finland_recent_count": 23
+    },
+    {
+      "scientific_name": "Schrankia balneorum",
+      "checklist": {
+        "number": "3938a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Schrankia+balneorum&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5113026&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5113026&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5113026,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Sciota lucipetella",
+      "checklist": {
+        "number": "2728",
+        "countries": [
+          "D",
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Sciota+lucipetella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1873424&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1873424&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1873424,
+      "sweden_count": 0,
+      "finland_recent_count": 277
+    },
+    {
+      "scientific_name": "Scolitantides vicrama",
+      "checklist": {
+        "number": "2650",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scolitantides+vicrama&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=6240927&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=6240927&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 6240927,
+      "sweden_count": 0,
+      "finland_recent_count": 114
+    },
+    {
+      "scientific_name": "Scopula caricaria",
+      "checklist": {
+        "number": "3140",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scopula+caricaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9627567&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=9627567&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 9627567,
+      "sweden_count": 0,
+      "finland_recent_count": 287
+    },
+    {
+      "scientific_name": "Scopula corrivalaria",
+      "checklist": {
+        "number": "3139",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scopula+corrivalaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5145083&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5145083&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5145083,
+      "sweden_count": 0,
+      "finland_recent_count": 66
+    },
+    {
+      "scientific_name": "Scopula frigidaria",
+      "checklist": {
+        "number": "3152",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scopula+frigidaria&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5145067&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5145067&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5145067,
+      "sweden_count": 0,
+      "finland_recent_count": 36
+    },
+    {
+      "scientific_name": "Scrobipalpa bryophiloides",
+      "checklist": {
+        "number": "1902",
+        "countries": [
+          "D",
+          "E",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scrobipalpa+bryophiloides&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1849875&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1849875&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1849875,
+      "sweden_count": 0,
+      "finland_recent_count": 1
+    },
+    {
+      "scientific_name": "Scythris palustris",
+      "checklist": {
+        "number": "2331",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scythris+palustris&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841588&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841588&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1841588,
+      "sweden_count": 0,
+      "finland_recent_count": 9
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "checklist": {
+        "number": "2323",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scythris+sinensis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841946&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841946&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1841946,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Stegania cararia",
+      "checklist": {
+        "number": "3451",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Stegania+cararia&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5149836&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5149836&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 5149836,
+      "sweden_count": 0,
+      "finland_recent_count": 515
+    },
+    {
+      "scientific_name": "Stenoptilodes taprobanes",
+      "checklist": {
+        "number": "2387",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Stenoptilodes+taprobanes&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1860026&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1860026&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1860026,
+      "sweden_count": 0,
+      "finland_recent_count": 2
+    },
+    {
+      "scientific_name": "Xylomoia strix",
+      "checklist": {
+        "number": "4327",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Xylomoia+strix&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1772458&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1772458&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1772458,
+      "sweden_count": 0,
+      "finland_recent_count": 11
+    },
+    {
+      "scientific_name": "Ypsolopha sarmaticella",
+      "checklist": {
+        "number": "707",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "already_visible": false,
+      "status": "recent_finnish_presence_needs_review",
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Ypsolopha+sarmaticella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1830940&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1830940&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+      ],
+      "gbif_key": 1830940,
+      "sweden_count": 0,
+      "finland_recent_count": 9
+    }
+  ],
+  "limitations": [
+    "Not an exhaustive 2026 Finland-versus-Sweden checklist reconciliation.",
+    "GBIF absence is not proof of national absence; old checklist names and taxonomic splits need specialist review.",
+    "Recent Finnish counts do not prove expansion, arrival in Sweden or suitability.",
+    "Nocturna new-to-monitoring records must not be labelled first Finnish records.",
+    "Point licensing is independent of biological screening. No observations, taxa or high-interest flags are accepted automatically."
+  ],
+  "sources": [
+    "https://www.entomologiskforening.no/wp-content/uploads/2025/06/Aarvik_et_al_2017_Nordic-Baltic_Checklist_of_Lepidiptera.pdf",
+    "https://www.entomologiskforening.no/wp-content/uploads/2025/06/Aarvik-et-al-2021.pdf",
+    "https://www.entomologiskforening.no/wp-content/uploads/2025/08/nje-vol72-no1-94-107.pdf",
+    "https://et-online.nu/index.php/contents/article/view/234",
+    "https://et-online.nu/index.php/contents/article/view/206",
+    "https://et-online.nu/index.php/contents/article/view/211",
+    "https://et-online.nu/index.php/contents/article/download/129/135/365",
+    "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf",
+    "https://www.ymparisto.fi/sites/default/files/documents/Baptria%204_2025%20Nocturna%20vuosiraportti%202024.pdf"
+  ]
+}
