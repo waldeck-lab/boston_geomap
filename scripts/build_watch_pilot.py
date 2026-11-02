@@ -99,7 +99,15 @@ def main():
             db.execute("UPDATE import_runs SET status='complete',completed_at=CURRENT_TIMESTAMP,report_json=? WHERE id=?",(json.dumps(report,ensure_ascii=False),run))
         if db.execute('PRAGMA quick_check').fetchone()[0]!='ok' or db.execute('PRAGMA foreign_key_check').fetchall():raise RuntimeError('Database integrity failure')
         (stage/'inventory.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
-        export=dict(generated_at=datetime.now(timezone.utc).isoformat(),pilot=True,notice='Source-screened watch candidates, not proof of national absence or an establishment forecast. Bounded GBIF samples are not complete histories.',inventory=inventory(db),profiles=[profile(db,ids[name]) for name in names],references=[profile(db,r['id']) for r in db.execute("SELECT id,scientific_name FROM candidates WHERE role='reference-control' ORDER BY scientific_name") if r['scientific_name'] not in excluded_names],screening_limitations=selection['limitations'],sources=[dict(r) for r in db.execute('SELECT * FROM sources')])
+        def export_profile(uid):
+            result=profile(db,uid)
+            response,path=get_json('https://api.gbif.org/v1/species/match',{'name':result['scientific_name'],'strict':'true'})
+            taxon=response['data']
+            if taxon.get('matchType')!='EXACT' or taxon.get('rank')!='SPECIES' or taxon.get('order')!='Lepidoptera' or not taxon.get('family'):raise RuntimeError('Family taxonomy requires review: '+result['scientific_name'])
+            result['family']=taxon['family']
+            result['family_source']=dict(url=response['url'],retrieved_at=response['retrieved_at'],sha256=hashlib.sha256(path.read_bytes()).hexdigest(),matched_name=taxon['scientificName'])
+            return result
+        export=dict(generated_at=datetime.now(timezone.utc).isoformat(),pilot=True,notice='Source-screened watch candidates, not proof of national absence or an establishment forecast. Bounded GBIF samples are not complete histories.',inventory=inventory(db),profiles=[export_profile(ids[name]) for name in names],references=[export_profile(r['id']) for r in db.execute("SELECT id,scientific_name FROM candidates WHERE role='reference-control' ORDER BY scientific_name") if r['scientific_name'] not in excluded_names],screening_limitations=selection['limitations'],sources=[dict(r) for r in db.execute('SELECT * FROM sources')])
         (stage/'pilot-export.json').write_text(json.dumps(export,ensure_ascii=False,indent=2))
         print('Pilot database:',stage/'future-species.sqlite','species:',len(ids))
     except BaseException:
