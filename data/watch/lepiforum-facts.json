@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v3",
+  "version": "2026-11-02-v4",
   "profiles": [
     {
       "notes": {
@@ -1078,6 +1078,172 @@
       "checked_at": "2026-11-02",
       "source_url": "https://lepiforum.org/wiki/page/Eurrhypis_pollinalis",
       "summary_status": "section_inventory_only"
+    },
+    {
+      "scientific_name": "Heliomata glarearia",
+      "source_url": "https://lepiforum.org/wiki/page/Heliomata_glarearia",
+      "source_sha256": "17990544f626f962a44165dcb31013f3a88500ccab3cf1506e38defb188fbfcb",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "habitat": true,
+        "hosts": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Dokumenterad i varma, torra gräsmarker på kalk eller sand, ibland med buskar och skogsbryn."
+        ],
+        "hosts": [
+          "Larvfynd på gullusern (Medicago falcata) är dokumenterade vid Jena i Tyskland."
+        ],
+        "search": [
+          "Daterade centraleuropeiska fotobelägg visar vuxna april–augusti och larver juli–augusti. Detta är exempel, inte en fullständig fenologiserie. Både dagfynd och ljusfynd finns."
+        ],
+        "locations": [
+          "Jena, Tyskland: larver på gullusern, 23 juli 2008 och 18 augusti 2012."
+        ],
+        "uncertainties": [
+          "Kan förväxlas med honor av allmän ängsmätare (Ematurga atomaria). Dokumentera vingarnas teckning och fransar."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Polymixis lichenea",
+      "source_url": "https://lepiforum.org/wiki/page/Polymixis_lichenea",
+      "source_sha256": "64882c4fc761e4c28ef7bee96448d3510aa8036b72917970544aa068be49f869",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "habitat": true,
+        "hosts": false,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [],
+        "search": [
+          "Lepiforum dokumenterar vuxna vid ljus i Frankrike och Italien under september–oktober."
+        ],
+        "locations": [
+          "Graissessac, Frankrike: vuxna 4 oktober 2017 och 24 oktober 2024; habitatfoto 20 oktober 2015."
+        ],
+        "uncertainties": [
+          "Lepiforum beskriver expansion, men de citerade äldre tyska enstaka fynden räcker inte för att belägga en aktuell rörelse mot Sverige."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scopula imitaria",
+      "source_url": "https://lepiforum.org/wiki/page/Scopula_imitaria",
+      "source_sha256": "1fd7bd8041fe1cfc9bc80278443d1248da88670cde0d0a61f66533e0b9dbda6a",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "habitat": true,
+        "hosts": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Lepiforum visar dynhabitat vid Cabo de Gata i Spanien; det är ett platsexempel och inte en fullständig habitatbeskrivning."
+        ],
+        "hosts": [
+          "Liguster (Ligustrum vulgare) framhålls som viktig föda; larven beskrivs samtidigt som bred i sitt födoval."
+        ],
+        "search": [
+          "Ljusfynd och fynd vid belysta väggar dokumenteras. Bilder av både över- och undersida underlättar bestämningen."
+        ],
+        "locations": [
+          "Cabo de Gata, Spanien: dynhabitat fotograferat 15 juni 2018."
+        ],
+        "uncertainties": [
+          "Danmark anges som enstaka fynd. Underlaget fastställer inte en dansk population eller expansion mot Sverige."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Aporophyla nigra",
+      "source_url": "https://lepiforum.org/wiki/page/Aporophyla_nigra",
+      "source_sha256": "cf81e08f6b8eb21e14234fce8613780b91a02408748405aac234fe351680f3f0",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "habitat": true,
+        "hosts": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Tyska fyndmiljöer omfattar sandiga magerräsmarker, hed och öppna marker vid skogsbryn."
+        ],
+        "hosts": [
+          "Tyska larvfynd på ljung (Calluna vulgaris) är dokumenterade. En larv som bara sitter på en växt ska inte räknas som ett födobelägg."
+        ],
+        "search": [
+          "Tyska vuxenfynd vid ljus och bete finns från september. Larvfynd i maj är dokumenterade."
+        ],
+        "locations": [
+          "Jüterbog-Heidehof, Brandenburg: larv på ljung, 26 maj 2008.",
+          "Lohsa, Sachsen: vuxen vid ljus, 21 september 2023."
+        ],
+        "uncertainties": [
+          "Skilj från andra mörka Aporophyla-arter; teckning, vingform och antenner behöver dokumenteras."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Conistra ligula",
+      "source_url": "https://lepiforum.org/wiki/page/Conistra_ligula",
+      "source_sha256": "1f4c48a53f9b822790efc3ce8d94b7ff5bf4aa91419fe6e8fac29797bbf5a995",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "habitat": true,
+        "hosts": false,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Ett dokumenterat tyskt habitat är en blandskogsdel i Bürgerpark vid Rodenberg."
+        ],
+        "hosts": [],
+        "search": [],
+        "locations": [
+          "Rodenberg, Niedersachsen: habitatfoto 4 november 2016."
+        ],
+        "uncertainties": [
+          "Risk för förväxling med Conistra vaccinii. Expansion i Skottland är inte belägg för att arten för närvarande närmar sig Sverige."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Lithophane leautieri",
+      "source_url": "https://lepiforum.org/wiki/page/Lithophane_leautieri",
+      "source_sha256": "6aa718026bd5edc25b886df795b5bd51b3ad85da20a45a70452eaea71be6561e",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "habitat": false,
+        "hosts": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Lepiforum dokumenterar unga larver som bankats från cypress i Portugal."
+        ],
+        "search": [
+          "Fynd vid ljus och bete dokumenteras i Tyskland under hösten."
+        ],
+        "locations": [
+          "Duisburg-Wanheim: första tyska fyndet 18 oktober 2015.",
+          "Rheinbrohl: första belägget för Rheinland-Pfalz 28 september 2023; Kassel: första för Hessen 26 oktober 2024."
+        ],
+        "uncertainties": [
+          "Nya lands- eller delstatsfynd kan påverkas av inventeringsinsats. Expansion i Europa ger ingen beräknad sannolikhet för svenskt fynd."
+        ]
+      }
     }
   ]
 }

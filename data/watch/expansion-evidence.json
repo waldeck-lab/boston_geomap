@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-01-v1",
+  "version": "2026-11-02-v2",
   "assessments": [
     {
       "scientific_name": "Proserpinus proserpina",
@@ -9,7 +9,12 @@
       "period": "2005–2015; publicerat 2017",
       "reason": "Dansk inventeringshandledning beskriver första danska fyndet 2005, därefter reproduktion på Lolland–Falster och Møn samt fortsatt spridning. Det ger en belagd nordlig förskjutning nära södra Sverige.",
       "caveat": "Källans utbredningsläge är från 2017. Flaggan innebär ingen beräknad sannolikhet för svenskt fynd eller belagd svensk övervintring.",
-      "sources": [{"title": "Aarhus universitet: övervakning av natlyssværmer, s. 9 (2017)", "url": "https://ecos.au.dk/fileadmin/ecos/Fagdatacentre/Biodiversitet/TA11_Proserpina_160517.pdf"}],
+      "sources": [
+        {
+          "title": "Aarhus universitet: övervakning av natlyssværmer, s. 9 (2017)",
+          "url": "https://ecos.au.dk/fileadmin/ecos/Fagdatacentre/Biodiversitet/TA11_Proserpina_160517.pdf"
+        }
+      ],
       "checked_at": "2026-11-01"
     },
     {
@@ -21,8 +26,14 @@
       "reason": "Litauiska originalrapporten 2016 beskriver expansion norrut till gränsen mot Lettland. En separat studie 2022 dokumenterar fortsatt nordlig expansion i Mähren och Schlesien. Den baltiska riktningen gör arten särskilt intressant för bevakning mot Sverige.",
       "caveat": "Studierna visar regional expansion, inte en fastställd spridningsväg över Östersjön. Pilotens baltiska fyndurval är litet och ska inte användas för en trendberäkning.",
       "sources": [
-        {"title": "Švitra m.fl.: Two new and 129 rare Lepidoptera species, 2016", "url": "https://entomologai.lt/en/leidiniai/1-nrlis/49-volume-28-2016?download=273%3Avol28p061-78-svitra-bacianskas-inokaitis-kvietkauskas-mikalauskas-usaitis-2-new-and-129-rare-lepidoptera-species"},
-        {"title": "Spitzer & Beneš: Expansion of the Marbled Fritillary, 2022, s. 68–76", "url": "https://media.muzeumvalassko.cz/mrv/media/newdata/ACO-13_2022.pdf"}
+        {
+          "title": "Švitra m.fl.: Two new and 129 rare Lepidoptera species, 2016",
+          "url": "https://entomologai.lt/en/leidiniai/1-nrlis/49-volume-28-2016?download=273%3Avol28p061-78-svitra-bacianskas-inokaitis-kvietkauskas-mikalauskas-usaitis-2-new-and-129-rare-lepidoptera-species"
+        },
+        {
+          "title": "Spitzer & Beneš: Expansion of the Marbled Fritillary, 2022, s. 68–76",
+          "url": "https://media.muzeumvalassko.cz/mrv/media/newdata/ACO-13_2022.pdf"
+        }
       ],
       "checked_at": "2026-11-01"
     },
@@ -34,7 +45,12 @@
       "period": "Expansion analyserad i publikation 2023",
       "reason": "Cuvelier & Vervaeke analyserar artens nordliga och västliga expansion i Belgien i en studie publicerad 2023. Tillsammans med aktuella grannlandsfynd motiverar det extra bevakning.",
       "caveat": "Det belgiska resultatet visar inte i sig expansion i Danmark eller en riktning över Östersjön. Flaggan gäller dokumenterad nordlig expansion i Europa, inte en prognos för ankomst till Sverige.",
-      "sources": [{"title": "Cuvelier & Vervaeke: Phegea 51(4), 2023 – författarnas publikationssammanfattning", "url": "https://archwestpalepido.be/SC_DYN.html"}],
+      "sources": [
+        {
+          "title": "Cuvelier & Vervaeke: Phegea 51(4), 2023 – författarnas publikationssammanfattning",
+          "url": "https://archwestpalepido.be/SC_DYN.html"
+        }
+      ],
       "checked_at": "2026-11-01"
     },
     {
@@ -45,7 +61,12 @@
       "period": "Danska belägg från 1970-talet; biologisk studie 1982",
       "reason": "En relevant grannlandsart, men de granskade originalkällorna belägger inte en ny nordlig expansion. Skou beskriver danskt material från Nordfyn 1979 och förväxlingsproblemet med Theria rupicapraria.",
       "caveat": "Nyupptäckta förekomster kan bero på bättre bestämning. Avsaknad av flagga betyder inte att arten är ointressant eller att expansion är utesluten.",
-      "sources": [{"title": "Skou 1982: Biologiske iagttagelser over Theria primaria", "url": "https://danbif.dk/research-files/litteratur/entomologiske-meddelelser/bind-49/skou__p._1982.pdf"}],
+      "sources": [
+        {
+          "title": "Skou 1982: Biologiske iagttagelser over Theria primaria",
+          "url": "https://danbif.dk/research-files/litteratur/entomologiske-meddelelser/bind-49/skou__p._1982.pdf"
+        }
+      ],
       "checked_at": "2026-11-01"
     },
     {
@@ -56,8 +77,49 @@
       "period": "Danmark 2023; rapport publicerad 2026",
       "reason": "Larsens originalrapport anger arten som ny för Danmark 2023. Det är ett aktuellt grannlandsbelägg, men ett nytt landsfynd räcker inte ensamt för att visa fortgående naturlig expansion norrut.",
       "caveat": "Möjlig spridning med växter och urbana mikroklimat behöver bedömas. Högintressant-flaggan kräver här tydligare expansionsunderlag.",
-      "sources": [{"title": "Larsen 2026: Fund af småsommerfugle fra Danmark i 2023 og 2024 – originalsammanfattning", "url": "https://www.researchgate.net/publication/400311666_Larsen_K_2026_Fund_af_smasommerfugle_fra_Danmark_i_2023_og_2024_Lepidoptera_-_Ent_Medd_vol_92_hft1-2-2026"}],
+      "sources": [
+        {
+          "title": "Larsen 2026: Fund af småsommerfugle fra Danmark i 2023 og 2024 – originalsammanfattning",
+          "url": "https://www.researchgate.net/publication/400311666_Larsen_K_2026_Fund_af_smasommerfugle_fra_Danmark_i_2023_og_2024_Lepidoptera_-_Ent_Medd_vol_92_hft1-2-2026"
+        }
+      ],
       "checked_at": "2026-11-01"
+    },
+    {
+      "scientific_name": "Conistra ligula",
+      "high_interest": true,
+      "status": "documented_range_expansion",
+      "direction": "Ökning och spridning i Skottland; riktning mot Sverige ej belagd",
+      "period": "Skotsk trend sedan 1980, sammanställd 2020",
+      "reason": "Scottish Macro-moth List 2020 beskriver stor ökning och spridning. Regionalt tyskt underlag ger samtidigt en mer blandad bild; flaggan gäller dokumenterad skotsk expansion.",
+      "caveat": "Ingen bekräftad aktuell expansionsfront mot Sverige har hittats. Skotsk ökning ska inte överföras till norra Tyskland eller Norden.",
+      "sources": [
+        {
+          "title": "Butterfly Conservation: Scottish Macro-moth List 2020, trend sedan 1980",
+          "url": "https://butterfly-conservation.org/sites/default/files/2024-02/Scottish%20Macro%20Moths%20List%20-%202020.pdf"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Lithophane leautieri",
+      "high_interest": true,
+      "status": "documented_range_expansion",
+      "direction": "Nordlig expansion i Storbritannien och nya tyska regionfynd; även dansk förekomst",
+      "period": "Storbritannien 1951–2016; tyska regionfynd 2015–2024",
+      "reason": "Publicerad brittisk expansionshistorik kompletteras av första tyska fynd 2015, Rheinland-Pfalz 2023 och Hessen 2024. Dansk förekomst finns i uppdaterad nordisk-baltisk checklista.",
+      "caveat": "Ingen säker svensk ankomstprognos. Brittisk expansion uppges ha stabiliserats efter 2000; plantering och transport av cypresser kan bidra.",
+      "sources": [
+        {
+          "title": "Lees m.fl. 2024: bakgrund och expansionshistorik",
+          "url": "https://doi.org/10.12688/wellcomeopenres.22610.1"
+        },
+        {
+          "title": "Lepiforum: tyska förstafynd 2015, 2023 och 2024",
+          "url": "https://lepiforum.org/wiki/page/Lithophane_leautieri"
+        }
+      ],
+      "checked_at": "2026-11-02"
     }
   ]
 }

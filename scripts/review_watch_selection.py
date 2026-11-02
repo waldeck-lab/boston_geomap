@@ -25,6 +25,12 @@ URLS={
 # Positive Swedish records explicitly enumerated in the open original 2025 abstract.
 BAB_2025={'Eriocrania marci','Caloptilia honoratella','Phyllonorycter issikii','Phyllonorycter mespilella','Phyllonorycter mespilellus','Phyllonorycter medicaginella','Phyllonorycter medicaginellus','Phyllocnistis xenia','Choreutis nemorana','Aproaerema cinctelloides','Aproaerema vinella','Agonopterix putridella','Endothenia ustulana','Epiblema turbidana'}
 PRIORITY=['Theria primaria','Brenthis daphne','Caradrina kadenii','Clepsis dumicolana','Lithophane leautieri','Eudonia angustea','Carcharodus alceae','Pyronia tithonus','Melanargia galathea','Lycaena dispar','Lycaena tityrus','Euplagia quadripunctaria','Eilema caniola','Aporophyla australis','Phaiogramma etruscaria','Aleucis distinctata','Cerura erminea','Horisme radicaria','Eucarta amethystina','Omphaloscelis lunosa','Aporophyla nigra','Eccopisa effractella','Gymnancyla hornigii','Udea costalis','Parectopa robiniella','Macrosaccus robiniella','Stigmella rhamnella','Trifurcula beirnei','Trifurcula squamatella','Dialectica imperialella','Phyllonorycter messaniella','Phyllonorycter scopariella','Stigmella stettinensis','Isotrias rectifasciana','Rhagades pruni','Zygaena trifolii','Metalampra italica','Batia lambdella','Agonopterix umbellana','Monochroa divisella','Mirificarma interrupta','Gelechia senticetella','Scrobipalpa costella','Scrobipalpa ocellatella','Scrobipalpa instabilella','Xenolechia aethiops','Blastobasis phycidella','Endotricha flammealis','Idaea degeneraria','Idaea rusticata','Idaea subsericeata','Scopula imitaria','Scopula emutaria','Horisme corticata','Stegania trimaculata','Gastropacha populifolia','Odonestis pruni','Proserpinus proserpina','Drymonia obliterata','Ptilodon cucullina']
+def front_params(taxon,mappable=False):
+    """Biological presence is independent of permission to republish map points."""
+    params={'taxonKey':taxon,'country':['DK','DE','PL','LT','LV','EE'],'decimalLatitude':'53,60','eventDate':'2015-01-01,2026-11-01','occurrenceStatus':'PRESENT','hasCoordinate':'true','hasGeospatialIssue':'false','limit':0}
+    if mappable:params['license']=['CC0_1_0','CC_BY_4_0']
+    return params
+
 def baseline(text,validate=True):
     genus=None;rows={}
     for line in text.splitlines():
@@ -92,10 +98,10 @@ def main():
         se=api('occurrence/search',{'taxonKey':key,'country':'SE','occurrenceStatus':'PRESENT','limit':0});review['gbif_sweden_count']=se['data']['count'];review['evidence_urls'].append(se['url'])
         if se['data']['count']:
             review.update(classification='swedish_record_to_review',reason='Publika svenska GBIF-belägg finns; utesluten från förstafyndslistan tills de bedömts.');assessments[name]=review;print('SE RECORDS',name,se['data']['count'],flush=True);continue
-        front=api('occurrence/search',{'taxonKey':key,'country':['DK','DE','PL','LT','LV','EE'],'decimalLatitude':'53,60','eventDate':'2015-01-01,2026-11-01','occurrenceStatus':'PRESENT','hasCoordinate':'true','hasGeospatialIssue':'false','license':['CC0_1_0','CC_BY_4_0'],'limit':0});review['front_2015_2026_count']=front['data']['count'];review['evidence_urls'].append(front['url'])
+        front=api('occurrence/search',front_params(key));review['front_2015_2026_count']=front['data']['count'];review['evidence_urls'].append(front['url'])
         if front['data']['count']:
             review.update(classification='watch_candidate',reason='Ej svensk i granskad nordisk-baltisk checklista med uppdateringar och senare öppna BAB-belägg; inga publika positiva SE-träffar i GBIF-kontrollen. Dokumenterade grannlandsfynd finns 2015–2026. Frånvaro och framtida etablering är inte bevisade.');selected.append(name);print('CANDIDATE',len(selected),name,front['data']['count'],flush=True)
-        else:review.update(reason='Inget aktuellt licensierat fyndunderlag i vald front; inte prioriterad.');print('NO FRONT',name,flush=True)
+        else:review.update(reason='Inget aktuellt fyndunderlag i vald geografisk front; inte prioriterad.');print('NO FRONT',name,flush=True)
         assessments[name]=review
         if len(selected)>=args.count:break
     if len(selected)<10:raise RuntimeError('Too few source-screened candidates; do not pad the list')

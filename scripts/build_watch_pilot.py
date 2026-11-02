@@ -28,7 +28,12 @@ def main():
     if record['metadata']['license']['id']!='cc-by-4.0':raise RuntimeError('Unexpected source license')
     item=next(f for f in record['files'] if f['key']==matrix.name);algorithm,digest=item['checksum'].split(':')
     if hashlib.file_digest(matrix.open('rb'),algorithm).hexdigest()!=digest:raise RuntimeError('Matrix checksum mismatch')
-    selection=json.loads((stage/'selection-review.json').read_text());names=selection['names']
+    selection=json.loads((stage/'selection-review.json').read_text());names=list(selection['names'])
+    additions_path=Path(__file__).resolve().parents[1]/'data/watch/additional-candidates.json'
+    additions=json.loads(additions_path.read_text(encoding='utf-8'))
+    for name,assessment in additions['assessments'].items():
+        if name not in names:names.append(name)
+        selection['assessments'][name]=assessment
     exclusions=json.loads((Path(__file__).resolve().parents[1]/'data/watch/selection-exclusions.json').read_text(encoding='utf-8'))
     excluded_names={r['scientific_name'] for r in exclusions['excluded']}
     if set(names)&excluded_names:raise RuntimeError('Excluded resident species in watch cohort')
@@ -41,6 +46,7 @@ def main():
     try:
         with db:
             matrix_source='gaytan-'+version;traits_source='uk-traits-2024'
+            source(db,'nrm-candidates-'+additions['version'],'Additional reviewed watch candidates: NRM catalogue and user proposals','http://www3.nrm.se/en/svenska_fjarilar/kataloger/CATLEP2015.xls','Source citation and factual screening only',additions['version'],additions_path)
             source(db,matrix_source,'Gaytán — European Lepidoptera–plant associations','https://doi.org/10.5281/zenodo.'+version,'CC-BY-4.0',version,matrix)
             source(db,traits_source,'Cook et al. — British and Irish Lepidoptera traits 2024','https://doi.org/10.5285/dbc7cc17-cbbd-49dd-bab4-8e8855768d66','Open Government Licence','2024',raw/'uk-traits-dataset.zip')
             taxon_file=raw/'dyntaxa-lepidoptera.json';taxa=json.loads(taxon_file.read_text())['species'] if taxon_file.exists() else []
@@ -78,6 +84,9 @@ def main():
                 name_source='dyntaxa-names-'+hashlib.sha256(taxon_file.read_bytes()).hexdigest()[:16]
                 source(db,name_source,'SLU Artdatabanken / Dyntaxa – svenska namn i lokal taxonomikatalog','https://www.dyntaxa.se/','Taxon names; source attribution','cached snapshot',taxon_file)
                 import_swedish_names(db,taxon_file,name_source)
+            for name,swedish_name in additions.get('swedish_names',{}).items():
+                if swedish_name and name in ids and not db.execute('SELECT 1 FROM vernacular_names WHERE candidate_id=?',(ids[name],)).fetchone():
+                    db.execute('INSERT INTO vernacular_names VALUES(?,?,?,?,?)',(ids[name],swedish_name,'sv','nrm-candidates-'+additions['version'],name))
             overrides=Path(__file__).resolve().parents[1]/'data/watch/swedish-name-overrides.json'
             name_data=json.loads(overrides.read_text(encoding='utf-8'))
             for item in name_data['names']:

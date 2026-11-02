@@ -2,9 +2,16 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from review_watch_selection import baseline,add_updates,BAB_2025
+from review_watch_selection import baseline,add_updates,front_params,BAB_2025
 
 class WatchSelectionTests(unittest.TestCase):
+    def test_biological_presence_does_not_require_a_map_reuse_license(self):
+        biological=front_params(1759673)
+        self.assertNotIn('license',biological)
+        self.assertEqual(biological['limit'],0)
+        mapped=front_params(1759673,mappable=True)
+        self.assertEqual(mapped.pop('license'),['CC0_1_0','CC_BY_4_0'])
+        self.assertEqual(mapped,biological)
     def test_country_parser_does_not_treat_taxonomy_as_swedish_occurrence(self):
         rows=baseline('577 Cameraria Chapman, 1902\n578 ohridella Deschka & Dimić, 1986    N S D F E Lv Lt\n503 Macrosaccus Davis, 2011\n504 robiniella (Clemens, 1859)    D Lt\n',validate=False)
         self.assertIn('S',rows['Cameraria ohridella']['countries'])

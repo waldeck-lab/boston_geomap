@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v2",
+  "version": "2026-11-02-v3",
   "guides": [
     {
       "scientific_name": "Proserpinus proserpina",
@@ -92,6 +92,381 @@
       ],
       "limitations": "Svenska områden och växtbestånd har inte inventerats eller modellerats. Dansk och tysk fenologi är utgångspunkter, inte ett fast svenskt schema. Ett inflyget vuxet djur visar inte att arten kan övervintra; larvfynd visar reproduktion men inte varaktig etablering. Svenska hypoteser ritas inte som fyndpunkter på kartan.",
       "follow_up": "Fotografera djuret och eventuell värdväxt. Anteckna datum, stadium, plats, biotop och växtnamn samt om det gäller ett flygande djur, ägg eller larv. Återbesök kan skilja enstaka besök från återkommande reproduktion."
+    },
+    {
+      "scientific_name": "Heliomata glarearia",
+      "swedish_name": "stäppnätmätare",
+      "review_status": "Redaktionellt utkast – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum – artblad och dokumenterade fynd",
+          "url": "https://lepiforum.org/wiki/page/Heliomata_glarearia"
+        },
+        {
+          "id": "traits",
+          "title": "Cook m.fl. (2024) – brittisk-irländska ekologiska traitdata",
+          "url": "https://doi.org/10.5285/dbc7cc17-cbbd-49dd-bab4-8e8855768d66"
+        }
+      ],
+      "documented": [],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Varma torrängar i sydöstra Skåne",
+          "text": "Pröva kalk- och sandgräsmarker kring Kåseberga–Sandhammaren och Kristianstadsslätten där gullusern verkligen finns. Föreslaget första sökområde, utan verifierade växtbestånd eller svenska artfynd.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi"
+          ]
+        },
+        {
+          "kind": "hypothesis",
+          "title": "Sök dagtid och följ upp larver",
+          "text": "Som försöksfönster: maj–juni och juli–augusti för vuxna, juli–augusti för larver. Undersök gullusern i solvarma bryn. Södra Öland och Gotlands kalkgräsmarker är alternativa habitatförslag med osäkrare spridningskoppling.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler och värdväxtbestånd har inte inventerats. Utländsk fenologi ger försöksfönster, inte fastställda svenska flygtider. Följ platsens tillträdes- och insamlingsregler. Sökhypoteser visas inte som fyndpunkter.",
+      "follow_up": "Fotografera djuret och eventuell födoväxt. Spara datum, plats, stadium och metod. Sök igen vid senare tillfälle; enstaka vuxna belägger inte varaktig etablering."
+    },
+    {
+      "scientific_name": "Polymixis lichenea",
+      "swedish_name": "kusthöstfly",
+      "review_status": "Redaktionellt utkast – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum – artblad och dokumenterade fynd",
+          "url": "https://lepiforum.org/wiki/page/Polymixis_lichenea"
+        },
+        {
+          "id": "traits",
+          "title": "Cook m.fl. (2024) – brittisk-irländska ekologiska traitdata",
+          "url": "https://doi.org/10.5285/dbc7cc17-cbbd-49dd-bab4-8e8855768d66"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "habitat",
+          "title": "Kustnära gräsmarker",
+          "text": "Den brittisk-irländska traitsammanställningen anger bland annat kalkgräsmark, sanddyner, klippkust och klapperstrand.",
+          "region": "Storbritannien och Irland",
+          "source_ids": [
+            "traits"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "search",
+          "title": "Höstflygning och övervintrande larv",
+          "text": "Brittisk-irländskt underlag: vuxna augusti–november, larver oktober–maj. Kalendern gäller källregionen.",
+          "region": "Storbritannien och Irland",
+          "source_ids": [
+            "traits"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "hosts",
+          "title": "Födoväxter i brittisk-irländskt underlag",
+          "text": "Traitsammanställningen anger bland annat Rumex, björnbär (Rubus fruticosus) och maskrosor (Taraxacum). Detta är regionala uppgifter, inte fastställda svenska födoväxtval.",
+          "region": "Storbritannien och Irland",
+          "source_ids": [
+            "traits"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Skånes syd- och västkust",
+          "text": "Pröva torra kustgräsmarker, klapperstränder och dynkanter kring Falsterbo–Skanör samt Kullabergs kust. Välj tillgängliga platser med låg örtvegetation; lokalerna är habitatförslag, inte förutsagda fyndplatser.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "traits"
+          ]
+        },
+        {
+          "kind": "hypothesis",
+          "title": "Ljus under hösten",
+          "text": "Prioritera september–oktober som ett första svenskt försöksfönster för ljusspaning. Hallands kust kan vara en andra sökomgång. Återkommande fynd och larver skulle vara mer informativa om etablering än ett enstaka vuxet djur.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "traits"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler och värdväxtbestånd har inte inventerats. Utländsk fenologi ger försöksfönster, inte fastställda svenska flygtider. Följ platsens tillträdes- och insamlingsregler. Sökhypoteser visas inte som fyndpunkter.",
+      "follow_up": "Fotografera djuret och eventuell födoväxt. Spara datum, plats, stadium och metod. Sök igen vid senare tillfälle; enstaka vuxna belägger inte varaktig etablering."
+    },
+    {
+      "scientific_name": "Scopula imitaria",
+      "swedish_name": "rödgul lövmätare",
+      "review_status": "Redaktionellt utkast – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum – artblad och dokumenterade fynd",
+          "url": "https://lepiforum.org/wiki/page/Scopula_imitaria"
+        },
+        {
+          "id": "traits",
+          "title": "Cook m.fl. (2024) – brittisk-irländska ekologiska traitdata",
+          "url": "https://doi.org/10.5285/dbc7cc17-cbbd-49dd-bab4-8e8855768d66"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "habitat",
+          "title": "Bryn och häckmiljöer",
+          "text": "Brittisk-irländska traitdata anger lövskog samt busk- och häckmiljöer. Detta kompletterar dynexemplet från Spanien.",
+          "region": "Storbritannien och Irland",
+          "source_ids": [
+            "traits"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "search",
+          "title": "Sommarflygning i brittiskt underlag",
+          "text": "Brittisk-irländska traitdata anger vuxna juni–september och larver augusti–maj. Tiderna är ingen svensk prognos.",
+          "region": "Storbritannien och Irland",
+          "source_ids": [
+            "traits"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Skyddade kustnära häckar i södra Skåne",
+          "text": "Pröva varma bryn, buskmarker och ligusterhäckar kring Falsterbo–Skanör och sydkusten mot Ystad. Kontrollera födoväxterna på plats. Inget av områdena är belagd svensk lokal för arten.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "traits"
+          ]
+        },
+        {
+          "kind": "hypothesis",
+          "title": "Sommarspaning vid ljus",
+          "text": "Juni–september är ett första försöksfönster från brittisk fenologi. Ljusspaning i vindskyddade miljöer nära kust och häckar kan prövas. Enstaka besök eller införsel måste skiljas från reproduktion.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "traits"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler och värdväxtbestånd har inte inventerats. Utländsk fenologi ger försöksfönster, inte fastställda svenska flygtider. Följ platsens tillträdes- och insamlingsregler. Sökhypoteser visas inte som fyndpunkter.",
+      "follow_up": "Fotografera djuret och eventuell födoväxt. Spara datum, plats, stadium och metod. Sök igen vid senare tillfälle; enstaka vuxna belägger inte varaktig etablering."
+    },
+    {
+      "scientific_name": "Aporophyla nigra",
+      "swedish_name": "svart puckelfly",
+      "review_status": "Redaktionellt utkast – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum – artblad och dokumenterade fynd",
+          "url": "https://lepiforum.org/wiki/page/Aporophyla_nigra"
+        },
+        {
+          "id": "traits",
+          "title": "Cook m.fl. (2024) – brittisk-irländska ekologiska traitdata",
+          "url": "https://doi.org/10.5285/dbc7cc17-cbbd-49dd-bab4-8e8855768d66"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "search",
+          "title": "Höstflygning och larvövervintring",
+          "text": "Brittisk-irländska traitdata anger vuxna augusti–november och larver oktober–maj. Ljung, Rumex, maskrosor och Salix finns bland angivna födoväxter.",
+          "region": "Storbritannien och Irland",
+          "source_ids": [
+            "traits"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Hed och torr gräsmark mot Kattegatt",
+          "text": "Pröva ljunghed, sandig gräsmark och öppna skogsbryn på Kullahalvön, Bjärehalvön och i kustnära Halland. Motivet är habitatlikhet samt kända förekomster i Danmark och Norge, inte en beräknad spridningsväg.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "traits"
+          ]
+        },
+        {
+          "kind": "hypothesis",
+          "title": "Ljus och bete i september–oktober",
+          "text": "Prioritera höstkvällar i vindskyddade lägen. Försiktig larvspaning på ljung i april–maj är ett uppföljningsförslag. Kontrollera växtbestånd och dokumentera larver för säker bestämning.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "traits"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler och värdväxtbestånd har inte inventerats. Utländsk fenologi ger försöksfönster, inte fastställda svenska flygtider. Följ platsens tillträdes- och insamlingsregler. Sökhypoteser visas inte som fyndpunkter.",
+      "follow_up": "Fotografera djuret och eventuell födoväxt. Spara datum, plats, stadium och metod. Sök igen vid senare tillfälle; enstaka vuxna belägger inte varaktig etablering."
+    },
+    {
+      "scientific_name": "Conistra ligula",
+      "swedish_name": "",
+      "review_status": "Redaktionellt utkast – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum – artblad och dokumenterade fynd",
+          "url": "https://lepiforum.org/wiki/page/Conistra_ligula"
+        },
+        {
+          "id": "pyrgus",
+          "title": "Wolfgang Wagner / Pyrgus – egen ekologisk artbeskrivning",
+          "url": "https://www.pyrgus.de/Conistra_ligula_en.html"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "habitat",
+          "title": "Varma bryn och buskrika skogar",
+          "text": "Pyrgus beskriver varma, ganska torra och ljusa skogar, buskmarker och häckar, gärna intill torrängar.",
+          "region": "Centraleuropa",
+          "source_ids": [
+            "pyrgus"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "hosts",
+          "title": "Vedväxter först, sedan örter",
+          "text": "Unga larver lever på vedväxter, till exempel slån. Äldre larver kan övergå till örter och låga grenar; variation i beteendet återstår att klarlägga.",
+          "region": "Centraleuropa",
+          "source_ids": [
+            "pyrgus"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "search",
+          "title": "Vuxna övervintrar",
+          "text": "Centraleuropeiskt underlag: vuxna från sensommar genom övervintring till början av maj. Larver kan bankas i maj och början av juni. Ett svenskt sökfönster är ännu inte fastställt.",
+          "region": "Centraleuropa",
+          "source_ids": [
+            "pyrgus"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Buskrika torrängsbryn i sydöstra Skåne",
+          "text": "Pröva varma slån- och lövskogsbryn vid Kåseberga och längs Österlens kust. Motivet är habitatlikhet och läget mot norra Tyskland/Polen. Inga svenska lokaler eller växtbestånd har verifierats.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "pyrgus"
+          ]
+        },
+        {
+          "kind": "hypothesis",
+          "title": "Höst och mild vår som försöksfönster",
+          "text": "Ljus- och betesprov under september–november, följt av milda vårkvällar, är ett redaktionellt försöksupplägg. Kontrollera särskilt förväxling med C. vaccinii. Skotsk expansion får inte likställas med en nordisk expansionsfront.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "pyrgus"
+          ]
+        }
+      ],
+      "limitations": "Svenska sökplatser och värdväxtbestånd har inte verifierats. Utländska flygtider är försöksunderlag. Inga hypoteser ritas som fyndpunkter. Följ tillträdes- och insamlingsregler.",
+      "follow_up": "Dokumentera datum, stadium, metod, biotop och eventuell födoväxt. Fotografera tydligt och be om expertkontroll. Följ upp vuxenfynd med eftersök av tidigare stadier."
+    },
+    {
+      "scientific_name": "Lithophane leautieri",
+      "swedish_name": "",
+      "review_status": "Redaktionellt utkast – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum – artblad och dokumenterade fynd",
+          "url": "https://lepiforum.org/wiki/page/Lithophane_leautieri"
+        },
+        {
+          "id": "paper",
+          "title": "Lees m.fl. (2024), Wellcome Open Research 9:369, biologisk bakgrund s. 3",
+          "url": "https://doi.org/10.12688/wellcomeopenres.22610.1"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "habitat",
+          "title": "Planterade cypresser i bebyggelse",
+          "text": "Den brittiska spridningen kopplas i forskningsartikelns bakgrund till planterade cypresser, bland annat i trädgårdar.",
+          "region": "Storbritannien",
+          "source_ids": [
+            "paper"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "hosts",
+          "title": "Cypressväxter",
+          "text": "Enar och cypresser anges som föda. Lawsoncypress och leylandcypress nämns särskilt; larven äter knoppar och blomanlag.",
+          "region": "Storbritannien",
+          "source_ids": [
+            "paper"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "search",
+          "title": "Höstflygning och äggövervintring",
+          "text": "Brittiskt underlag: en generation, mitten av september–slutet av november med tyngdpunkt tidigt i oktober. Arten kommer till ljus och övervintrar som ägg. Brittisk kläckning anges till februari–mars.",
+          "region": "Storbritannien",
+          "source_ids": [
+            "paper"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Kustnära cypressplanteringar",
+          "text": "Pröva parker, trädgårdar och kyrkogårdar med cypressväxter kring Falsterbo–Skanör, Helsingborg och Kullahalvön. Danska belägg motiverar ett första försök i södra/västra Skåne. Trädslag och tillträde måste kontrolleras på plats.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "paper"
+          ]
+        },
+        {
+          "kind": "hypothesis",
+          "title": "Ljusspaning i oktober",
+          "text": "September–november är ett första försöksfönster, främst oktober. Hallands kust är ett andra geografiskt förslag. Sök senare larver på identifierade cypressväxter; planttransport kan också sprida arten och måste skiljas från naturlig expansion.",
+          "region": "Sverige – redaktionellt sökförslag",
+          "source_ids": [
+            "lepi",
+            "paper"
+          ]
+        }
+      ],
+      "limitations": "Svenska sökplatser och värdväxtbestånd har inte verifierats. Utländska flygtider är försöksunderlag. Inga hypoteser ritas som fyndpunkter. Följ tillträdes- och insamlingsregler.",
+      "follow_up": "Dokumentera datum, stadium, metod, biotop och eventuell födoväxt. Fotografera tydligt och be om expertkontroll. Följ upp vuxenfynd med eftersök av tidigare stadier."
     }
   ]
 }

@@ -1,0 +1,435 @@
+{
+  "checked_at": "2026-11-02",
+  "tested": 90,
+  "remaining": [
+    {
+      "scientific_name": "Aporophyla australis",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 2,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1760857&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Phaiogramma etruscaria",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1961013&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Gymnancyla hornigii",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 3,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1878589&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Phyllonorycter scopariella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 10,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1750086&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Stigmella stettinensis",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=5102547&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Batia lambdella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 29,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1841158&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Monochroa divisella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1846678&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Mirificarma interrupta",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 32,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1852159&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Scrobipalpa costella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 19,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1849897&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Scrobipalpa instabilella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 10,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1849815&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Idaea degeneraria",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=5147441&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Idaea rusticata",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 6,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=5147478&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Ectoedemia klimeschi",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=4527282&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Ectoedemia heringi",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 2,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=4527229&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Tischeria decidua",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 2,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1939427&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Bucculatrix noltei",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 10,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1751464&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Ornixola caudulatella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 2,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1749695&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Micrurapteryx kollariella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 11,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1749105&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Phyllonorycter kuhlweiniella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1749908&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 10,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1749762&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Argyresthia thuiella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 2,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1830284&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Clepsis rogana",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 12,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1737406&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Aethes bilbaensis",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 5,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1738440&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Lepteucosma huebneriana",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=4530286&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Zygaena angelicae",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 4,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=5107128&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Paranthrene insolitus",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 6,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=4525909&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Synanthedon stomoxiformis",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=4525803&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Pancalia nodosella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 9,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1842690&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Aproaerema larseniella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 15,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=9882511&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Gelechia jakovlevi",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 6,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1850374&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Elachista littoricola",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1832876&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1841946&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Epermenia insecurella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 4,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1869472&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Ochromolopis ictella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=9760332&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Agdistis adactyla",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 17,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=7582756&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Agdistis bennetii",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 8,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1859421&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Stenoptilodes taprobanes",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1860026&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Capperia trichodactyla",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1859878&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Hellinsia carphodactyla",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1859483&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Emmelina argoteles",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1859047&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Brenthis hecate",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 5,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8189761&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Polyommatus daphnis",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 36,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=5140436&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Gymnancyla canella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 12,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1878586&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Uncinus obductella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 3,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=11728049&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Euzophera bigella",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 1,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1875330&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Aglossa caprealis",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 13,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1877988&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    },
+    {
+      "scientific_name": "Diasemiopsis ramburialis",
+      "previous_licensed_front_count": 0,
+      "all_license_front_count": 8,
+      "evidence_url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1883067&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+      "swedish_check_date": "2026-11-01",
+      "status": "needs_species_level_review",
+      "reason": "Map-reuse license was used as a biological selection gate"
+    }
+  ],
+  "limitations": [
+    "This only audits one known filter in already assessed species, not completeness of all European taxa.",
+    "Positive aggregate counts do not prove expansion or authorize republication of individual records.",
+    "Swedish counts were zero at previous screening; each queued species needs a fresh national and literature check before inclusion.",
+    "Species outside the Nordic-Baltic checklist, outside the host matrix, after the 50-species stop, and taxonomic aliases need separate review."
+  ]
+}

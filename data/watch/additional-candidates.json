@@ -1,0 +1,162 @@
+{
+  "version": "2026-11-02-v2",
+  "swedish_names": {
+    "Heliomata glarearia": "stäppnätmätare",
+    "Polymixis lichenea": "kusthöstfly",
+    "Scopula imitaria": "rödgul lövmätare",
+    "Aporophyla nigra": "svart puckelfly",
+    "Conistra ligula": "",
+    "Lithophane leautieri": ""
+  },
+  "assessments": {
+    "Heliomata glarearia": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "3456",
+        "countries": [
+          "D",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 22,
+      "mappable_front_2015_2026_count": 1,
+      "gbif_key": 4525068,
+      "evidence_urls": [
+        "https://www.entomologiskforening.no/wp-content/uploads/2025/06/Aarvik_et_al_2017_Nordic-Baltic_Checklist_of_Lepidiptera.pdf",
+        "https://www.entomologiskforening.no/wp-content/uploads/2025/08/nje-vol72-no1-94-107.pdf",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4525068&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4525068&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+        "http://www3.nrm.se/en/svenska_fjarilar/kataloger/CATLEP2015.xls"
+      ],
+      "reason": "Källgranskad bevakningskandidat. Inga publika svenska GBIF-belägg i kontrollen och ingen svensk markering i granskat checklistunderlag. Fyndräkningen i närområdet omfattar alla licenser; endast CC0/CC BY-fynd återpubliceras på kartan. Detta är inte bevisad svensk frånvaro eller i sig belagd expansion; sena svenska rapporter behöver fortsatt expertgranskas."
+    },
+    "Polymixis lichenea": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "4429",
+        "countries": [
+          "D",
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 26,
+      "mappable_front_2015_2026_count": 0,
+      "gbif_key": 4533285,
+      "evidence_urls": [
+        "https://www.entomologiskforening.no/wp-content/uploads/2025/06/Aarvik_et_al_2017_Nordic-Baltic_Checklist_of_Lepidiptera.pdf",
+        "https://www.entomologiskforening.no/wp-content/uploads/2025/06/Aarvik-et-al-2021.pdf",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4533285&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4533285&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+        "http://www3.nrm.se/en/svenska_fjarilar/kataloger/CATLEP2015.xls"
+      ],
+      "reason": "Källgranskad bevakningskandidat. Inga publika svenska GBIF-belägg i kontrollen och ingen svensk markering i granskat checklistunderlag. Fyndräkningen i närområdet omfattar alla licenser; endast CC0/CC BY-fynd återpubliceras på kartan. Detta är inte bevisad svensk frånvaro eller i sig belagd expansion; sena svenska rapporter behöver fortsatt expertgranskas."
+    },
+    "Scopula imitaria": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "3150",
+        "countries": [
+          "D"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 6,
+      "mappable_front_2015_2026_count": 0,
+      "gbif_key": 8014296,
+      "evidence_urls": [
+        "https://www.entomologiskforening.no/wp-content/uploads/2025/06/Aarvik_et_al_2017_Nordic-Baltic_Checklist_of_Lepidiptera.pdf",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8014296&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8014296&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+        "http://www3.nrm.se/en/svenska_fjarilar/kataloger/CATLEP2015.xls"
+      ],
+      "reason": "Källgranskad bevakningskandidat. Inga publika svenska GBIF-belägg i kontrollen och ingen svensk markering i granskat checklistunderlag. Fyndräkningen i närområdet omfattar alla licenser; endast CC0/CC BY-fynd återpubliceras på kartan. Detta är inte bevisad svensk frånvaro eller i sig belagd expansion; sena svenska rapporter behöver fortsatt expertgranskas."
+    },
+    "Aporophyla nigra": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "4424",
+        "countries": [
+          "N",
+          "D"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 10,
+      "mappable_front_2015_2026_count": 0,
+      "gbif_key": 1760891,
+      "evidence_urls": [
+        "https://www.entomologiskforening.no/wp-content/uploads/2025/06/Aarvik_et_al_2017_Nordic-Baltic_Checklist_of_Lepidiptera.pdf",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1760891&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1760891&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+        "http://www3.nrm.se/en/svenska_fjarilar/kataloger/CATLEP2015.xls"
+      ],
+      "reason": "Källgranskad bevakningskandidat. Inga publika svenska GBIF-belägg i kontrollen och ingen svensk markering i granskat checklistunderlag. Fyndräkningen i närområdet omfattar alla licenser; endast CC0/CC BY-fynd återpubliceras på kartan. Detta är inte bevisad svensk frånvaro eller i sig belagd expansion; sena svenska rapporter behöver fortsatt expertgranskas."
+    },
+    "Conistra ligula": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": null,
+        "countries": [],
+        "sources": [],
+        "note": "Not listed in examined Nordic-Baltic checklist; separate Lepiforum and Pyrgus range sources used. No country-column inference."
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 12,
+      "mappable_front_2015_2026_count": 1,
+      "gbif_key": 1768729,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1768729&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1768729&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+        "https://lepiforum.org/wiki/page/Conistra_ligula"
+      ],
+      "reason": "Källgranskad bevakningskandidat. Inga publika svenska GBIF-belägg i kontrollen och ingen svensk markering i granskat checklistunderlag. Fyndräkningen i närområdet omfattar alla licenser; endast CC0/CC BY-fynd återpubliceras på kartan. Detta är inte bevisad svensk frånvaro eller i sig belagd expansion; sena svenska rapporter behöver fortsatt expertgranskas."
+    },
+    "Lithophane leautieri": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "4387a",
+        "countries": [
+          "D"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 1,
+      "mappable_front_2015_2026_count": 0,
+      "gbif_key": 1759673,
+      "evidence_urls": [
+        "https://www.entomologiskforening.no/wp-content/uploads/2025/06/Aarvik-et-al-2021.pdf",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1759673&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1759673&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&decimalLatitude=53%2C60&eventDate=2015-01-01%2C2026-11-01&occurrenceStatus=PRESENT&hasCoordinate=true&hasGeospatialIssue=false&limit=0",
+        "https://lepiforum.org/wiki/page/Lithophane_leautieri"
+      ],
+      "reason": "Källgranskad bevakningskandidat. Inga publika svenska GBIF-belägg i kontrollen och ingen svensk markering i granskat checklistunderlag. Fyndräkningen i närområdet omfattar alla licenser; endast CC0/CC BY-fynd återpubliceras på kartan. Detta är inte bevisad svensk frånvaro eller i sig belagd expansion; sena svenska rapporter behöver fortsatt expertgranskas."
+    }
+  }
+}
