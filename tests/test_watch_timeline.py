@@ -21,5 +21,12 @@ class TimelineTests(unittest.TestCase):
             with self.subTest(patch=patch):self.assertIsNone(self.parse(**patch))
     def test_same_origin_keeps_identity_across_gbif_records(self):
         self.assertEqual(self.parse()['occurrence_uid'],self.parse(key=2,datasetKey='other')['occurrence_uid'])
+    def test_finnish_history_uses_the_named_foreign_scope(self):
+        row=self.record(countryCode='FI',decimalLatitude=61,eventDate='1935-08-11')
+        self.assertIsNone(normalize(row,date(2026,11,2)))
+        self.assertEqual(normalize(row,date(2026,11,2),scope='baltic-finland')['year'],1935)
+        row['countryCode']='SE'
+        self.assertIsNone(normalize(row,date(2026,11,2),scope='baltic-finland'))
+        with self.assertRaises(ValueError):normalize(row,date(2026,11,2),scope='all-countries')
 
 if __name__=='__main__':unittest.main()

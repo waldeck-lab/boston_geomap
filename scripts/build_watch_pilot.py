@@ -9,6 +9,7 @@ from datetime import datetime,timezone
 from pathlib import Path
 import requests
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from geomap.watch_scope import get_scope
 from geomap.watch_store import connect,initialize,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,import_expansion_assessments,import_species_supplements,inventory,profile,normalized
 
 def main():
@@ -46,7 +47,7 @@ def main():
     try:
         with db:
             matrix_source='gaytan-'+version;traits_source='uk-traits-2024'
-            source(db,'nrm-candidates-'+additions['version'],'Additional reviewed watch candidates: NRM catalogue and user proposals','http://www3.nrm.se/en/svenska_fjarilar/kataloger/CATLEP2015.xls','Source citation and factual screening only',additions['version'],additions_path)
+            source(db,'nrm-candidates-'+additions['version'],'Source-screened additional watch candidates including Finland','http://www3.nrm.se/en/svenska_fjarilar/kataloger/CATLEP2015.xls','Source citation and factual screening only',additions['version'],additions_path)
             source(db,matrix_source,'Gaytán — European Lepidoptera–plant associations','https://doi.org/10.5281/zenodo.'+version,'CC-BY-4.0',version,matrix)
             source(db,traits_source,'Cook et al. — British and Irish Lepidoptera traits 2024','https://doi.org/10.5285/dbc7cc17-cbbd-49dd-bab4-8e8855768d66','Open Government Licence','2024',raw/'uk-traits-dataset.zip')
             taxon_file=raw/'dyntaxa-lepidoptera.json';taxa=json.loads(taxon_file.read_text())['species'] if taxon_file.exists() else []
@@ -65,16 +66,18 @@ def main():
                 db.execute('UPDATE candidates SET role=?,swedish_status=?,review_status=?,review_notes=? WHERE id=?',(role,status,'source-screened; expert review pending',assessment.get('reason'),candidate['id']))
                 db.execute('INSERT OR REPLACE INTO candidate_assessments VALUES(?,?,?,?,?)',(candidate['id'],classification,assessment['checked_at'],assessment.get('reason','Further review required'),json.dumps(assessment,ensure_ascii=False)))
             report=dict(matrix=import_matrix(db,matrix,ids,matrix_source),traits=import_traits(db,raw/'uk-traits-dataset.zip',ids,traits_source),occurrences={})
-            if report['matrix']['missing']:raise RuntimeError('Pilot names absent from host matrix')
+            unexplained=[n for n in report['matrix']['missing'] if selection['assessments'][n].get('ecology_gap_acknowledged') is not True]
+            if unexplained:raise RuntimeError('Unacknowledged host matrix gaps: '+', '.join(unexplained))
             for name,uid in ids.items():
                 match,_=get_json('https://api.gbif.org/v1/species/match',{'name':name,'strict':'true'});match=match['data']
                 if match.get('matchType')!='EXACT' or match.get('rank')!='SPECIES' or match.get('order')!='Lepidoptera':
                     report['occurrences'][name]={'error':'Taxonomic match requires review'};continue
                 taxon=match.get('acceptedUsageKey',match['usageKey']);db.execute('UPDATE candidates SET gbif_key=? WHERE id=?',(taxon,uid))
-                params={'taxonKey':taxon,'country':['DK','DE','PL','LT','LV','EE'],'decimalLatitude':'53,60','hasCoordinate':'true','hasGeospatialIssue':'false','occurrenceStatus':'PRESENT','eventDate':'2000-01-01,2026-11-01','license':['CC0_1_0','CC_BY_4_0'],'limit':300}
+                scope_name=selection['assessments'][name].get('occurrence_scope');geography=get_scope(scope_name)
+                params={'taxonKey':taxon,'country':geography['countries'],'decimalLatitude':','.join(map(str,geography['latitude_range'])),'hasCoordinate':'true','hasGeospatialIssue':'false','occurrenceStatus':'PRESENT','eventDate':'2000-01-01,'+('2026-11-02' if scope_name else '2026-11-01'),'license':['CC0_1_0','CC_BY_4_0'],'limit':300}
                 response,path=get_json('https://api.gbif.org/v1/occurrence/search',params);data=response['data'];sid='gbif-'+path.stem
                 source(db,sid,'GBIF public occurrence search — '+name,response['url'],'Per record: CC0 or CC-BY-4.0',response['retrieved_at'],path)
-                counts=import_occurrences(db,data.get('results',[]),uid,sid)
+                counts=import_occurrences(db,data.get('results',[]),uid,sid,scope=scope_name)
                 report['occurrences'][name]=dict(**counts,total_matching_query=data.get('count'),sample_limit=300,complete=data.get('endOfRecords',False))
                 print(name,counts,flush=True)
             report['search_guides']=import_search_guides(db,Path(__file__).resolve().parents[1]/'data/watch/search-guides.json')
@@ -101,6 +104,7 @@ def main():
         (stage/'inventory.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
         def export_profile(uid):
             result=profile(db,uid)
+            result['occurrence_scope']=get_scope((result.get('assessment') or {}).get('evidence',{}).get('occurrence_scope'))
             response,path=get_json('https://api.gbif.org/v1/species/match',{'name':result['scientific_name'],'strict':'true'})
             taxon=response['data']
             if taxon.get('matchType')!='EXACT' or taxon.get('rank')!='SPECIES' or taxon.get('order')!='Lepidoptera' or not taxon.get('family'):raise RuntimeError('Family taxonomy requires review: '+result['scientific_name'])

@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v5",
+  "version": "2026-11-02-v6",
   "profiles": [
     {
       "notes": {
@@ -1252,6 +1252,262 @@
         ],
         "uncertainties": [
           "Nya lands- eller delstatsfynd kan påverkas av inventeringsinsats. Expansion i Europa ger ingen beräknad sannolikhet för svenskt fynd."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Nola estonica",
+      "source_url": "https://lepiforum.org/wiki/page/Nola_estonica",
+      "source_sha256": "9d1511fabf8919aeaaaf0640d9c99e3c4de5ad208f08bd37b1e6c5becd7438de",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": false,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Skilj arten från Nola aerugula. Nybeskriven är inte samma sak som nyinvandrad; larvvärdväxt och detaljerad livscykel är fortfarande okända i originalbeskrivningen."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Xylomoia strix",
+      "source_url": "https://lepiforum.org/wiki/page/Xylomoia_strix",
+      "source_sha256": "8ed8a2bfb1dffbf483f2a567d0f7026f0bfa6eec354dda4f74ed0a5d03f09b5e",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Larven lever i stjälkar av skavfräken (Equisetum hyemale). Enbart förekomst av fräken bevisar inte att fjärilen finns där."
+        ],
+        "search": [
+          "Rikta eftersök mot kraftiga fräkenstjälkar. Expertkontroll av larv och fjäril behövs; närstående taxa har nyligen omprövats."
+        ],
+        "locations": [],
+        "uncertainties": [
+          "Äldre finska belägg finns. Ett fynd nytt för Nocturna är inte ett första finskt fynd eller i sig en dokumenterad nordlig expansion."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Eversmannia exornata",
+      "source_url": "https://lepiforum.org/wiki/page/Eversmannia_exornata",
+      "source_sha256": "6a7d3c0aae908b5d51c11c545c9e48e86df3cf2f8f3db28b42da13074654af20",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Källan beskriver fuktiga ängsöppningar nära vattendrag, med videbuskage och närliggande lövskog. Detaljerna kommer främst från västsibiriska observationer."
+        ],
+        "hosts": [
+          "Larvvärdväxten är okänd. Vide och älggräs i habitatbeskrivningen är inte belagda larvvärdväxter."
+        ],
+        "search": [
+          "Fjärilar har setts vila under blad och flyga upp vid störning. Källans sibiriska huvudperiod är slutet av juni–början av juli; det är ingen fastställd svensk kalender."
+        ],
+        "locations": [],
+        "uncertainties": [
+          "Habitatöverföring från Sibirien till Sverige behöver prövas. Värdväxt kan inte härledas från buskarna där vuxna vilar."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Cosmopterix sibirica",
+      "source_url": "https://lepiforum.org/wiki/page/Cosmopterix_sibirica",
+      "source_sha256": "094354ae9271fae4fef4e4ec17f8ba5d4a7612bd83ac503063f6ce1075ff19e6",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": false,
+        "habitat": false,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Förväxlingsrisk med andra Cosmopterix. Kvickrot är dokumenterad larvvärd; rörflen ska inte upphöjas från tidigare hypotes till värdväxt."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Phyllonorycter trifoliella",
+      "source_url": "https://lepiforum.org/wiki/page/Phyllonorycter_trifoliella",
+      "source_sha256": "346c055f82cdd90b19e7f46931954e564edb414ffbaa94387f01d7bc02130348",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Arten kan eftersökas i gräsmarker där lämpliga ärtväxter finns. En använd värdväxt är viktigare än en allmän etikett som äng."
+        ],
+        "hosts": [
+          "Ängsvial (Lathyrus pratensis) har belagda minerings- och kläckningsfynd i Tjeckien. Originalmaterialet kom från Trifolium och Lathyrus roseus; växtvalet kan skilja mellan regioner."
+        ],
+        "search": [
+          "Leta bladminor på ärtväxter och dokumentera växten. Vuxna liknar bland annat P. nigrescentella och P. insignitella; säkert belägg kan kräva genitalundersökning. Ingen svensk månadsserie är fastställd."
+        ],
+        "locations": [],
+        "uncertainties": [
+          "Minor räcker inte ensamma för artbestämning. Svenska fynd måste kunna skiljas från redan svenska närstående arter."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Ypsolopha sarmaticella",
+      "source_url": "https://lepiforum.org/wiki/page/Ypsolopha_sarmaticella",
+      "source_sha256": "9be47fca9d9376b8807719df11d392a3544525bf29fba58ecc1ccc95c8e75468",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Den dokumenterade larvvärden ger anledning att granska planterade ärtbuskar i kulturmiljöer. Detta är en värdväxtstyrd sökingång, inte en fastställd svensk habitatpreferens."
+        ],
+        "hosts": [
+          "Caragana arborescens anges som larvvärdväxt i ryskt underlag; Caragana frutex nämns som möjlig ytterligare värd."
+        ],
+        "search": [
+          "Ett finskt belägg från Joutseno är daterat 25–28 juli 1995. Ljusspaning kring värdväxten under sommaren kan prövas; enstaka belägg ger ingen fullständig flygkalender."
+        ],
+        "locations": [],
+        "uncertainties": [
+          "Finska fynd är inte nya i sig. Belagd aktuell expansion mot Sverige saknas i lästa källor."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "source_url": "https://lepiforum.org/wiki/page/Scythris_sinensis",
+      "source_sha256": "abc7103fdd820ccf16f98b6d43f3eb10bbe56804ca67507881ae8f20d2e0ee0f",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Källan visar kulturpräglad ruderatmiljö och en tysk koloniträdgård med Chenopodium album. Arten har uppmärksammats på flera europeiska platser."
+        ],
+        "hosts": [
+          "Chenopodium album och Atriplex patula är belagda larvvärdar."
+        ],
+        "search": [
+          "Källbelägg från Centraleuropa omfattar juni–augusti; leta vuxna dagtid vid värdväxterna och följ upp misstänkta larvspinn. Expertbestämning behövs för Scythris."
+        ],
+        "locations": [],
+        "uncertainties": [
+          "Spridning och införsel kan båda påverka fyndbilden. Tyska lokalfynd bevisar inte en spridningsväg över Östersjön."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Atypha pulmonaris",
+      "source_url": "https://lepiforum.org/wiki/page/Atypha_pulmonaris",
+      "source_sha256": "d9d3752c16d133f44ff3aca5eb872d617fe0195bca27d1b4abcc20c156919c66",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Löv- och blandskogsbryn med lungört är en relevant sökingång. Källan visar bland annat en skogsväg vid Gaim, Hannover."
+        ],
+        "hosts": [
+          "Larven använder Pulmonaria-arter och även Symphytum officinale."
+        ],
+        "search": [
+          "Källan har larvfynd på Pulmonaria i april och vuxenfynd i juni–juli. Uppfödda djurs kläckningsdatum ska inte användas som naturlig flygtid."
+        ],
+        "locations": [],
+        "uncertainties": [
+          "De angivna tiderna är centraleuropeiska exempel. Aktuell expansion i Finland är inte belagd i lästa källor."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Euchalcia modestoides",
+      "source_url": "https://lepiforum.org/wiki/page/Euchalcia_modestoides",
+      "source_sha256": "8331b131af0ec509f81b36271c0c85aa057787b29cca370c29881f55d71027c6",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Källan beskriver blandskogskanter och växelfuktig gräsmark med Pulmonaria."
+        ],
+        "hosts": [
+          "Lungörter (Pulmonaria) är de bäst stödda larvvärdarna. Betydelsen av vallört (Symphytum) anges som oklar och kan ha överskattats."
+        ],
+        "search": [
+          "Larvfynd i april och ett litauiskt vuxenfynd den 15 juni finns dokumenterade. Sök på lungörter under våren och komplettera med sommarspaning; tiderna är utländska exempel."
+        ],
+        "locations": [],
+        "uncertainties": [
+          "Värdväxtval och fenologi i Sverige är inte fastställda. Finska fynd är inte i sig en belagd expansion."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "source_url": "https://lepiforum.org/wiki/page/Phyllonorycter_lantanella",
+      "source_sha256": "1e9ca763bc104ab0c06185ac217499cbabb12745885d633e7548b0b93080f21f",
+      "checked_at": "2026-11-02",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [
+          "Källan har mineringsfynd i löv- och strandskog samt på odlade Viburnum."
+        ],
+        "hosts": [
+          "Viburnum lantana är viktigast i källregionen; även Viburnum opulus och V. tinus används. Uppgifter om Sorbus aucuparia är osäkra."
+        ],
+        "search": [
+          "Leta under blad efter minor sent på hösten, även när bladen börjar gulna. Dokumentera växt och mina och låt kläckt fjäril expertbestämmas. Inomhuskläckning i februari anger inte naturlig svensk flygtid."
+        ],
+        "locations": [],
+        "uncertainties": [
+          "Regionala skillnader i värdväxtanvändning finns. Ett minfynd behöver skiljas från andra minerare. Ingen aktuell nordlig expansion är belagd här."
         ]
       }
     }

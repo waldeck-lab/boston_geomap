@@ -1,0 +1,86 @@
+{
+  "profiles": [
+    {
+      "scientific_name": "Nola estonica",
+      "candidate_id": 70,
+      "unique_records": 219,
+      "first_year": 2011,
+      "last_year": 2026,
+      "complete_api_paging": true
+    },
+    {
+      "scientific_name": "Xylomoia strix",
+      "candidate_id": 71,
+      "unique_records": 40,
+      "first_year": 1994,
+      "last_year": 2024,
+      "complete_api_paging": true
+    },
+    {
+      "scientific_name": "Eversmannia exornata",
+      "candidate_id": 72,
+      "unique_records": 25,
+      "first_year": 2012,
+      "last_year": 2025,
+      "complete_api_paging": true
+    },
+    {
+      "scientific_name": "Cosmopterix sibirica",
+      "candidate_id": 73,
+      "unique_records": 72,
+      "first_year": 2016,
+      "last_year": 2026,
+      "complete_api_paging": true
+    },
+    {
+      "scientific_name": "Phyllonorycter trifoliella",
+      "candidate_id": 74,
+      "unique_records": 245,
+      "first_year": 1995,
+      "last_year": 2026,
+      "complete_api_paging": true
+    },
+    {
+      "scientific_name": "Ypsolopha sarmaticella",
+      "candidate_id": 75,
+      "unique_records": 19,
+      "first_year": 1995,
+      "last_year": 2026,
+      "complete_api_paging": true
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "candidate_id": 76,
+      "unique_records": 7,
+      "first_year": 1993,
+      "last_year": 2024,
+      "complete_api_paging": true
+    },
+    {
+      "scientific_name": "Atypha pulmonaris",
+      "candidate_id": 77,
+      "unique_records": 36,
+      "first_year": 1986,
+      "last_year": 2026,
+      "complete_api_paging": true
+    },
+    {
+      "scientific_name": "Euchalcia modestoides",
+      "candidate_id": 78,
+      "unique_records": 291,
+      "first_year": 1961,
+      "last_year": 2025,
+      "complete_api_paging": true
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "candidate_id": 79,
+      "unique_records": 1,
+      "first_year": 1986,
+      "last_year": 1986,
+      "complete_api_paging": true
+    }
+  ],
+  "new_unique_records": 955,
+  "previous_timelines_unchanged": 65
+}

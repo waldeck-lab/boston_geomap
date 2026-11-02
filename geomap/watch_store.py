@@ -11,6 +11,7 @@ import zipfile
 from datetime import date
 from pathlib import Path
 from urllib.parse import urlsplit
+from .watch_scope import get_scope
 
 SCHEMA='''
 PRAGMA foreign_keys=ON;
@@ -94,7 +95,8 @@ def import_traits(db,path,candidate_ids,source_id):
                     if not db.execute('SELECT 1 FROM ecological_requirements WHERE candidate_id=? AND property=? AND value=? AND region=? AND source_id=?',(uid,prop,value,region,source_id)).fetchone():
                         db.execute('INSERT INTO ecological_requirements(candidate_id,property,value,region,source_id,source_field) VALUES(?,?,?,?,?,?)',(uid,prop,value,region,source_id,key))
     return dict(matched_species=len(matched),matched_names=matched,missing=sorted(set(candidate_ids)-set(matched)))
-def import_occurrences(db,records,uid,source_id):
+def import_occurrences(db,records,uid,source_id,scope=None):
+    geography=get_scope(scope);low,high=geography['latitude_range']
     accepted=0;rejected=0
     for r in records:
         license=r.get('license') or '';country=r.get('countryCode');stamp=str(r.get('eventDate',''))[:10]
@@ -103,7 +105,7 @@ def import_occurrences(db,records,uid,source_id):
             rejected+=1;continue
         try:
             day=date.fromisoformat(stamp);lat=float(r['decimalLatitude']);lon=float(r['decimalLongitude'])
-            if country not in FRONTS or not(53<=lat<=60 and -180<=lon<=180) or not(date(2000,1,1)<=day<=date(2026,11,1)) or not math.isfinite(lat+lon):raise ValueError()
+            if country not in geography['countries'] or not(low<=lat<=high and -180<=lon<=180) or not(date(2000,1,1)<=day<=date(2026,11,2)) or not math.isfinite(lat+lon):raise ValueError()
             if r.get('informationWithheld') or r.get('dataGeneralizations') or r.get('occurrenceStatus')=='ABSENT':raise ValueError()
             uncertainty=r.get('coordinateUncertaintyInMeters')
             if uncertainty is not None and (not math.isfinite(float(uncertainty)) or float(uncertainty)<0):raise ValueError()

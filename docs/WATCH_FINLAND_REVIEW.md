@@ -1,5 +1,9 @@
 # Finland: upptäckta luckor i På väg hit
 
+Uppföljningen är genomförd: tio nya artkort har publicerats efter genomgång av
+hela 72-artskön. Se WATCH_FINLAND_DECISIONS.md för aktuella artvisa beslut.
+Texten nedan beskriver den ursprungliga inventeringen före detta tillskott.
+
 Granskat 2 november 2026. Ingen art eller observationspunkt har lagts till automatiskt.
 
 ## Orsak

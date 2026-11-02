@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v4",
+  "version": "2026-11-02-v5",
   "guides": [
     {
       "scientific_name": "Proserpinus proserpina",
@@ -566,6 +566,556 @@
       ],
       "limitations": "Svenska växtbestånd och lokaler har inte verifierats. Återkommande vuxenfynd är inte i sig bevis på lokal reproduktion; Feikes larveftersök gav inget fynd. Ett nytt regionalt belägg bevisar inte expansion, och underlaget motiverar ingen automatisk flagga som högintressant. Sökförslagen ritas inte som fyndpunkter.",
       "follow_up": "Dokumentera datum, stadium, värdväxt och habitat samt tydliga bilder av fjäril eller larvsäck. Be om expertkontroll av Nemophora-bestämningen; blomval eller ett allmänt färgintryck räcker inte. Skilj vuxnas blomresurser från larvens värdväxt."
+    },
+    {
+      "scientific_name": "Nola estonica",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Nola estonica – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Nola_estonica"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=11596496&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        },
+        {
+          "id": "nola",
+          "title": "Õunap m.fl. (2021): originalbeskrivning, Zootaxa 5082: 401–424",
+          "url": "https://www.mapress.com/zt/article/download/zootaxa.5082.5.1/46273/50942"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "83 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "habitat",
+          "title": "Torr tallskog och smal ängsremsa",
+          "text": "Estniskt typmaterial togs till stor del vid en torr ängsremsa i en järnvägskorridor genom sandig tallskog. Författarna kunde inte avgöra om skogen eller den öppna remsan var den viktiga miljön.",
+          "region": "Estland",
+          "source_ids": [
+            "nola"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "hosts",
+          "title": "Värdväxt fortfarande okänd",
+          "text": "Originalbeskrivningen anger att larvens födoväxt och övriga livscykeldetaljer inte är kända. Ingen värdväxt är inlagd genom gissning.",
+          "region": "Estland och övrigt typmaterial",
+          "source_ids": [
+            "nola"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "search",
+          "title": "Juli och början av augusti",
+          "text": "De flesta beläggen i originalbeskrivningen är från juli och början av augusti. Två septemberfynd kan tyda på en partiell andra generation; det är osäkert och ingen svensk kalender.",
+          "region": "Typmaterialets källregioner",
+          "source_ids": [
+            "nola"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Pröva ljusspaning i juli–början av augusti vid sandiga tallskogsbryn och smala torra gräsmarker på Gotland, Öland eller Upplandskusten. Habitatlikheten med Estland är en sökhypotes; värdväxt och svenska lokaler är inte fastställda.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi",
+            "nola"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
+    },
+    {
+      "scientific_name": "Xylomoia strix",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Xylomoia strix – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Xylomoia_strix"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1772458&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        },
+        {
+          "id": "nocturna",
+          "title": "Nocturna 2024, Baptria 4/2025",
+          "url": "https://www.ymparisto.fi/sites/default/files/documents/Baptria%204_2025%20Nocturna%20vuosiraportti%202024.pdf"
+        },
+        {
+          "id": "gios",
+          "title": "GIOŚ (2025): naturövervakning, artavsnitt Xylomoia strix",
+          "url": "https://siedliska.gios.gov.pl/images/pliki_pdf/publikacje/biuletyn_monitoringu/Biuletyn_Monitoringu_Przyrody_nr_29_2025_1.pdf#page=61"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "11 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Nyare uppgifter om finsk etablering",
+          "text": "Rapporten beskriver arten som på väg att etableras i Finland. Första fyndet i själva övervakningen var 2022; detta ska inte anges som första finska fynd.",
+          "region": "Finland",
+          "source_ids": [
+            "nocturna"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "habitat",
+          "title": "Fuktig skog med skavfräken",
+          "text": "Polsk övervakning beskriver bestånd i fuktig lövskog med skavfräken. Fräkenbeståndens kvalitet är central; uppgiften är regional och fastställer inte svensk lämplighet.",
+          "region": "Polen",
+          "source_ids": [
+            "gios"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Undersök kustnära skogs- och våtmarksmosaiker i Uppland och Södermanland där skavfräken är verifierad. Börja med habitat och värdväxtkontroll; inga specifika svenska bestånd är inventerade här.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi",
+            "nocturna",
+            "gios"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
+    },
+    {
+      "scientific_name": "Eversmannia exornata",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Eversmannia exornata – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Eversmannia_exornata"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=8943343&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        },
+        {
+          "id": "fi2014",
+          "title": "Pakkanen & Wettenhovi: finskt belägg 2014, sammanställt 2015",
+          "url": "https://www.perhoset.fi/historia/uraniidae/eve-exornata.htm"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "18 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Dokumenterat finskt fynd 2014",
+          "text": "Ett honexemplar från Virolahti den 12 juli 2014 redovisas med samlare och samling. Senare finska databasposter finns också. Enstaka förstafynd bevisar inte i sig etablering.",
+          "region": "Finland",
+          "source_ids": [
+            "fi2014"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Pröva fuktiga skogsbryn och ängsöppningar vid små vattendrag längs östra Svealand eller på Gotland. Sök varsamt under blad och komplettera med kvällsljus. Förslaget bygger på habitatlikhet, inte en lämplighetsmodell.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi",
+            "fi2014"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
+    },
+    {
+      "scientific_name": "Cosmopterix sibirica",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Cosmopterix sibirica – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Cosmopterix_sibirica"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=4529774&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        },
+        {
+          "id": "congress",
+          "title": "Vähätalo, Kaitila & Vähätalo (2022): SEL-kongress, abstract s. 99",
+          "url": "https://kodu.ut.ee/~tammarut/abstractbook1005-1.pdf#page=99"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "79 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Dokumenterad expansion till Finland",
+          "text": "Författarna beskriver expansion från Ryssland till Finland och Baltikum. Finland fick sitt första rapporterade fynd 2016; de sammanställda 35 finska posterna låg i sydost. Underlaget gäller kunskapsläget 2022.",
+          "region": "Finland och Baltikum",
+          "source_ids": [
+            "congress"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "habitat",
+          "title": "Äldre deponi med kvickrot",
+          "text": "En stor population undersöktes på en äldre deponi med ett sammanhängande bestånd av kvickrot. Detta är ett dokumenterat lokalt habitat, inte ett generellt krav på deponimark.",
+          "region": "Sydöstra Finland",
+          "source_ids": [
+            "congress"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "hosts",
+          "title": "Kvickrot belagd",
+          "text": "Larver hittades i stora bladminor på Elytrigia repens, även benämnd Elymus repens, i juli på den undersökta finska lokalen.",
+          "region": "Sydöstra Finland",
+          "source_ids": [
+            "congress"
+          ]
+        },
+        {
+          "kind": "documented",
+          "category": "search",
+          "title": "Skymningsaktiv i juni",
+          "text": "Finska huvudflygtiden anges till juni. Arten var skymningsaktiv och ljusattraherad; parade djur sågs den 17 juni 2020. Mineftersök i juli är en kompletterande metod.",
+          "region": "Sydöstra Finland",
+          "source_ids": [
+            "congress"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Pröva ostörda kvickrotsbestånd på äldre ruderatmark längs ostkusten, exempelvis i Uppland och Södermanland. Kombinera skymningsspaning i juni med mineftersök i juli. Svenska lokaler och fenologi är inte verifierade.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi",
+            "congress"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
+    },
+    {
+      "scientific_name": "Phyllonorycter trifoliella",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Phyllonorycter trifoliella – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Phyllonorycter_trifoliella"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1749994&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "230 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Pröva ängsvialsrika vägkanter, slåtterängar och kustnära gräsmarker i östra Svealand och på Östersjööarna. Följ upp misstänkta minor med expertbestämning. Svenska värdväxtbestånd har inte inventerats här.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
+    },
+    {
+      "scientific_name": "Ypsolopha sarmaticella",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Ypsolopha sarmaticella – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Ypsolopha_sarmaticella"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1830940&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "9 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Kontrollera äldre planteringar av Caragana arborescens vid gårdar, parker och vindskydd i östra Svealand. Dokumentera värdväxten och eventuella larver eller vuxna. Detta är ett oprövat svenskt sökförslag.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Scythris sinensis – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Scythris_sinensis"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1841946&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "2 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Pröva solvarma, ostörda ruderatytor med Chenopodium album eller Atriplex patula vid kustnära odlings- och trädgårdsmiljöer. Börja i södra eller östra Sverige. Förslaget innebär inget belagt svenskt fynd.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
+    },
+    {
+      "scientific_name": "Atypha pulmonaris",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Atypha pulmonaris – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Atypha_pulmonaris"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1782319&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "9 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Granska varma, skyddade lövskogsbryn med verifierad lungört i östra Svealand eller södra Sverige. Kontrollera växtbeståndet under våren och följ upp misstänkta larver med expertbestämning.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
+    },
+    {
+      "scientific_name": "Euchalcia modestoides",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Euchalcia modestoides – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Euchalcia_modestoides"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=4532929&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "18 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Pröva lungörtsrika bryn och halvöppna, växelfuktiga lövskogsmiljöer i östra Svealand och södra Sverige. Prioritera verifierad värdväxt och sammanhängande skyddad markvegetation.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "swedish_name": "",
+      "review_status": "Källscreenad bevakningskandidat – biologisk expertgranskning återstår",
+      "sources": [
+        {
+          "id": "lepi",
+          "title": "Lepiforum: Phyllonorycter lantanella – artunderlag och källhänvisningar",
+          "url": "https://lepiforum.org/wiki/page/Phyllonorycter_lantanella"
+        },
+        {
+          "id": "fi-gbif",
+          "title": "GBIF: finska positiva belägg 2015–2026, kontroll 2 november 2026",
+          "url": "https://api.gbif.org/v1/occurrence/search?taxonKey=1749762&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0"
+        }
+      ],
+      "documented": [
+        {
+          "kind": "documented",
+          "category": "distribution",
+          "title": "Finskt fyndunderlag i kontrollen",
+          "text": "7 finska GBIF-poster från 2015–2026 ingick i kontrollen. Poster är inte nödvändigtvis unika fynd. Artens fullständiga utbredning och en eventuell expansion måste bedömas med källor, inte enbart fyndantal.",
+          "region": "Finland",
+          "source_ids": [
+            "fi-gbif"
+          ]
+        }
+      ],
+      "swedish_hypotheses": [
+        {
+          "kind": "hypothesis",
+          "title": "Föreslaget svenskt eftersök",
+          "text": "Kontrollera Viburnum opulus i skyddade lövskogsbryn och Viburnum-planteringar i kustnära parker i östra Svealand. Värdväxt och minornas identitet måste verifieras på plats.",
+          "region": "Sverige – redaktionell hypotes",
+          "source_ids": [
+            "lepi"
+          ]
+        }
+      ],
+      "limitations": "Svenska lokaler, värdväxtbestånd och flygtider har inte verifierats. Hypoteser ritas inte som svenska fynd. Finsk förekomst innebär inte automatiskt expansion eller att arten saknas i Sverige.",
+      "follow_up": "Dokumentera datum, stadium, habitat och eventuell växt. Artbestämning behöver kunna granskas med tydliga bilder och vid behov genitalier eller DNA. Håll larvvärdväxt åtskild från vuxnas viloplats och blomresurs."
     }
   ]
 }

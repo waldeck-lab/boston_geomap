@@ -1,19 +1,23 @@
 """Build complete paginated, licensed historical series separately from pilot samples."""
+import sys
 import argparse,calendar,hashlib,json,math,re,sqlite3,time
 from datetime import date,datetime,timezone
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit,parse_qs
 from zoneinfo import ZoneInfo
 import requests
 
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from geomap.watch_scope import get_scope
 FRONT=['DK','DE','PL','LT','LV','EE']
-def normalize(record,as_of):
+def normalize(record,as_of,scope=None):
+    geography=get_scope(scope);low,high=geography['latitude_range']
     lic=urlsplit(record.get('license') or '')
     if lic.hostname!='creativecommons.org' or not (lic.path.startswith('/licenses/by/4.0/') or lic.path.startswith('/publicdomain/zero/1.0/')):return None
-    if record.get('informationWithheld') or record.get('dataGeneralizations') or record.get('occurrenceStatus')=='ABSENT' or record.get('countryCode') not in FRONT:return None
+    if record.get('informationWithheld') or record.get('dataGeneralizations') or record.get('occurrenceStatus')=='ABSENT' or record.get('countryCode') not in geography['countries']:return None
     try:
         lat=float(record['decimalLatitude']);lon=float(record['decimalLongitude'])
-        if not math.isfinite(lat+lon) or not 53<=lat<=60 or not -180<=lon<=180:return None
+        if not math.isfinite(lat+lon) or not low<=lat<=high or not -180<=lon<=180:return None
         uncertainty=record.get('coordinateUncertaintyInMeters')
         if uncertainty is not None and (not math.isfinite(float(uncertainty)) or float(uncertainty)<0):return None
         stamp=str(record.get('eventDate') or '')
@@ -40,7 +44,7 @@ def normalize(record,as_of):
     except (KeyError,TypeError,ValueError,OverflowError):return None
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--as-of',type=date.fromisoformat,default=datetime.now(ZoneInfo('Europe/Stockholm')).date());ap.add_argument('--offline',action='store_true');a=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('--stage',type=Path,required=True);ap.add_argument('--as-of',type=date.fromisoformat,default=datetime.now(ZoneInfo('Europe/Stockholm')).date());ap.add_argument('--offline',action='store_true');ap.add_argument('--reuse',action='store_true',help='Reuse complete files with identical taxon, date and named geography');a=ap.parse_args()
     stage=a.stage.resolve()
     if not stage.is_relative_to(Path('/proj/boston/beta/wcr/stage')) or not stage.name.startswith('watch-pilot-'):raise ValueError('Pilot stage required')
     export=json.loads((stage/'pilot-export.json').read_text());out=stage/'timeline';out.mkdir(exist_ok=True);cache=stage/'source'/('timeline-'+a.as_of.isoformat());cache.mkdir(exist_ok=True)
@@ -61,10 +65,18 @@ def main():
     profiles=export['profiles']+export.get('references',[])
     profiles.sort(key=lambda p:(p['scientific_name']!='Proserpinus proserpina',p['scientific_name']))
     for p in profiles:
+        scope_name=(p.get('assessment') or {}).get('evidence',{}).get('occurrence_scope');geography=get_scope(scope_name)
+        previous_path=out/(str(p['id'])+'.json')
+        if a.reuse and previous_path.exists():
+            previous=json.loads(previous_path.read_text())
+            same_taxon=bool(previous.get('sources')) and str(p['gbif_key']) in parse_qs(urlsplit(previous['sources'][0]['url']).query).get('taxonKey',[])
+            if same_taxon and previous.get('candidate_id')==p['id'] and previous.get('scientific_name')==p['scientific_name'] and previous.get('as_of')==a.as_of.isoformat() and previous.get('countries')==geography['countries'] and previous.get('latitude_range')==geography['latitude_range'] and previous.get('complete_api_paging') and not previous.get('identity_conflicts'):
+                manifest['profiles'].append({k:previous[k] for k in ['candidate_id','scientific_name','unique_records','complete_api_paging','rejected_records']})
+                print(p['scientific_name'],'complete file reused',flush=True);continue
         records={};sources=[];datasets={};fetched=0;rejected=0;conflicts=0;offset=0;total=None;stable=True
         ranges=['1,'+str(a.as_of.year)];range_index=0;scope_total=None
         while True:
-            response,path=get(dict(taxonKey=p['gbif_key'],country=FRONT,decimalLatitude='53,60',hasCoordinate='true',hasGeospatialIssue='false',occurrenceStatus='PRESENT',year=ranges[range_index],license=['CC0_1_0','CC_BY_4_0'],limit=300,offset=offset))
+            response,path=get(dict(taxonKey=p['gbif_key'],country=geography['countries'],decimalLatitude=','.join(map(str,geography['latitude_range'])),hasCoordinate='true',hasGeospatialIssue='false',occurrenceStatus='PRESENT',year=ranges[range_index],license=['CC0_1_0','CC_BY_4_0'],limit=300,offset=offset))
             data=response['data'];count=data['count']
             if total is None:total=count
             sources.append(dict(url=response['url'],retrieved_at=response['retrieved_at'],sha256=hashlib.sha256(path.read_bytes()).hexdigest()))
@@ -75,7 +87,7 @@ def main():
             stable=stable and count==scope_total
             batch=data.get('results',[]);fetched+=len(batch)
             for raw in batch:
-                row=normalize(raw,a.as_of)
+                row=normalize(raw,a.as_of,scope=scope_name)
                 if row is None:rejected+=1;continue
                 identity=row['occurrence_uid'];previous=records.get(identity)
                 if previous:
@@ -90,7 +102,7 @@ def main():
                 offset=0;scope_total=None;continue
             offset+=len(batch)
             if offset+300>100000:raise RuntimeError('Use GBIF download API for this species: '+p['scientific_name'])
-        result=dict(candidate_id=p['id'],scientific_name=p['scientific_name'],as_of=a.as_of.isoformat(),countries=FRONT,latitude_range=[53,60],api_total_records=total,fetched_records=fetched,rejected_records=rejected,identity_conflicts=conflicts,complete_api_paging=stable and fetched==total,unique_records=len(records),sources=sources,datasets=datasets,occurrences=sorted(records.values(),key=lambda r:(r['year'],r['event_date'],r['occurrence_uid'])))
+        result=dict(candidate_id=p['id'],scientific_name=p['scientific_name'],as_of=a.as_of.isoformat(),countries=geography['countries'],latitude_range=geography['latitude_range'],api_total_records=total,fetched_records=fetched,rejected_records=rejected,identity_conflicts=conflicts,complete_api_paging=stable and fetched==total,unique_records=len(records),sources=sources,datasets=datasets,occurrences=sorted(records.values(),key=lambda r:(r['year'],r['event_date'],r['occurrence_uid'])))
         temp=out/(str(p['id'])+'.json.tmp');temp.write_text(json.dumps(result,ensure_ascii=False,separators=(',',':')));temp.replace(out/(str(p['id'])+'.json'))
         manifest['profiles'].append({k:result[k] for k in ['candidate_id','scientific_name','unique_records','complete_api_paging','rejected_records']})
         print(p['scientific_name'],len(records),'unique;',sum(r['year']<2000 for r in records.values()),'before 2000;',fetched,'/',total,'API records',flush=True)

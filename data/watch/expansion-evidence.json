@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v2",
+  "version": "2026-11-02-v3",
   "assessments": [
     {
       "scientific_name": "Proserpinus proserpina",
@@ -117,6 +117,166 @@
         {
           "title": "Lepiforum: tyska förstafynd 2015, 2023 och 2024",
           "url": "https://lepiforum.org/wiki/page/Lithophane_leautieri"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Nola estonica",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Kunskapsläge granskat 2026-11-02",
+      "reason": "Arten är relevant som finsk/östlig bevakningsart, men de lästa källorna ger inte tillräckligt stöd för en särskild flagga för aktuell nordlig expansion.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Lepiforum: Nola estonica",
+          "url": "https://lepiforum.org/wiki/page/Nola_estonica"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Xylomoia strix",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Kunskapsläge granskat 2026-11-02",
+      "reason": "Arten är relevant som finsk/östlig bevakningsart, men de lästa källorna ger inte tillräckligt stöd för en särskild flagga för aktuell nordlig expansion.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Lepiforum: Xylomoia strix",
+          "url": "https://lepiforum.org/wiki/page/Xylomoia_strix"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Eversmannia exornata",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Kunskapsläge granskat 2026-11-02",
+      "reason": "Arten är relevant som finsk/östlig bevakningsart, men de lästa källorna ger inte tillräckligt stöd för en särskild flagga för aktuell nordlig expansion.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Lepiforum: Eversmannia exornata",
+          "url": "https://lepiforum.org/wiki/page/Eversmannia_exornata"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Cosmopterix sibirica",
+      "high_interest": true,
+      "status": "documented_range_expansion",
+      "direction": "Från Ryssland till Finland och Baltikum",
+      "period": "Finskt förstafynd 2016; sammanställning 2022",
+      "reason": "Forskarna beskriver uttryckligen expansion till Finland, Estland och Lettland. Arten upptäcktes i Finland 2016 och en reproducerande population med larvminor dokumenterades.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Vähätalo, Kaitila & Vähätalo (2022), SEL-kongress, s. 99",
+          "url": "https://kodu.ut.ee/~tammarut/abstractbook1005-1.pdf#page=99"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Phyllonorycter trifoliella",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Kunskapsläge granskat 2026-11-02",
+      "reason": "Arten är relevant som finsk/östlig bevakningsart, men de lästa källorna ger inte tillräckligt stöd för en särskild flagga för aktuell nordlig expansion.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Lepiforum: Phyllonorycter trifoliella",
+          "url": "https://lepiforum.org/wiki/page/Phyllonorycter_trifoliella"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Ypsolopha sarmaticella",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Kunskapsläge granskat 2026-11-02",
+      "reason": "Arten är relevant som finsk/östlig bevakningsart, men de lästa källorna ger inte tillräckligt stöd för en särskild flagga för aktuell nordlig expansion.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Lepiforum: Ypsolopha sarmaticella",
+          "url": "https://lepiforum.org/wiki/page/Ypsolopha_sarmaticella"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Kunskapsläge granskat 2026-11-02",
+      "reason": "Arten är relevant som finsk/östlig bevakningsart, men de lästa källorna ger inte tillräckligt stöd för en särskild flagga för aktuell nordlig expansion.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Lepiforum: Scythris sinensis",
+          "url": "https://lepiforum.org/wiki/page/Scythris_sinensis"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Atypha pulmonaris",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Kunskapsläge granskat 2026-11-02",
+      "reason": "Arten är relevant som finsk/östlig bevakningsart, men de lästa källorna ger inte tillräckligt stöd för en särskild flagga för aktuell nordlig expansion.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Lepiforum: Atypha pulmonaris",
+          "url": "https://lepiforum.org/wiki/page/Atypha_pulmonaris"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Euchalcia modestoides",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Kunskapsläge granskat 2026-11-02",
+      "reason": "Arten är relevant som finsk/östlig bevakningsart, men de lästa källorna ger inte tillräckligt stöd för en särskild flagga för aktuell nordlig expansion.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Lepiforum: Euchalcia modestoides",
+          "url": "https://lepiforum.org/wiki/page/Euchalcia_modestoides"
+        }
+      ],
+      "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Kunskapsläge granskat 2026-11-02",
+      "reason": "Arten är relevant som finsk/östlig bevakningsart, men de lästa källorna ger inte tillräckligt stöd för en särskild flagga för aktuell nordlig expansion.",
+      "caveat": "Detta är en regional bevakningsprioritering, inte en beräknad spridningsväg eller sannolikhet för svenska fynd.",
+      "sources": [
+        {
+          "title": "Lepiforum: Phyllonorycter lantanella",
+          "url": "https://lepiforum.org/wiki/page/Phyllonorycter_lantanella"
         }
       ],
       "checked_at": "2026-11-02"

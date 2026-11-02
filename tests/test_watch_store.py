@@ -34,6 +34,13 @@ class WatchStoreTests(unittest.TestCase):
         self.assertEqual(self.db.execute('SELECT count(*) FROM occurrences').fetchone()[0],1)
         self.assertEqual(self.db.execute('SELECT count(*) FROM occurrence_records').fetchone()[0],2)
         self.assertIn('Svensk status och expansionsbedömning',profile(self.db,1)['gaps'])
+    def test_finnish_scope_is_explicit_and_never_allows_swedish_records(self):
+        records=[self.record(countryCode='FI',decimalLatitude=62)]
+        self.assertEqual(import_occurrences(self.db,records,1,'fixture')['accepted_records'],0)
+        self.assertEqual(import_occurrences(self.db,records,1,'fixture',scope='baltic-finland')['accepted_records'],1)
+        rejected=[self.record(key=2,countryCode='SE',decimalLatitude=62),self.record(key=3,countryCode='FI',decimalLatitude=71)]
+        self.assertEqual(import_occurrences(self.db,rejected,1,'fixture',scope='baltic-finland')['accepted_records'],0)
+        with self.assertRaises(ValueError):import_occurrences(self.db,records,1,'fixture',scope='include-sweden')
     def test_traits_two_headers_region_stage_and_primary_host_are_preserved(self):
         groups=['species_details','adult_stage','larval_stage','common_hostplants','habitat','overwintering_stage'];keys=['scientific_name ','ad_agu','lar_dec','Plant alpha','woodland','overwinter_larva']
         text=io.StringIO();writer=csv.writer(text);writer.writerows([groups,keys,['Species\u00a0alpha','1','1','1','1','1']])

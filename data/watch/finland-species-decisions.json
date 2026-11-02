@@ -1,0 +1,1679 @@
+{
+  "checked_at": "2026-11-02",
+  "scope": "Editorial first pass of all 72 previously unseen Finnish review-queue species",
+  "counts": {
+    "priority_follow_up": 12,
+    "held_for_evidence": 50,
+    "published_candidate": 10
+  },
+  "results": [
+    {
+      "scientific_name": "Acleris scabrana",
+      "decision": "priority_follow_up",
+      "reason": "Källan har användbar biologi på Salix/Populus och övervintrande vuxna. Finsk utveckling och aktuell svensk status behöver fördjupas innan publicering.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Acleris_scabrana",
+      "source_sha256": "f8b88dcc43831500dcd2c6d8a5019d5aacb7520904378deda928b5f0ea245242",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "925",
+        "countries": [
+          "F",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Acontia lucida",
+      "decision": "held_for_evidence",
+      "reason": "Finska poster och utländsk larvbiologi finns. Förekomstsätt och svensk förstafyndsstatus behöver verifieras; inga slutsatser om etablering från räknade poster.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 4,
+      "source_url": "https://lepiforum.org/wiki/page/Acontia_lucida",
+      "source_sha256": "c86e55cb7b6c1b20693bf5d352b3eb703901c048df8738d8cecf69ce175ccf7a",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3984",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Aethes kyrkii",
+      "decision": "held_for_evidence",
+      "reason": "Biologin gäller fröätande larver i Saussurea alpina. Nordlig specialist: inte automatiskt ett exempel på sydlig expansion; finsk geografi och svensk kunskapslucka behöver expertbedömas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 31,
+      "source_url": "https://lepiforum.org/wiki/page/Aethes_kyrkii",
+      "source_sha256": "f348dbca38e2986ef3280691160c8e56fdcc6e1c0a529c5698c60b8fcabe4c7c",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "989",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Agriphila tolli",
+      "decision": "held_for_evidence",
+      "reason": "Biologidelen ger bara ett kroatiskt habitatfoto. Finska beläggs identitet, förekomstsätt och taxonomisk avgränsning behöver kontrolleras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Agriphila_tolli",
+      "source_sha256": "ebcde34dc5982b5f962b83fa315deb62ba60734175bc36f32bb9104579e17ad7",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3034a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Alcis deversata",
+      "decision": "held_for_evidence",
+      "reason": "Lästa habitat- och parasituppgifter räcker inte för finsk expansionsbedömning. Återstår att verifiera regional förekomst och relevans för Sverige.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 181,
+      "source_url": "https://lepiforum.org/wiki/page/Alcis_deversata",
+      "source_sha256": "10a1217d0051d1577d00c1e9b7909013f43ea39e33f8e1b3f17f962e293d3dcb",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3504",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Ancylis habeleri",
+      "decision": "held_for_evidence",
+      "reason": "Källans biologi är alpin och larvstadier okända. Det måste klarläggas hur finska belägg förhåller sig till artens taxonomi och habitat innan ett svenskt sökförslag ges.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 611,
+      "source_url": "https://lepiforum.org/wiki/page/Ancylis_habeleri",
+      "source_sha256": "15304e29c7b8a8aa87ca9ad079ad7c69e08a08e6b8227ee2726fb509e06d342f",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1151",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Aspitates gilvaria",
+      "decision": "priority_follow_up",
+      "reason": "Kalkgräsmark beskrivs i artkällan. Sambandet mellan finska fynd, spridningsriktning och svensk habitatrelevans återstår.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 245,
+      "source_url": "https://lepiforum.org/wiki/page/Aspitates_gilvaria",
+      "source_sha256": "3a377ba64ee1821b1dac882d695e27383fdad6f450aafcc52b51ffb464e01353",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3593",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Aterpia chalybeia",
+      "decision": "held_for_evidence",
+      "reason": "Larvvärdväxt anges som okänd. Finsk geografi, bestämning och belagd utveckling saknas i denna fördjupning.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 6,
+      "source_url": "https://lepiforum.org/wiki/page/Aterpia_chalybeia",
+      "source_sha256": "8ae7fbd11c898c73933ffb8fb99c9d9bb2db009534a1b1c45778d2abeec8f1f4",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1022",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Athetis correpta",
+      "decision": "held_for_evidence",
+      "reason": "2025 års nordisk-baltiska uppdatering använder kombinationen Proxenus correpta medan finsk övervakning använder Athetis. Namnkoppling och belägg måste förenas före import; nytt i Nocturna 2024 betyder inte nytt i Finland.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 10,
+      "source_url": "https://lepiforum.org/wiki/page/Athetis_correpta",
+      "source_sha256": "becc7dbe84c2bc18272a9cfc4cd1d2acfb1f15aec37ac474749e220a7c71b1fa",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "supplement": "Nocturna 2024: new to monitoring, not necessarily new to Finland"
+      }
+    },
+    {
+      "scientific_name": "Atypha pulmonaris",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 9,
+      "source_url": "https://lepiforum.org/wiki/page/Atypha_pulmonaris",
+      "source_sha256": "d9d3752c16d133f44ff3aca5eb872d617fe0195bca27d1b4abcc20c156919c66",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4349",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Bucculatrix latviaella",
+      "decision": "held_for_evidence",
+      "reason": "Källan påpekar motstridiga larvvärduppgifter och har ett oväntat DNA-bekräftat alpint fynd. Kan vara förbisedd snarare än expanderande; taxonomi och sökbiologi behöver mer kontroll.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 6,
+      "source_url": "https://lepiforum.org/wiki/page/Bucculatrix_latviaella",
+      "source_sha256": "cc16d840a354f927a819a09565dea9343e020d7865493aba5c9d746594b767b9",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "423",
+        "countries": [
+          "N",
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Bucculatrix noltei",
+      "decision": "priority_follow_up",
+      "reason": "Tydlig larvvärd Artemisia vulgaris och eftersöksmöjlighet. Finsk fyndhistoria och senare svenska småfjärilsrapporter behöver kompletteras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 145,
+      "source_url": "https://lepiforum.org/wiki/page/Bucculatrix_noltei",
+      "source_sha256": "93c8d8634e3a790e3880cfa9c7dd0b1d5e7488a0505c0e3493c4ecb4bd6aa666",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "425",
+        "countries": [
+          "N",
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Cabera leptographa",
+      "decision": "held_for_evidence",
+      "reason": "Ingen användbar biologisammanfattning i den lästa artkällan. Finska belägg, larvvärd och bestämningsrisk måste kompletteras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 3,
+      "source_url": "https://lepiforum.org/wiki/page/Cabera_leptographa",
+      "source_sha256": "f90902be3825244eb37b57b53ef9dfb5f9fc1b410b9bc30210e7a1c365fa8202",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3570",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Capperia trichodactyla",
+      "decision": "priority_follow_up",
+      "reason": "Leonurus cardiaca och ett dokumenterat larvhabitat ger en konkret sökingång. Regional utveckling och säker bestämning behöver kontrolleras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 3,
+      "source_url": "https://lepiforum.org/wiki/page/Capperia_trichodactyla",
+      "source_sha256": "23502a06af250e9d2bb7d907e0dfef3fab9c83d595d03d35f518393c3dee0f0c",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2411",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Caradrina expansa",
+      "decision": "held_for_evidence",
+      "reason": "Nyare finsk landsuppgift finns, men naturförekomst, införsel och regional utveckling kan inte avgöras från artkällans tunna biologidel.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Caradrina_expansa",
+      "source_sha256": "a6bbf70782fca53cbb5103b1457aa43f69a456228717722ba85c99ad35e215ce",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4188b",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Chersotis andereggii",
+      "decision": "held_for_evidence",
+      "reason": "Otillräckligt regionalt biologiskt underlag. Finska belägg och taxonomisk behandling måste kopplas till rätt artkoncept.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Chersotis_andereggii",
+      "source_sha256": "8620bd93e63aad23c0edb62ca5a8d2a8eb736af9eaf435f38c82345bfc007641",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4618",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Chlorissa cloraria",
+      "decision": "held_for_evidence",
+      "reason": "Centraleuropeiska kalkgräsmarksexempel finns. Finsk spridningshistoria och säker avgränsning mot närstående arter behöver kontrolleras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 29,
+      "source_url": "https://lepiforum.org/wiki/page/Chlorissa_cloraria",
+      "source_sha256": "b4659bc14dde7a04960066442153d043c7c1dfde3bfe15245d72ff57a6fcf67e",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3623",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Clepsis lindebergi",
+      "decision": "held_for_evidence",
+      "reason": "Larvbiologin anges som okänd. Finsk geografi och relevans för en svensk bevakningsvy behöver expertbedömas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 43,
+      "source_url": "https://lepiforum.org/wiki/page/Clepsis_lindebergi",
+      "source_sha256": "94d14d0df2af57f4a1b7215de8ef4243e6953170243b5674ce3b360943ac0a6c",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "829",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Clepsis rogana",
+      "decision": "held_for_evidence",
+      "reason": "Källans utförliga larvbiologi är huvudsakligen alpin. Överföring till finska bestånd eller en svensk expansionsfront kan inte göras utan särskilt underlag.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 3,
+      "source_url": "https://lepiforum.org/wiki/page/Clepsis_rogana",
+      "source_sha256": "27203b19630b98bbcfbb91f799086149aa91cdca1d31b3eda493c2b217e54447",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "825",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Coleophora sirella",
+      "decision": "held_for_evidence",
+      "reason": "Artkällan saknar användbar biologidel. Namn, finska belägg och larvsäck-/värdväxtunderlag behöver fördjupas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 6,
+      "source_url": "https://lepiforum.org/wiki/page/Coleophora_sirella",
+      "source_sha256": "fbcf90c3c5e2794940561255dd3fcab46d1a5c0cad03e12266e7bd5f707debfa",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2237a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Cosmardia moritzella",
+      "decision": "priority_follow_up",
+      "reason": "Larvbiologi på Silene latifolia är beskriven. Nordlig expansion och finsk förekomsthistoria är inte styrkta av den lästa biologitexten.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 15,
+      "source_url": "https://lepiforum.org/wiki/page/Cosmardia_moritzella",
+      "source_sha256": "3b69a71ec0be00b6bfc45949992556e10c693f4086fa007613dc8a96ac9528c9",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1918",
+        "countries": [
+          "N",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Cosmia contusa",
+      "decision": "priority_follow_up",
+      "reason": "Populus tremula och skuggiga ungaspbestånd är dokumenterade. Ingen daterad expansion mot Sverige har verifierats i denna genomgång.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 7,
+      "source_url": "https://lepiforum.org/wiki/page/Cosmia_contusa",
+      "source_sha256": "823de70e939e04eea299a8abd02a5875b115628a2f5b6fa0723a845f663adc26",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4405",
+        "countries": [
+          "N",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Cosmopterix sibirica",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 79,
+      "source_url": "https://lepiforum.org/wiki/page/Cosmopterix_sibirica",
+      "source_sha256": "094354ae9271fae4fef4e4ec17f8ba5d4a7612bd83ac503063f6ce1075ff19e6",
+      "source_status": "source_read",
+      "expansion_flag": true,
+      "checklist": {
+        "number": "1656",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Cucullia pustulata",
+      "decision": "held_for_evidence",
+      "reason": "Endast sparsamt habitatmaterial i den lästa biologidelen. Förekomstsätt i Finland och regional reproduktion återstår att belägga.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Cucullia_pustulata",
+      "source_sha256": "f616b66ae9520c1aca20502ce1e0b210784bbf71766b5a5551c0931d5d760ecb",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4056",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Cucullia virgaureae",
+      "decision": "held_for_evidence",
+      "reason": "Källans habitatfoto från Ukraina räcker inte som grund för svensk biotop- eller expansionsbedömning.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Cucullia_virgaureae",
+      "source_sha256": "63f374e6799a88a83eab856b5530c70dfc7c71880a4856bdeaecf653f0f26068",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4063a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Diachrysia zosimi",
+      "decision": "held_for_evidence",
+      "reason": "Sanguisorba officinalis är säkert värdunderlag, men källan beskriver en specialiserad våtmarksart med låg vandringsbenägenhet. Finska belägg och spridningsrelevans måste bedömas särskilt.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 3,
+      "source_url": "https://lepiforum.org/wiki/page/Diachrysia_zosimi",
+      "source_sha256": "23e9c9f78f0d3c90f0841e100c03cf2f6aa596c9490f0321411f2bcd6730a33d",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4010",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Dichagyris musiva",
+      "decision": "held_for_evidence",
+      "reason": "Den lästa biologidelen ger ett alpint habitatfoto. Finsk förekomsts karaktär och bestämning behöver kontrolleras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 3,
+      "source_url": "https://lepiforum.org/wiki/page/Dichagyris_musiva",
+      "source_sha256": "3f109324cf3d58896da6c5a5bfd5e900acce7d8d78bedc9c1f4b6fedce4e8853",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4562a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Dichrorampha cinerascens",
+      "decision": "held_for_evidence",
+      "reason": "Uppgiften om Achillea som värd anges utan känd primärkälla. Artbestämning, biologi och finsk utveckling behöver kompletteras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 4,
+      "source_url": "https://lepiforum.org/wiki/page/Dichrorampha_cinerascens",
+      "source_sha256": "1d51e098aff5e5abdecc06381a4a2fa177796c75a946d7bd016822d3006a2ea8",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1297",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Dysgonia algira",
+      "decision": "held_for_evidence",
+      "reason": "Utländsk larvbiologi är känd, men finsk förekomsts karaktär och aktuell svensk status behöver en särskild faunistisk kontroll.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Dysgonia_algira",
+      "source_sha256": "8a27b769ce8ca597c0d8394a2d0b048bb1ef24f55c6b0a3efdc293b69a5e8201",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3967",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Elachista imatrella",
+      "decision": "held_for_evidence",
+      "reason": "Artkällan ger inget tillräckligt biologiskt sökunderlag. Finska belägg och artbestämning kräver specialistgranskning.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Elachista_imatrella",
+      "source_sha256": "5bb9df63ff429a3bcfebab9568ccd43d41d5f1d4ad1bf43231b0c76988b02527",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2029",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Elachista leifi",
+      "decision": "held_for_evidence",
+      "reason": "Tunt biologiskt underlag och behov av taxonomisk/biogeografisk granskning; ingen expansionsflagga utifrån finska antal.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Elachista_leifi",
+      "source_sha256": "bd18eb25708018bc43b266f01e754c18a27e4bf949635749cbec69a83584d084",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2044",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Elachista littoricola",
+      "decision": "held_for_evidence",
+      "reason": "Tunt biologiskt underlag. Rätt artkoncept, finskt habitat och svensk status behöver verifieras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 57,
+      "source_url": "https://lepiforum.org/wiki/page/Elachista_littoricola",
+      "source_sha256": "3c90637aff266ec371bc2428d1b3302e7a21f9e691afff61635569910ff3cbd9",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2016",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Elachista ornithopodella",
+      "decision": "priority_follow_up",
+      "reason": "Källan återger finska originalfynd på Carex digitata och en särskild fuktig skogsbiotop. Värdefull uppföljning, men aktuell svensk status och svår bestämning behöver fördjupas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 5,
+      "source_url": "https://lepiforum.org/wiki/page/Elachista_ornithopodella",
+      "source_sha256": "2fe90af11ca8a2b571953b7ed0f12ab02f932b0baad4e4de5916cb6210bf9076",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2031",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Elachista saarelai",
+      "decision": "held_for_evidence",
+      "reason": "Ingen sammanfattad sökbiologi i läst artkälla. Finsk utbredning och bestämning kräver specialistunderlag.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Elachista_saarelai",
+      "source_sha256": "030e55617d537da7fc91d263218d7d5673326f659e31de4a5a1f23c88e050e8a",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2028",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Endothenia gentianaeana",
+      "decision": "priority_follow_up",
+      "reason": "Väl beskriven biologi i Dipsacus-fröställningar. Förväxling och osäkra alternativa värduppgifter måste hanteras före tillägg.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 39,
+      "source_url": "https://lepiforum.org/wiki/page/Endothenia_gentianaeana",
+      "source_sha256": "f8e407e9492d3768e86b1dde1b7d26e0ca77c7f277c4b44ee4c8eef88df06dc6",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1115",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Epirrhoe tartuensis",
+      "decision": "held_for_evidence",
+      "reason": "Fuktig äng med vide och lövskog finns som källexempel. Senare svensk status, artavgränsning och finska belägg behöver fördjupas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 4,
+      "source_url": "https://lepiforum.org/wiki/page/Epirrhoe_tartuensis",
+      "source_sha256": "9a2cab01ec5b185e18f7127dec820c9d1aaf6286e12fa94e0dcb87f71cd3a74c",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3199",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Eublemma parva",
+      "decision": "held_for_evidence",
+      "reason": "Många utländska värdväxter listas, delvis osäkert. Finsk förekomsts karaktär och senare svenska fynd behöver kontrolleras före bevakningsstatus.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Eublemma_parva",
+      "source_sha256": "538a5e71c4b2d430809d239821f8d233fc9ff92617c0f78743a0e4cbcf0a48c2",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3955",
+        "countries": [
+          "D",
+          "F",
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Euchalcia modestoides",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 18,
+      "source_url": "https://lepiforum.org/wiki/page/Euchalcia_modestoides",
+      "source_sha256": "8331b131af0ec509f81b36271c0c85aa057787b29cca370c29881f55d71027c6",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4013",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Eucosma flavispecula",
+      "decision": "held_for_evidence",
+      "reason": "Värdväxten Centaurea jacea är osäkert underbyggd och flygtider varierar regionalt. Finsk biologi och säker bestämning behövs.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 4,
+      "source_url": "https://lepiforum.org/wiki/page/Eucosma_flavispecula",
+      "source_sha256": "58addc069bb6eacdb0e33a6485d7a4befc5f8cf04b6a1887ec17a7515e5f0f5e",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1222",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Euzophera bigella",
+      "decision": "priority_follow_up",
+      "reason": "Finska poster finns, men artkällans habitatexempel är sydligt. Frilevande förekomst, införsel och regional etablering behöver skiljas åt.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Euzophera_bigella",
+      "source_sha256": "2b590cd9e499722b3590fadb6fb8192cdf631e27269aeadb0ba29e734fadad96",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2809",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Eversmannia exornata",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 18,
+      "source_url": "https://lepiforum.org/wiki/page/Eversmannia_exornata",
+      "source_sha256": "6a7d3c0aae908b5d51c11c545c9e48e86df3cf2f8f3db28b42da13074654af20",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3636",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Gelechia jakovlevi",
+      "decision": "held_for_evidence",
+      "reason": "Otillräcklig biologitext för ett användbart artkort. Finska belägg, värdväxt och bestämningsunderlag behöver kompletteras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 64,
+      "source_url": "https://lepiforum.org/wiki/page/Gelechia_jakovlevi",
+      "source_sha256": "a71b40a25bc2ea2868e026f13b772df86d8d8e171e8bdb634030595517d09181",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1870",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Gnorimoschema streliciella",
+      "decision": "held_for_evidence",
+      "reason": "Källan diskuterar äldre svenska uppgifter som inte har kunnat bekräftas med belägg och möjliga felbestämningar. Statuskonflikten måste lösas före import.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 35,
+      "source_url": "https://lepiforum.org/wiki/page/Gnorimoschema_streliciella",
+      "source_sha256": "35f5b9f0b4aaa4b7cd0c286559bcc081254dcde1d2e084c5d513a4c733f33689",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1888",
+        "countries": [
+          "N",
+          "D",
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Grapholita andabatana",
+      "decision": "held_for_evidence",
+      "reason": "Den lästa källan saknar användbar biologisammanfattning. Finska belägg och artkoncept behöver specialistgranskas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 49,
+      "source_url": "https://lepiforum.org/wiki/page/Grapholita_andabatana",
+      "source_sha256": "d3ab4a593e610e46f714450dca69a2befc77dc1f7a20a867f6983eed34a9fd2b",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1357",
+        "countries": [
+          "D",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Grapholita cotoneastri",
+      "decision": "held_for_evidence",
+      "reason": "Tunt biologiskt underlag. Finska fynd, värdväxt och aktuell svensk status behöver kontrolleras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Grapholita_cotoneastri",
+      "source_sha256": "57c2c07d51f95fe57617468f0f64cfb3b931b1b75ca3290845495b3b16f54bd4",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1357",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Gymnancyla hornigii",
+      "decision": "priority_follow_up",
+      "reason": "Atriplex/Chenopodium och fröställningar ger användbara sökråd. Finsk utveckling och senaste svenska statuskontroll behöver kompletteras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Gymnancyla_hornigii",
+      "source_sha256": "a319333d050a9b06754181242d4fbf264600ba0bcd005ee5931abac57ab7a538",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2737a",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "update-2021.pdf",
+          "update-2025.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Gynaephora selenitica",
+      "decision": "held_for_evidence",
+      "reason": "Artkällan ger habitat- och växtbilder men inte en belagd aktuell expansionsfront. Regional utveckling och svensk relevans återstår.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 115,
+      "source_url": "https://lepiforum.org/wiki/page/Gynaephora_selenitica",
+      "source_sha256": "88cae265fcd39e7e36b51b67b1470d119c988d98b9a623f871ad0dca7edd6558",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3817",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Helcystogramma albinervis",
+      "decision": "held_for_evidence",
+      "reason": "Larvvärd är uttryckligen okänd. Fuktiga miljöer nämns, men konkret finskt eftersöksunderlag behöver kompletteras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Helcystogramma_albinervis",
+      "source_sha256": "d99af09ee3ee0707682d53a2a1145dcb93a5accc481ca96f75dfccd7a01a4619",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1733",
+        "countries": [
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Laothoe amurensis",
+      "decision": "priority_follow_up",
+      "reason": "Intressant östligt tillskott, men den lästa källans biologidel är tunn. Finsk populationshistoria, värdväxt och relevans för svensk ostkust behöver ett bättre originalunderlag.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 330,
+      "source_url": "https://lepiforum.org/wiki/page/Laothoe_amurensis",
+      "source_sha256": "28e1909411686b60f4f15102d3dcb2d9fc8b68eba6eea216920e3a63e9a7ef4a",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3690",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Lobesia euphorbiana",
+      "decision": "held_for_evidence",
+      "reason": "Ingen användbar biologisammanfattning i läst artkälla. Finska belägg och värdväxtuppgifter måste verifieras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 339,
+      "source_url": "https://lepiforum.org/wiki/page/Lobesia_euphorbiana",
+      "source_sha256": "c314473dc406ffc87d8a16a20db95f2f9922772ce188b90a7502c05b4a37215e",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1107",
+        "countries": [
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Loxostege deliblatica",
+      "decision": "held_for_evidence",
+      "reason": "Ett ukrainskt habitatfoto räcker inte för finsk populations- eller svensk expansionsbedömning.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Loxostege_deliblatica",
+      "source_sha256": "b17f4d9d2e15c274adb8fc615a31993e26f583a88b7394021f2ac569ca8d01eb",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2859a",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Monochroa simplicella",
+      "decision": "held_for_evidence",
+      "reason": "Föreslagna Juncus/Eriophorum-värdar är enligt källan inte belagda. Svensk hypotes bör vänta på bättre biologi och belägg.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 4,
+      "source_url": "https://lepiforum.org/wiki/page/Monochroa_simplicella",
+      "source_sha256": "d6e56b996c31fb09a8ba0fc5712e1a4af9850467ef9d2344e548d2d08b693f2c",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1806",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Nola estonica",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 83,
+      "source_url": "https://lepiforum.org/wiki/page/Nola_estonica",
+      "source_sha256": "9d1511fabf8919aeaaaf0640d9c99e3c4de5ad208f08bd37b1e6c5becd7438de",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4695a",
+        "countries": [
+          "E"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ],
+        "supplement": "Finnish checklist 2022 and Nocturna 2024"
+      }
+    },
+    {
+      "scientific_name": "Pammene luculentana",
+      "decision": "held_for_evidence",
+      "reason": "Hallonbär anges endast som förmodad larvmiljö. Livscykel och finskt eftersöksunderlag behöver beläggas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 14,
+      "source_url": "https://lepiforum.org/wiki/page/Pammene_luculentana",
+      "source_sha256": "43f88f7c43cc94036de6e91b2f77f1a7d69cef15c6a723f4193040ccb713215d",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1374",
+        "countries": [
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Paradiarsia punicea",
+      "decision": "held_for_evidence",
+      "reason": "Den lästa artkällan saknar tillräcklig biologidel. Finsk geografi och regional utveckling behöver särskild kontroll.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 67,
+      "source_url": "https://lepiforum.org/wiki/page/Paradiarsia_punicea",
+      "source_sha256": "e0bd2c958bcfecf33d594cbf0e2e14f043f1552b02cd3ee681aac6510aa3bb6d",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4607",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 7,
+      "source_url": "https://lepiforum.org/wiki/page/Phyllonorycter_lantanella",
+      "source_sha256": "1e9ca763bc104ab0c06185ac217499cbabb12745885d633e7548b0b93080f21f",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "537",
+        "countries": [
+          "N",
+          "F",
+          "E"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Phyllonorycter trifoliella",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 230,
+      "source_url": "https://lepiforum.org/wiki/page/Phyllonorycter_trifoliella",
+      "source_sha256": "346c055f82cdd90b19e7f46931954e564edb414ffbaa94387f01d7bc02130348",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "573",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Prochoreutis solaris",
+      "decision": "held_for_evidence",
+      "reason": "Larvbiologi anges som okänd. Finska belägg och säkert svenskt sökunderlag återstår.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 5,
+      "source_url": "https://lepiforum.org/wiki/page/Prochoreutis_solaris",
+      "source_sha256": "6174c5f519efb07f410639e2a49cc83021adac3023ea46b852d61a21187204b0",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "764",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Pyrrhia exprimens",
+      "decision": "held_for_evidence",
+      "reason": "Artkällan saknar användbar biologidel. Finska fynd måste kopplas till rätt artkoncept och förekomstsätt.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 23,
+      "source_url": "https://lepiforum.org/wiki/page/Pyrrhia_exprimens",
+      "source_sha256": "ea7cd66d4c630637dd162c7e58b03eb081a8f2a407198b1a36200546385934b3",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4144",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Schrankia balneorum",
+      "decision": "held_for_evidence",
+      "reason": "Nyare finsk landsuppgift men tunt habitatmaterial. Förekomstsätt, bestämning och regional reproduktion behöver utredas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Schrankia_balneorum",
+      "source_sha256": "cc96eb2402c8e195fa6eb44a689a07eabebae02f1823fd197f4ed14450ca5efa",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3938a",
+        "countries": [
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Sciota lucipetella",
+      "decision": "held_for_evidence",
+      "reason": "Larvbiologin anges som okänd. Finska belägg och bestämningsrisk behöver specialistgranskas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 277,
+      "source_url": "https://lepiforum.org/wiki/page/Sciota_lucipetella",
+      "source_sha256": "dd7bef4d8df38ebc2effbdb187701dec821b08954254c305d247f230cd4378db",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2728",
+        "countries": [
+          "D",
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scolitantides vicrama",
+      "decision": "held_for_evidence",
+      "reason": "Artkällan på exakt detta namn kunde inte läsas. Kombinationer och artkoncept måste redas ut före källgranskning och import.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 114,
+      "source_url": "https://lepiforum.org/wiki/page/Scolitantides_vicrama",
+      "source_sha256": null,
+      "source_status": "source_unavailable",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2650",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scopula caricaria",
+      "decision": "held_for_evidence",
+      "reason": "Värdväxtunderlaget gäller uppfödning och är svagt för fältet. Finska habitat- och bestämningsuppgifter behövs.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 287,
+      "source_url": "https://lepiforum.org/wiki/page/Scopula_caricaria",
+      "source_sha256": "28d1cabc4839d5fcad1c6ba1c33826d5cb2a963f4c379aac686bce9c63d2b5a7",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3140",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scopula corrivalaria",
+      "decision": "held_for_evidence",
+      "reason": "Ett fuktigt hed-/myrhabitat är dokumenterat, men finsk populationshistoria och spridningsrelevans saknar tillräckligt källstöd här.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 66,
+      "source_url": "https://lepiforum.org/wiki/page/Scopula_corrivalaria",
+      "source_sha256": "e69890b65f0297052df558768a7fb171d4291cf0463bd410e32415c2bafc2910",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3139",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scopula frigidaria",
+      "decision": "held_for_evidence",
+      "reason": "Tunt biologiskt underlag. Finsk geografi och betydelse för svensk bevakning måste bedömas separat från sydlig expansion.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 36,
+      "source_url": "https://lepiforum.org/wiki/page/Scopula_frigidaria",
+      "source_sha256": "ebcf77e08898a4119e216acd94ec2fc2fe4976cfa4b645f650fed6d11b50645d",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3152",
+        "countries": [
+          "N",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scrobipalpa bryophiloides",
+      "decision": "held_for_evidence",
+      "reason": "Ingen användbar biologisammanfattning i läst källa. Artavgränsning och finska belägg behöver fördjupas.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 1,
+      "source_url": "https://lepiforum.org/wiki/page/Scrobipalpa_bryophiloides",
+      "source_sha256": "32082ed0a9db5c7bf260d5ab317346e5f2dd1b8e1973e1e2a5e7c7211fbc7f5b",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "1902",
+        "countries": [
+          "D",
+          "E",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scythris palustris",
+      "decision": "held_for_evidence",
+      "reason": "Födouppgifterna bygger i stor utsträckning på uppfödning; fältvärd är osäker. Finska habitat och säker bestämning behöver kompletteras.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 9,
+      "source_url": "https://lepiforum.org/wiki/page/Scythris_palustris",
+      "source_sha256": "08e2c729953cedca3d29eafc9832aff8f13d8179461f89b9e879f6a98af7d576",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2331",
+        "countries": [
+          "D",
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Scythris_sinensis",
+      "source_sha256": "abc7103fdd820ccf16f98b6d43f3eb10bbe56804ca67507881ae8f20d2e0ee0f",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2323",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Stegania cararia",
+      "decision": "priority_follow_up",
+      "reason": "Östlig art med finska belägg. Finsk fyndhistorik och sammanhängande habitat-/värdväxtunderlag behöver fördjupas; ingen expansionsflagga kan sättas nu.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 515,
+      "source_url": "https://lepiforum.org/wiki/page/Stegania_cararia",
+      "source_sha256": "6d45d07e059e4f449e1323e258b33df46f4799d7cae6761ac4fe54b18b8ccccc",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "3451",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Stenoptilodes taprobanes",
+      "decision": "held_for_evidence",
+      "reason": "Källans värdväxter och habitat gäller sydliga öar/Medelhavet. Finska beläggs förekomstsätt måste klarläggas före svenskt sökförslag.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 2,
+      "source_url": "https://lepiforum.org/wiki/page/Stenoptilodes_taprobanes",
+      "source_sha256": "40cb910459a2c108195834b4093abe986f43cf7d5c981eb73fdf8ef5bf70ae13",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "2387",
+        "countries": [
+          "D",
+          "F"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Xylomoia strix",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 11,
+      "source_url": "https://lepiforum.org/wiki/page/Xylomoia_strix",
+      "source_sha256": "8ed8a2bfb1dffbf483f2a567d0f7026f0bfa6eec354dda4f74ed0a5d03f09b5e",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "4327",
+        "countries": [
+          "F",
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Ypsolopha sarmaticella",
+      "decision": "published_candidate",
+      "reason": "Källscreenad finsk/östlig bevakningsart med separat artkort, biologiska uppgifter och tydligt märkta svenska sökhypoteser. Svensk frånvaro är inte bevisad.",
+      "checked_at": "2026-11-02",
+      "sweden_gbif_count": 0,
+      "finland_2015_2026_count": 9,
+      "source_url": "https://lepiforum.org/wiki/page/Ypsolopha_sarmaticella",
+      "source_sha256": "9be47fca9d9376b8807719df11d392a3544525bf29fba58ecc1ccc95c8e75468",
+      "source_status": "source_read",
+      "expansion_flag": false,
+      "checklist": {
+        "number": "707",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "Source screening, not a taxonomic expert revision.",
+    "No Swedish GBIF record is not proof of national absence; later annual reports remain incomplete.",
+    "Held species are not declared absent, unsuitable or uninteresting.",
+    "Finland is added to the named geographic scope of the ten new profiles only; existing profiles retain their documented original scope.",
+    "No Finnish new-to-monitoring record is reinterpreted as a first national record."
+  ]
+}

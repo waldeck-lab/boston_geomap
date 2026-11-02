@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v2",
+  "version": "2026-11-02-v3",
   "swedish_names": {
     "Heliomata glarearia": "stäppnätmätare",
     "Polymixis lichenea": "kusthöstfly",
@@ -157,6 +157,292 @@
         "https://lepiforum.org/wiki/page/Lithophane_leautieri"
       ],
       "reason": "Källgranskad bevakningskandidat. Inga publika svenska GBIF-belägg i kontrollen och ingen svensk markering i granskat checklistunderlag. Fyndräkningen i närområdet omfattar alla licenser; endast CC0/CC BY-fynd återpubliceras på kartan. Detta är inte bevisad svensk frånvaro eller i sig belagd expansion; sena svenska rapporter behöver fortsatt expertgranskas."
+    },
+    "Nola estonica": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "4695a",
+        "countries": [
+          "E",
+          "F"
+        ],
+        "sources": [
+          "update-2025.pdf"
+        ],
+        "supplement": "Finnish checklist 2022 and Nocturna 2024"
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 83,
+      "gbif_key": 11596496,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Nola+estonica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11596496&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=11596496&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Nola_estonica",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Xylomoia strix": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "4327",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 11,
+      "gbif_key": 1772458,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Xylomoia+strix&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1772458&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1772458&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Xylomoia_strix",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Eversmannia exornata": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "3636",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2021.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 18,
+      "gbif_key": 8943343,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Eversmannia+exornata&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8943343&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=8943343&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Eversmannia_exornata",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Cosmopterix sibirica": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "1656",
+        "countries": [
+          "E",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 79,
+      "gbif_key": 4529774,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Cosmopterix+sibirica&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4529774&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4529774&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Cosmopterix_sibirica",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Phyllonorycter trifoliella": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "573",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 230,
+      "gbif_key": 1749994,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Phyllonorycter+trifoliella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749994&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749994&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Phyllonorycter_trifoliella",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Ypsolopha sarmaticella": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "707",
+        "countries": [
+          "E",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 9,
+      "gbif_key": 1830940,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Ypsolopha+sarmaticella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1830940&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1830940&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Ypsolopha_sarmaticella",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Scythris sinensis": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "2323",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 2,
+      "gbif_key": 1841946,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Scythris+sinensis&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841946&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1841946&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Scythris_sinensis",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Atypha pulmonaris": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "4349",
+        "countries": [
+          "E",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 9,
+      "gbif_key": 1782319,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Atypha+pulmonaris&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782319&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1782319&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Atypha_pulmonaris",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Euchalcia modestoides": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "4013",
+        "countries": [
+          "E",
+          "F",
+          "Lt",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 18,
+      "gbif_key": 4532929,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Euchalcia+modestoides&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532929&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=4532929&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Euchalcia_modestoides",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Phyllonorycter lantanella": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-02",
+      "checklist": {
+        "number": "537",
+        "countries": [
+          "E",
+          "F",
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 7,
+      "gbif_key": 1749762,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/species/match?name=Phyllonorycter+lantanella&strict=true",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749762&country=SE&occurrenceStatus=PRESENT&limit=0",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749762&country=FI&occurrenceStatus=PRESENT&eventDate=2015-01-01%2C2026-11-02&limit=0",
+        "https://lepiforum.org/wiki/page/Phyllonorycter_lantanella",
+        "https://cdn.laji.fi/files/checklists/2022/Lajiluettelo2022_Checklist2022.pdf"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
     }
   }
 }
