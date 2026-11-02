@@ -106,6 +106,14 @@ class WatchStoreTests(unittest.TestCase):
         import_species_supplements(self.db,p)
         self.assertEqual(profile(self.db,1)['supplement']['additional_records'][0]['event_date'],'2024-09-24')
         self.assertEqual(self.db.execute('SELECT count(*) FROM occurrences').fetchone()[0],0)
+        record['map_location']=dict(latitude=55.13,longitude=14.92,approximate=True,precision='island',placement_method='user_requested_island_center')
+        p.write_text(json.dumps(dict(version='v2',profiles=[item])))
+        import_species_supplements(self.db,p)
+        self.assertTrue(profile(self.db,1)['supplement']['additional_records'][0]['map_location']['approximate'])
+        record['map_location']['approximate']=False
+        p.write_text(json.dumps(dict(version='v3',profiles=[item])))
+        with self.assertRaises(ValueError):import_species_supplements(self.db,p)
+        record['map_location']['approximate']=True
         record['latitude']=55
         p.write_text(json.dumps(dict(version='v2',profiles=[item])))
         with self.assertRaises(ValueError):import_species_supplements(self.db,p)

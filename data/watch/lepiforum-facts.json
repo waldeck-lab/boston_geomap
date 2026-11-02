@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v2",
+  "version": "2026-11-02-v3",
   "profiles": [
     {
       "notes": {
@@ -57,14 +57,23 @@
         {
           "country": "DK",
           "source_url": "https://www.researchgate.net/publication/400572677_Data_vedrorende_nogle_nye_danske_smasommerfugle",
-          "note": "Publicerat originalbelägg från Bornholm. Uppgiften anger inga exakta koordinater och har inte lagts till som kartpunkt.",
+          "note": "Den separata ≈-markören är placerad ungefär mitt på Bornholm enligt önskemål. Den anger ön, inte fyndens exakta lägen vid Balka och V. Sømarken.",
           "event_date": "2024-09-24",
           "host": "Robinia pseudoacacia",
           "locality": "Balka och V. Sømarken, Bornholm",
           "observer": "Per Falck",
           "life_stage": "Larver",
           "source_title": "Falck (2026): Data vedrørende nogle nye danske småsommerfugle. Entomologiske Meddelelser 92(1–2), s. 31–32; fynduppgift s. 31, figur 4 s. 32.",
-          "abundance": "I antal (originalrapportens formulering)"
+          "abundance": "I antal (originalrapportens formulering)",
+          "map_location": {
+            "approximate": true,
+            "placement_method": "user_requested_island_center",
+            "label": "Bornholm – ungefärlig öplacering",
+            "longitude": 14.92,
+            "precision": "island",
+            "latitude": 55.13
+          },
+          "life_stage_code": "Larva"
         }
       ],
       "distribution_review": {

@@ -29,6 +29,9 @@ def main():
     item=next(f for f in record['files'] if f['key']==matrix.name);algorithm,digest=item['checksum'].split(':')
     if hashlib.file_digest(matrix.open('rb'),algorithm).hexdigest()!=digest:raise RuntimeError('Matrix checksum mismatch')
     selection=json.loads((stage/'selection-review.json').read_text());names=selection['names']
+    exclusions=json.loads((Path(__file__).resolve().parents[1]/'data/watch/selection-exclusions.json').read_text(encoding='utf-8'))
+    excluded_names={r['scientific_name'] for r in exclusions['excluded']}
+    if set(names)&excluded_names:raise RuntimeError('Excluded resident species in watch cohort')
     if not 10<=len(names)<=100 or any(selection['assessments'][n]['classification']!='watch_candidate' for n in names):raise RuntimeError('Candidate screening is required before import')
     for name in names:
         assessment=selection['assessments'][name]
@@ -87,7 +90,7 @@ def main():
             db.execute("UPDATE import_runs SET status='complete',completed_at=CURRENT_TIMESTAMP,report_json=? WHERE id=?",(json.dumps(report,ensure_ascii=False),run))
         if db.execute('PRAGMA quick_check').fetchone()[0]!='ok' or db.execute('PRAGMA foreign_key_check').fetchall():raise RuntimeError('Database integrity failure')
         (stage/'inventory.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
-        export=dict(generated_at=datetime.now(timezone.utc).isoformat(),pilot=True,notice='Source-screened watch candidates, not proof of national absence or an establishment forecast. Bounded GBIF samples are not complete histories.',inventory=inventory(db),profiles=[profile(db,ids[name]) for name in names],references=[profile(db,r['id']) for r in db.execute("SELECT id FROM candidates WHERE role='reference-control' ORDER BY scientific_name")],screening_limitations=selection['limitations'],sources=[dict(r) for r in db.execute('SELECT * FROM sources')])
+        export=dict(generated_at=datetime.now(timezone.utc).isoformat(),pilot=True,notice='Source-screened watch candidates, not proof of national absence or an establishment forecast. Bounded GBIF samples are not complete histories.',inventory=inventory(db),profiles=[profile(db,ids[name]) for name in names],references=[profile(db,r['id']) for r in db.execute("SELECT id,scientific_name FROM candidates WHERE role='reference-control' ORDER BY scientific_name") if r['scientific_name'] not in excluded_names],screening_limitations=selection['limitations'],sources=[dict(r) for r in db.execute('SELECT * FROM sources')])
         (stage/'pilot-export.json').write_text(json.dumps(export,ensure_ascii=False,indent=2))
         print('Pilot database:',stage/'future-species.sqlite','species:',len(ids))
     except BaseException:

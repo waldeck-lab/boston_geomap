@@ -132,6 +132,11 @@ def import_species_supplements(db,path):
             date.fromisoformat(record['event_date'])
             u=urlsplit(record['source_url'])
             if u.scheme!='https' or not u.hostname or not record['source_title'] or not record['locality']:raise ValueError('Literature example requires a source and locality')
+            placement=record.get('map_location')
+            if placement:
+                if placement.get('approximate') is not True or placement.get('precision')!='island' or placement.get('placement_method')!='user_requested_island_center':raise ValueError('Approximate island placement must be explicitly labelled')
+                lat=float(placement['latitude']);lon=float(placement['longitude'])
+                if not math.isfinite(lat+lon) or not(-90<=lat<=90 and -180<=lon<=180):raise ValueError('Invalid island placement')
         prepared.append((row['id'],data['version'],json.dumps(p,ensure_ascii=False)))
     db.executemany('INSERT OR REPLACE INTO species_supplements VALUES(?,?,?)',prepared)
     return len(prepared)
