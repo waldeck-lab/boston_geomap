@@ -31,17 +31,23 @@ def front_params(taxon,mappable=False):
     if mappable:params['license']=['CC0_1_0','CC_BY_4_0']
     return params
 
-def baseline(text,validate=True):
+def baseline(text,validate=True,accepted_genera=None):
+    if accepted_genera is None and validate:
+        accepted_genera=json.loads((Path(__file__).resolve().parents[1]/'data/watch/checklist-2017-accepted-genera.json').read_text())['genera']
     genus=None;rows={}
     for line in text.splitlines():
-        g=re.match(r'^\s*\d+[a-z*]*\s+([A-Z][a-z]+)\s+[A-Z(]',line)
-        if g and not g[1].endswith(('idae','inae','oidea')):genus=g[1]
+        g=re.match(r'^\s*(\d+)[a-z*]*\s+([A-Z][a-z]+)\b',line)
+        if g and not g[2].endswith(('idae','inae','oidea')):
+            if accepted_genera is not None:
+                if accepted_genera.get(g[1])==g[2]:genus=g[2]
+            elif re.match(r'^\s*\d+[a-z*]*\s+[A-Z][a-z]+\s+[A-Z(]',line):genus=g[2]
         m=re.match(r'^\s*(\d+)[a-z*]*\s+([a-z][a-z-]+)\s+(.+?)\s{2,}((?:(?:I|N|S|D|F|E|Lv|Lt)[?*()]*\s*)+)$',line)
         if m and genus:rows[genus+' '+m[2]]=dict(number=m[1],countries=re.findall(r'\b(?:I|N|S|D|F|E|Lv|Lt)\b',m[4]),sources=['checklist-2017.pdf'])
     if validate:
         if len(rows)!=3259 or sum('S' in r['countries'] for r in rows.values())!=2804:raise ValueError('Checklist parsing failed published country/total control counts')
         for name in ['Cameraria ohridella','Phyllonorycter leucographella','Vanessa cardui','Saturnia pavonia']:
             if 'S' not in rows[name]['countries']:raise ValueError('Known Swedish control failed')
+        if rows.get('Coleophora algidella',{}).get('countries')!=['I','N'] or rows.get('Coleophora carelica',{}).get('countries')!=['F','E','Lv']:raise ValueError('Accepted genus / synonym control failed')
     return rows
 def add_updates(rows,text,label):
     text=text.split('\nNew country records\n',1)[1].split('\nTaxonomic changes',1)[0]

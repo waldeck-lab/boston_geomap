@@ -1,0 +1,3134 @@
+[
+  {
+    "scientific_name": "Eriocrania chrysolepidella",
+    "number": "17",
+    "previous_name": "Paracrania chrysolepidella",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Eriocrania unimaculella",
+    "number": "18",
+    "previous_name": "Paracrania unimaculella",
+    "countries": [
+      "I",
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Eriocrania sparrmannella",
+    "number": "19",
+    "previous_name": "Paracrania sparrmannella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Eriocrania salopiella",
+    "number": "20",
+    "previous_name": "Paracrania salopiella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Eriocrania cicatricella",
+    "number": "21",
+    "previous_name": "Paracrania cicatricella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Eriocrania sangii",
+    "number": "23",
+    "previous_name": "Paracrania sangii",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Eriocrania semipurpurella",
+    "number": "24",
+    "previous_name": "Paracrania semipurpurella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Dahlica triquetrella",
+    "number": "258",
+    "previous_name": "Siederia triquetrella",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Dahlica lichenella",
+    "number": "259",
+    "previous_name": "Siederia lichenella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Dahlica fennicella",
+    "number": "262",
+    "previous_name": "Siederia fennicella",
+    "countries": [
+      "F",
+      "E"
+    ]
+  },
+  {
+    "scientific_name": "Dahlica lazuri",
+    "number": "263",
+    "previous_name": "Siederia lazuri",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Dahlica charlottae",
+    "number": "265",
+    "previous_name": "Siederia charlottae",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Dahlica rupicolella",
+    "number": "266",
+    "previous_name": "Siederia rupicolella",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Dahlica listerella",
+    "number": "267",
+    "previous_name": "Siederia listerella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Proutia rotunda",
+    "number": "282",
+    "previous_name": "Anaproutia rotunda",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Proutia norvegica",
+    "number": "283",
+    "previous_name": "Anaproutia norvegica",
+    "countries": [
+      "N",
+      "S",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Acossus terebra",
+    "number": "1459",
+    "previous_name": "Lamellocossus terebra",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Promalactis procerella",
+    "number": "1516",
+    "previous_name": "Bisigna procerella",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agnoea latipennella",
+    "number": "1536",
+    "previous_name": "Pseudatemelia latipennella",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Agnoea josephinae",
+    "number": "1537",
+    "previous_name": "Pseudatemelia josephinae",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agnoea elsae",
+    "number": "1538",
+    "previous_name": "Pseudatemelia elsae",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agnoea flavifrontella",
+    "number": "1539",
+    "previous_name": "Pseudatemelia flavifrontella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agnoea subochreella",
+    "number": "1540",
+    "previous_name": "Pseudatemelia subochreella",
+    "countries": [
+      "S",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema sangiella",
+    "number": "1676",
+    "previous_name": "Syncopacma sangiella",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema cinctella",
+    "number": "1677",
+    "previous_name": "Syncopacma cinctella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema larseniella",
+    "number": "1678",
+    "previous_name": "Syncopacma larseniella",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema wormiella",
+    "number": "1679",
+    "previous_name": "Syncopacma wormiella",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema ochrofasciella",
+    "number": "1680",
+    "previous_name": "Syncopacma ochrofasciella",
+    "countries": [
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema taeniolella",
+    "number": "1681",
+    "previous_name": "Syncopacma taeniolella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema albifrontella",
+    "number": "1682",
+    "previous_name": "Syncopacma albifrontella",
+    "countries": [
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema vinella",
+    "number": "1683",
+    "previous_name": "Syncopacma vinella",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema suecicella",
+    "number": "1684",
+    "previous_name": "Syncopacma suecicella",
+    "countries": [
+      "S",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema polychromella",
+    "number": "1685",
+    "previous_name": "Syncopacma polychromella",
+    "countries": [
+      "N",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema karvoneni",
+    "number": "1686",
+    "previous_name": "Syncopacma karvoneni",
+    "countries": [
+      "N",
+      "S",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Aproaerema anthyllidella",
+    "number": "1687",
+    "previous_name": "Syncopacma anthyllidella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora directella",
+    "number": "2107",
+    "previous_name": "Metriotes directella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora expressella",
+    "number": "2108",
+    "previous_name": "Metriotes expressella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora carelica",
+    "number": "2109",
+    "previous_name": "Metriotes carelica",
+    "countries": [
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora inulae",
+    "number": "2110",
+    "previous_name": "Metriotes inulae",
+    "countries": [
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora striatipennella",
+    "number": "2111",
+    "previous_name": "Metriotes striatipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora algidella",
+    "number": "2112",
+    "previous_name": "Metriotes algidella",
+    "countries": [
+      "I",
+      "N"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora tanaceti",
+    "number": "2113",
+    "previous_name": "Metriotes tanaceti",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora solitariella",
+    "number": "2114",
+    "previous_name": "Metriotes solitariella",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora hackmani",
+    "number": "2115",
+    "previous_name": "Metriotes hackmani",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora dianthi",
+    "number": "2116",
+    "previous_name": "Metriotes dianthi",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora kyffhusana",
+    "number": "2117",
+    "previous_name": "Metriotes kyffhusana",
+    "countries": [
+      "S",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora burmanni",
+    "number": "2118",
+    "previous_name": "Metriotes burmanni",
+    "countries": [
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora niveistrigella",
+    "number": "2119",
+    "previous_name": "Metriotes niveistrigella",
+    "countries": [
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora silenella",
+    "number": "2120",
+    "previous_name": "Metriotes silenella",
+    "countries": [
+      "D",
+      "F",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora nutantella",
+    "number": "2121",
+    "previous_name": "Metriotes nutantella",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora graminicolella",
+    "number": "2122",
+    "previous_name": "Metriotes graminicolella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora paradrymidis",
+    "number": "2123",
+    "previous_name": "Metriotes paradrymidis",
+    "countries": [
+      "S"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora adelogrammella",
+    "number": "2124",
+    "previous_name": "Metriotes adelogrammella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora saponariella",
+    "number": "2125",
+    "previous_name": "Metriotes saponariella",
+    "countries": [
+      "S",
+      "D",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora riffelensis",
+    "number": "2126",
+    "previous_name": "Metriotes riffelensis",
+    "countries": [
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora galbulipennella",
+    "number": "2127",
+    "previous_name": "Metriotes galbulipennella",
+    "countries": [
+      "S",
+      "F",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora scabrida",
+    "number": "2128",
+    "previous_name": "Metriotes scabrida",
+    "countries": [
+      "S",
+      "D",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora follicularis",
+    "number": "2129",
+    "previous_name": "Metriotes follicularis",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora trochilella",
+    "number": "2130",
+    "previous_name": "Metriotes trochilella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora gardesanella",
+    "number": "2131",
+    "previous_name": "Metriotes gardesanella",
+    "countries": [
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora amellivora",
+    "number": "2132",
+    "previous_name": "Metriotes amellivora",
+    "countries": [
+      "S",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora ramosella",
+    "number": "2133",
+    "previous_name": "Metriotes ramosella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora peribenanderi",
+    "number": "2134",
+    "previous_name": "Metriotes peribenanderi",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora paripennella",
+    "number": "2135",
+    "previous_name": "Metriotes paripennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora therinella",
+    "number": "2136",
+    "previous_name": "Metriotes therinella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora pratella",
+    "number": "2137",
+    "previous_name": "Metriotes pratella",
+    "countries": [
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora asteris",
+    "number": "2138",
+    "previous_name": "Metriotes asteris",
+    "countries": [
+      "N",
+      "S",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora albicans",
+    "number": "2139",
+    "previous_name": "Metriotes albicans",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora zukowskii",
+    "number": "2141",
+    "previous_name": "Metriotes zukowskii",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora argentula",
+    "number": "2142",
+    "previous_name": "Metriotes argentula",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora granulatella",
+    "number": "2143",
+    "previous_name": "Metriotes granulatella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora absinthii",
+    "number": "2144",
+    "previous_name": "Metriotes absinthii",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora lewandowskii",
+    "number": "2145",
+    "previous_name": "Metriotes lewandowskii",
+    "countries": [
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora artemisicolella",
+    "number": "2146",
+    "previous_name": "Metriotes artemisicolella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora derasofasciella",
+    "number": "2147",
+    "previous_name": "Metriotes derasofasciella",
+    "countries": [
+      "S"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora deviella",
+    "number": "2149",
+    "previous_name": "Metriotes deviella",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora chrysanthemi",
+    "number": "2150",
+    "previous_name": "Metriotes chrysanthemi",
+    "countries": [
+      "F",
+      "E"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora succursella",
+    "number": "2151",
+    "previous_name": "Metriotes succursella",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora gnaphalii",
+    "number": "2152",
+    "previous_name": "Metriotes gnaphalii",
+    "countries": [
+      "S",
+      "D",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora millefolii",
+    "number": "2153",
+    "previous_name": "Metriotes millefolii",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora squamosella",
+    "number": "2154",
+    "previous_name": "Metriotes squamosella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora proterella",
+    "number": "2155",
+    "previous_name": "Metriotes proterella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora virgaureae",
+    "number": "2156",
+    "previous_name": "Metriotes virgaureae",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora pappiferella",
+    "number": "2157",
+    "previous_name": "Metriotes pappiferella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora filaginella",
+    "number": "2158",
+    "previous_name": "Metriotes filaginella",
+    "countries": [
+      "D",
+      "F",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora saxicolella",
+    "number": "2159",
+    "previous_name": "Metriotes saxicolella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora sternipennella",
+    "number": "2160",
+    "previous_name": "Metriotes sternipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora jaernaensis",
+    "number": "2161",
+    "previous_name": "Metriotes jaernaensis",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora boreella",
+    "number": "2162",
+    "previous_name": "Metriotes boreella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora motacillella",
+    "number": "2163",
+    "previous_name": "Metriotes motacillella",
+    "countries": [
+      "D",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora adspersella",
+    "number": "2164",
+    "previous_name": "Metriotes adspersella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora versurella",
+    "number": "2165",
+    "previous_name": "Metriotes versurella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora vestianella",
+    "number": "2166",
+    "previous_name": "Metriotes vestianella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora atriplicis",
+    "number": "2167",
+    "previous_name": "Metriotes atriplicis",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora lassella",
+    "number": "2168",
+    "previous_name": "Metriotes lassella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora taeniipennella",
+    "number": "2169",
+    "previous_name": "Metriotes taeniipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora glaucicolella",
+    "number": "2170",
+    "previous_name": "Metriotes glaucicolella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora tamesis",
+    "number": "2171",
+    "previous_name": "Metriotes tamesis",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora alticolella",
+    "number": "2172",
+    "previous_name": "Metriotes alticolella",
+    "countries": [
+      "I",
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora maritimella",
+    "number": "2173",
+    "previous_name": "Metriotes maritimella",
+    "countries": [
+      "S",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora adjunctella",
+    "number": "2174",
+    "previous_name": "Metriotes adjunctella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora caespititiella",
+    "number": "2175",
+    "previous_name": "Metriotes caespititiella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora otidipennella",
+    "number": "2176",
+    "previous_name": "Metriotes otidipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora antennariella",
+    "number": "2178",
+    "previous_name": "Metriotes antennariella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora sylvaticella",
+    "number": "2179",
+    "previous_name": "Metriotes sylvaticella",
+    "countries": [
+      "N",
+      "S",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora albella",
+    "number": "2180",
+    "previous_name": "Metriotes albella",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora lutarea",
+    "number": "2181",
+    "previous_name": "Metriotes lutarea",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora limoniella",
+    "number": "2182",
+    "previous_name": "Metriotes limoniella",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora clypeiferella",
+    "number": "2183",
+    "previous_name": "Metriotes clypeiferella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora carchara",
+    "number": "2184",
+    "previous_name": "Metriotes carchara",
+    "countries": [
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora squalorella",
+    "number": "2185",
+    "previous_name": "Metriotes squalorella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora salicorniae",
+    "number": "2186",
+    "previous_name": "Metriotes salicorniae",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora lithargyrinella",
+    "number": "2187",
+    "previous_name": "Metriotes lithargyrinella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora chalcogrammella",
+    "number": "2188",
+    "previous_name": "Metriotes chalcogrammella",
+    "countries": [
+      "S",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora siccifolia",
+    "number": "2189",
+    "previous_name": "Metriotes siccifolia",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora uliginosella",
+    "number": "2190",
+    "previous_name": "Metriotes uliginosella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora adjectella",
+    "number": "2191",
+    "previous_name": "Metriotes adjectella",
+    "countries": [
+      "N",
+      "S",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora milvipennis",
+    "number": "2192",
+    "previous_name": "Metriotes milvipennis",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora alnifoliae",
+    "number": "2193",
+    "previous_name": "Metriotes alnifoliae",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora badiipennella",
+    "number": "2194",
+    "previous_name": "Metriotes badiipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora limosipennella",
+    "number": "2195",
+    "previous_name": "Metriotes limosipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora gryphipennella",
+    "number": "2196",
+    "previous_name": "Metriotes gryphipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora hemerobiella",
+    "number": "2197",
+    "previous_name": "Metriotes hemerobiella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora serratella",
+    "number": "2198",
+    "previous_name": "Metriotes serratella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora spinella",
+    "number": "2199",
+    "previous_name": "Metriotes spinella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora prunifoliae",
+    "number": "2200",
+    "previous_name": "Metriotes prunifoliae",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora lutipennella",
+    "number": "2201",
+    "previous_name": "Metriotes lutipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora flavipennella",
+    "number": "2202",
+    "previous_name": "Metriotes flavipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora spiraeella",
+    "number": "2203",
+    "previous_name": "Metriotes spiraeella",
+    "countries": [
+      "S",
+      "D",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora hydrolapathella",
+    "number": "2204",
+    "previous_name": "Metriotes hydrolapathella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora trigeminella",
+    "number": "2205",
+    "previous_name": "Metriotes trigeminella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora albicosta",
+    "number": "2206",
+    "previous_name": "Metriotes albicosta",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora vulnerariae",
+    "number": "2207",
+    "previous_name": "Metriotes vulnerariae",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora trifolii",
+    "number": "2208",
+    "previous_name": "Metriotes trifolii",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora frischella",
+    "number": "2209",
+    "previous_name": "Metriotes frischella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora alcyonipennella",
+    "number": "2210",
+    "previous_name": "Metriotes alcyonipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora deauratella",
+    "number": "2211",
+    "previous_name": "Metriotes deauratella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora mayrella",
+    "number": "2212",
+    "previous_name": "Metriotes mayrella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora gallipennella",
+    "number": "2213",
+    "previous_name": "Metriotes gallipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora discordella",
+    "number": "2214",
+    "previous_name": "Metriotes discordella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora genistae",
+    "number": "2215",
+    "previous_name": "Metriotes genistae",
+    "countries": [
+      "S",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora svenssoni",
+    "number": "2216",
+    "previous_name": "Metriotes svenssoni",
+    "countries": [
+      "N",
+      "S",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora saturatella",
+    "number": "2217",
+    "previous_name": "Metriotes saturatella",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora parthenogenella",
+    "number": "2218",
+    "previous_name": "Metriotes parthenogenella",
+    "countries": [
+      "S",
+      "D",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora onobrychiella",
+    "number": "2219",
+    "previous_name": "Metriotes onobrychiella",
+    "countries": [
+      "S",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora colutella",
+    "number": "2221",
+    "previous_name": "Metriotes colutella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora coronillae",
+    "number": "2222",
+    "previous_name": "Metriotes coronillae",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora conyzae",
+    "number": "2223",
+    "previous_name": "Metriotes conyzae",
+    "countries": [
+      "S",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora brevipalpella",
+    "number": "2224",
+    "previous_name": "Metriotes brevipalpella",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora ptarmicia",
+    "number": "2225",
+    "previous_name": "Metriotes ptarmicia",
+    "countries": [
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora ballotella",
+    "number": "2226",
+    "previous_name": "Metriotes ballotella",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora wockeella",
+    "number": "2227",
+    "previous_name": "Metriotes wockeella",
+    "countries": [
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora ornatipennella",
+    "number": "2228",
+    "previous_name": "Metriotes ornatipennella",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora lixella",
+    "number": "2229",
+    "previous_name": "Metriotes lixella",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora ochrea",
+    "number": "2230",
+    "previous_name": "Metriotes ochrea",
+    "countries": [
+      "S",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora serpylletorum",
+    "number": "2231",
+    "previous_name": "Metriotes serpylletorum",
+    "countries": [
+      "D",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora lineolea",
+    "number": "2232",
+    "previous_name": "Metriotes lineolea",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora pennella",
+    "number": "2233",
+    "previous_name": "Metriotes pennella",
+    "countries": [
+      "S",
+      "D",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora albicostella",
+    "number": "2234",
+    "previous_name": "Metriotes albicostella",
+    "countries": [
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora peri",
+    "number": "2235",
+    "previous_name": "Metriotes peri",
+    "countries": [
+      "S"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora arctostaphyli",
+    "number": "2236",
+    "previous_name": "Metriotes arctostaphyli",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora juncicolella",
+    "number": "2237",
+    "previous_name": "Metriotes juncicolella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora fuscocuprella",
+    "number": "2238",
+    "previous_name": "Metriotes fuscocuprella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora binderella",
+    "number": "2239",
+    "previous_name": "Metriotes binderella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora orbitella",
+    "number": "2240",
+    "previous_name": "Metriotes orbitella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora lusciniaepennella",
+    "number": "2241",
+    "previous_name": "Metriotes lusciniaepennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora idaeella",
+    "number": "2243",
+    "previous_name": "Metriotes idaeella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora vacciniella",
+    "number": "2244",
+    "previous_name": "Metriotes vacciniella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora ledi",
+    "number": "2245",
+    "previous_name": "Metriotes ledi",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora plumbella",
+    "number": "2246",
+    "previous_name": "Metriotes plumbella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora vitisella",
+    "number": "2247",
+    "previous_name": "Metriotes vitisella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora glitzella",
+    "number": "2248",
+    "previous_name": "Metriotes glitzella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora murinella",
+    "number": "2249",
+    "previous_name": "Metriotes murinella",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora cornutella",
+    "number": "2250",
+    "previous_name": "Metriotes cornutella",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora laricella",
+    "number": "2251",
+    "previous_name": "Metriotes laricella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora sibiricella",
+    "number": "2252",
+    "previous_name": "Metriotes sibiricella",
+    "countries": [
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora violacea",
+    "number": "2253",
+    "previous_name": "Metriotes violacea",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora potentillae",
+    "number": "2254",
+    "previous_name": "Metriotes potentillae",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora ahenella",
+    "number": "2255",
+    "previous_name": "Metriotes ahenella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora obscuripalpella",
+    "number": "2256",
+    "previous_name": "Metriotes obscuripalpella",
+    "countries": [
+      "S",
+      "F",
+      "E",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora thulea",
+    "number": "2257",
+    "previous_name": "Metriotes thulea",
+    "countries": [
+      "N",
+      "S",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora unigenella",
+    "number": "2258",
+    "previous_name": "Metriotes unigenella",
+    "countries": [
+      "N",
+      "S",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora albitarsella",
+    "number": "2259",
+    "previous_name": "Metriotes albitarsella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora niveicostella",
+    "number": "2260",
+    "previous_name": "Metriotes niveicostella",
+    "countries": [
+      "S",
+      "D",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora pulmonariella",
+    "number": "2261",
+    "previous_name": "Metriotes pulmonariella",
+    "countries": [
+      "S",
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora polonicella",
+    "number": "2262",
+    "previous_name": "Metriotes polonicella",
+    "countries": [
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora anatipennella",
+    "number": "2263",
+    "previous_name": "Metriotes anatipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora albidella",
+    "number": "2265",
+    "previous_name": "Metriotes albidella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora kuehnella",
+    "number": "2266",
+    "previous_name": "Metriotes kuehnella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora ibipennella",
+    "number": "2267",
+    "previous_name": "Metriotes ibipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora betulella",
+    "number": "2268",
+    "previous_name": "Metriotes betulella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora zelleriella",
+    "number": "2269",
+    "previous_name": "Metriotes zelleriella",
+    "countries": [
+      "S",
+      "D",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora currucipennella",
+    "number": "2270",
+    "previous_name": "Metriotes currucipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora pyrrhulipennella",
+    "number": "2271",
+    "previous_name": "Metriotes pyrrhulipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora vibicigerella",
+    "number": "2272",
+    "previous_name": "Metriotes vibicigerella",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora conspicuella",
+    "number": "2273",
+    "previous_name": "Metriotes conspicuella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora partitella",
+    "number": "2274",
+    "previous_name": "Metriotes partitella",
+    "countries": [
+      "N",
+      "S",
+      "F",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora ditella",
+    "number": "2275",
+    "previous_name": "Metriotes ditella",
+    "countries": [
+      "E"
+    ]
+  },
+  {
+    "scientific_name": "Coleophora caelebipennella",
+    "number": "2276",
+    "previous_name": "Metriotes caelebipennella",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Oxyptilus pilosellae",
+    "number": "2414",
+    "previous_name": "Crombrugghia pilosellae",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Oxyptilus chrysodactyla",
+    "number": "2415",
+    "previous_name": "Crombrugghia chrysodactyla",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Oxyptilus ericetorum",
+    "number": "2416",
+    "previous_name": "Crombrugghia ericetorum",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Oxyptilus parvidactyla",
+    "number": "2417",
+    "previous_name": "Crombrugghia parvidactyla",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Oxyptilus distans",
+    "number": "2418",
+    "previous_name": "Crombrugghia distans",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "Lv"
+    ]
+  },
+  {
+    "scientific_name": "Oxyptilus tristis",
+    "number": "2419",
+    "previous_name": "Crombrugghia tristis",
+    "countries": [
+      "D",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Phengaris arion",
+    "number": "2656",
+    "previous_name": "Maculinea arion",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Phengaris teleius",
+    "number": "2657",
+    "previous_name": "Maculinea teleius",
+    "countries": [
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Phengaris alcon",
+    "number": "2658",
+    "previous_name": "Maculinea alcon",
+    "countries": [
+      "S",
+      "D",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Pyla fusca",
+    "number": "2760",
+    "previous_name": "Matilella fusca",
+    "countries": [
+      "I",
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Patania ruralis",
+    "number": "2921",
+    "previous_name": "Pleuroptya ruralis",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Cynaeda dentalis",
+    "number": "2949",
+    "previous_name": "Epascestria dentalis",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Cynaeda pustulalis",
+    "number": "2950",
+    "previous_name": "Epascestria pustulalis",
+    "countries": [
+      "S",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Rheumaptera hastata",
+    "number": "3300",
+    "previous_name": "Hydria hastata",
+    "countries": [
+      "I",
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Rheumaptera subhastata",
+    "number": "3301",
+    "previous_name": "Hydria subhastata",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Rheumaptera undulata",
+    "number": "3302",
+    "previous_name": "Hydria undulata",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Rheumaptera cervinalis",
+    "number": "3303",
+    "previous_name": "Hydria cervinalis",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Diacrisia sannio",
+    "number": "3889",
+    "previous_name": "Rhyparia sannio",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Diacrisia purpurata",
+    "number": "3890",
+    "previous_name": "Rhyparia purpurata",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Chelis puengeleri",
+    "number": "3893",
+    "previous_name": "Holoarctia puengeleri",
+    "countries": [
+      "N",
+      "S",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Apantesis quenseli",
+    "number": "3896",
+    "previous_name": "Grammia quenseli",
+    "countries": [
+      "N",
+      "S",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Arctia alpina",
+    "number": "3904",
+    "previous_name": "Borearctia alpina",
+    "countries": [
+      "N",
+      "S",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Arctia lapponica",
+    "number": "3905",
+    "previous_name": "Borearctia lapponica",
+    "countries": [
+      "N",
+      "S",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Arctia menetriesii",
+    "number": "3906",
+    "previous_name": "Borearctia menetriesii",
+    "countries": [
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Arctia matronula",
+    "number": "3907",
+    "previous_name": "Borearctia matronula",
+    "countries": [
+      "S",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Arctia caja",
+    "number": "3908",
+    "previous_name": "Borearctia caja",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Arctia aulica",
+    "number": "3909",
+    "previous_name": "Borearctia aulica",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Arctia villica",
+    "number": "3910",
+    "previous_name": "Borearctia villica",
+    "countries": [
+      "S",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Arctia festiva",
+    "number": "3911",
+    "previous_name": "Borearctia festiva",
+    "countries": [
+      "E",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Arctia plantaginis",
+    "number": "3912",
+    "previous_name": "Borearctia plantaginis",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta alni",
+    "number": "4102",
+    "previous_name": "Simyra alni",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta megacephala",
+    "number": "4103",
+    "previous_name": "Simyra megacephala",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta leporina",
+    "number": "4104",
+    "previous_name": "Simyra leporina",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta aceris",
+    "number": "4105",
+    "previous_name": "Simyra aceris",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta strigosa",
+    "number": "4106",
+    "previous_name": "Simyra strigosa",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta cuspis",
+    "number": "4107",
+    "previous_name": "Simyra cuspis",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta psi",
+    "number": "4108",
+    "previous_name": "Simyra psi",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta tridens",
+    "number": "4109",
+    "previous_name": "Simyra tridens",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta auricoma",
+    "number": "4110",
+    "previous_name": "Simyra auricoma",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta cinerea",
+    "number": "4111",
+    "previous_name": "Simyra cinerea",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta menyanthidis",
+    "number": "4113",
+    "previous_name": "Simyra menyanthidis",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta rumicis",
+    "number": "4114",
+    "previous_name": "Simyra rumicis",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta nervosa",
+    "number": "4115",
+    "previous_name": "Simyra nervosa",
+    "countries": [
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Acronicta albovenosa",
+    "number": "4116",
+    "previous_name": "Simyra albovenosa",
+    "countries": [
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Fissipunctia ypsillon",
+    "number": "4347",
+    "previous_name": "Apterogenum ypsillon",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agrochola lychnidis",
+    "number": "4362",
+    "previous_name": "Omphaloscelis lychnidis",
+    "countries": [
+      "S",
+      "D",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Agrochola nitida",
+    "number": "4363",
+    "previous_name": "Omphaloscelis nitida",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F"
+    ]
+  },
+  {
+    "scientific_name": "Agrochola litura",
+    "number": "4364",
+    "previous_name": "Omphaloscelis litura",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agrochola helvola",
+    "number": "4365",
+    "previous_name": "Omphaloscelis helvola",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agrochola lota",
+    "number": "4366",
+    "previous_name": "Omphaloscelis lota",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agrochola macilenta",
+    "number": "4367",
+    "previous_name": "Omphaloscelis macilenta",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agrochola circellaris",
+    "number": "4368",
+    "previous_name": "Omphaloscelis circellaris",
+    "countries": [
+      "I",
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Agrochola laevis",
+    "number": "4369",
+    "previous_name": "Omphaloscelis laevis",
+    "countries": [
+      "D"
+    ]
+  },
+  {
+    "scientific_name": "Agrochola lunosa",
+    "number": "4370",
+    "previous_name": "Omphaloscelis lunosa",
+    "countries": [
+      "N",
+      "D",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Xylena solidaginis",
+    "number": "4390",
+    "previous_name": "Lithomoia solidaginis",
+    "countries": [
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Xylena vetusta",
+    "number": "4391",
+    "previous_name": "Lithomoia vetusta",
+    "countries": [
+      "I",
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  },
+  {
+    "scientific_name": "Xylena exsoleta",
+    "number": "4392",
+    "previous_name": "Lithomoia exsoleta",
+    "countries": [
+      "I",
+      "N",
+      "S",
+      "D",
+      "F",
+      "E",
+      "Lv",
+      "Lt"
+    ]
+  }
+]

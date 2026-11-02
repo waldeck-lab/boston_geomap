@@ -16,6 +16,18 @@ class WatchSelectionTests(unittest.TestCase):
         rows=baseline('577 Cameraria Chapman, 1902\n578 ohridella Deschka & Dimić, 1986    N S D F E Lv Lt\n503 Macrosaccus Davis, 2011\n504 robiniella (Clemens, 1859)    D Lt\n',validate=False)
         self.assertIn('S',rows['Cameraria ohridella']['countries'])
         self.assertNotIn('S',rows['Macrosaccus robiniella']['countries'])
+    def test_genus_synonyms_cannot_rename_following_coleophora_species(self):
+        text='2104    Coleophora Hübner, 1822\n 2105        Goniodoma Zeller, 1849\n 2106        Metriotes Herrich-Schäffer, 1853\n2109           carelica Hackman, 1945    F E Lv\n2112           algidella Zeller, 1857    I N\n'
+        rows=baseline(text,validate=False,accepted_genera={'2104':'Coleophora'})
+        self.assertEqual(rows['Coleophora carelica']['countries'],['F','E','Lv'])
+        self.assertEqual(rows['Coleophora algidella']['countries'],['I','N'])
+        self.assertNotIn('Metriotes carelica',rows)
+    def test_body_size_genus_inventory_excludes_small_synonym_entries(self):
+        import json
+        data=json.loads((Path(__file__).resolve().parents[1]/'data/watch/checklist-2017-accepted-genera.json').read_text())['genera']
+        self.assertEqual(data['2104'],'Coleophora')
+        self.assertNotIn('2105',data)
+        self.assertNotIn('2106',data)
     def test_broken_or_incomplete_checklist_fails_published_count_controls(self):
         with self.assertRaises(ValueError):baseline('577 Cameraria Chapman, 1902\n578 ohridella Author, 1986    D\n')
     def test_updates_apply_wrapped_country_records_without_author_initials(self):
