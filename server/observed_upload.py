@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 from flask import jsonify, request, Response
+from server.personal_access import require_personal_access
 from geomap.observed_csv import MAX_BYTES, CsvValidationError, build_difference, save_difference
 from geomap.shared_store import connect
 
@@ -18,6 +19,7 @@ def register_observed_upload(app, db_path, current_auth):
         user=auth.get('user') or {}
         if not auth.get('authenticated') or not user.get('id'):
             return jsonify(ok=False,error='Logga in för att skapa en personlig lista.'),401
+        require_personal_access(auth)
         if request.headers.get('Origin') not in {None,*os.environ.get('WCR_ALLOWED_ORIGINS','https://beta.waldeck.se').split(',')}:
             return jsonify(ok=False,error='Uppladdningen måste göras från webbplatsen.'),403
         if request.content_length is None or request.content_length>MAX_BYTES+65536:
@@ -45,6 +47,7 @@ def register_observed_upload(app, db_path, current_auth):
                 auth=current_auth()
                 if not auth.get('authenticated') or (auth.get('user') or {}).get('id')!=chosen['owner_id']:
                     return jsonify(ok=False,error='Listan hittades inte.'),404
+                require_personal_access(auth)
             rows=db.execute('''SELECT t.taxon_id,t.scientific_name,t.swedish_name FROM taxa t
                 JOIN list_taxa l ON t.taxon_id=l.taxon_id WHERE l.list_id=? ORDER BY t.taxon_id''',(list_id,)).fetchall()
         output=io.StringIO(newline='');writer=csv.writer(output)

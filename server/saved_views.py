@@ -4,6 +4,7 @@ import os
 import math
 import uuid
 from flask import jsonify, request
+from server.personal_access import allowed
 from geomap.shared_store import connect
 
 SCHEMA = '''CREATE TABLE IF NOT EXISTS saved_map_views (
@@ -56,7 +57,8 @@ def register_saved_views(app,path,current_auth):
         return (auth.get('user') or {}).get('id') if auth.get('authenticated') else None
 
     def accessible(db,list_id,uid):
-        return db.execute("SELECT 1 FROM lists WHERE id=? AND (visibility='public' OR owner_id=?)",(list_id,uid)).fetchone() is not None
+        row=db.execute("SELECT visibility,owner_id FROM lists WHERE id=? AND (visibility='public' OR owner_id=?)",(list_id,uid)).fetchone()
+        return bool(row and (row['visibility']=='public' or allowed(current_auth())))
 
     @app.route('/geomap-api/views',methods=['GET','POST'])
     def saved_views():

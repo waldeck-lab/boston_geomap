@@ -14,6 +14,7 @@ from pathlib import Path
 from flask import jsonify, request, Response
 from werkzeug.exceptions import BadRequest, NotFound, Forbidden
 
+from server.personal_access import allowed,require_personal_access
 from geomap.shared_store import connect, BASE_ZOOM
 from geomap.documentation import read_references, version as documentation_version
 from geomap.tiles import tile_xy_to_bbox
@@ -50,6 +51,7 @@ def register_shared_api(app):
             auth=current_auth()
             if not auth.get('authenticated') or int((auth.get('user') or {}).get('id',-1))!=row['owner_id']:
                 raise NotFound('List not found')
+            require_personal_access(auth)
         return row
 
     from server.observed_upload import register_observed_upload
@@ -87,6 +89,11 @@ def register_shared_api(app):
             return public
         except FileNotFoundError:return {'busy':False,'phase':'not-started'}
 
+    @app.after_request
+    def personal_data_no_cache(response):
+        if request.path.startswith("/geomap-api/"):response.headers["Cache-Control"]="no-store"
+        return response
+
     @app.before_request
     def shared_dispatch():
         nonlocal cache_size
@@ -110,7 +117,7 @@ def register_shared_api(app):
         try:
             with connect(path,readonly=True) as db:
                 if endpoint=='lists':
-                    auth=current_auth();uid=(auth.get('user') or {}).get('id') if auth.get('authenticated') else None
+                    auth=current_auth();uid=(auth.get('user') or {}).get('id') if allowed(auth) else None
                     rows=db.execute('''SELECT l.id,l.title,l.visibility,l.content_hash,
                       (SELECT COUNT(*) FROM list_taxa t WHERE t.list_id=l.id) AS taxa_count,
                       (SELECT COUNT(*) FROM list_taxa t WHERE t.list_id=l.id AND NOT EXISTS
