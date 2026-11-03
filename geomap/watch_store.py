@@ -25,6 +25,10 @@ CREATE TABLE IF NOT EXISTS search_guides(candidate_id INTEGER PRIMARY KEY REFERE
 CREATE TABLE IF NOT EXISTS vernacular_names(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),name TEXT NOT NULL,language TEXT NOT NULL CHECK(language='sv'),source_id TEXT NOT NULL REFERENCES sources(id),source_taxon_name TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS expansion_assessments(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),version TEXT NOT NULL,assessment_json TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS species_supplements(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),version TEXT NOT NULL,supplement_json TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS knowledge_reviews(candidate_id INTEGER PRIMARY KEY REFERENCES candidates(id),version TEXT NOT NULL,review_json TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS geographic_annotations(id TEXT PRIMARY KEY,candidate_id INTEGER NOT NULL REFERENCES candidates(id),note_json TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS geographic_annotations_candidate ON geographic_annotations(candidate_id);
+INSERT OR IGNORE INTO schema_versions VALUES(6,'Separate ecology reviews and coarse geographic references, never observation points');
 INSERT OR IGNORE INTO schema_versions VALUES(5,'Separate cited habitat, host, search and locality supplements');
 INSERT OR IGNORE INTO schema_versions VALUES(4,'Cited range-expansion assessments and evidence-based interest flag');
 INSERT OR IGNORE INTO schema_versions VALUES(3,'Cited search guidance separate from Swedish habitat hypotheses');
@@ -191,6 +195,9 @@ def profile(db,uid):
     out=dict(row)
     supplement=db.execute('SELECT supplement_json FROM species_supplements WHERE candidate_id=?',(uid,)).fetchone()
     out['supplement']=json.loads(supplement[0]) if supplement else None
+    knowledge=db.execute('SELECT review_json FROM knowledge_reviews WHERE candidate_id=?',(uid,)).fetchone()
+    out['knowledge_review']=json.loads(knowledge[0]) if knowledge else None
+    out['geographic_notes']=[json.loads(r[0]) for r in db.execute('SELECT note_json FROM geographic_annotations WHERE candidate_id=? ORDER BY id',(uid,))]
     expansion=db.execute('SELECT assessment_json FROM expansion_assessments WHERE candidate_id=?',(uid,)).fetchone()
     out['expansion']=json.loads(expansion[0]) if expansion else None
     vernacular=db.execute('SELECT name,source_id,source_taxon_name FROM vernacular_names WHERE candidate_id=?',(uid,)).fetchone()

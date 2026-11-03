@@ -1,0 +1,191 @@
+{
+  "version": "p2.0.1-2026-11-03",
+  "checked_at": "2026-11-03",
+  "scope": "Utländska artuppgifter. Svenska sökområden är fortsatt hypoteser; detta fastställer inte svensk förekomst eller invandringssannolikhet.",
+  "additional_sources": {
+    "nola-original":{"title":"Õunap m.fl. 2021, originalbeskrivning, Biology s. 410–411","url":"https://mapress.com/zt/article/download/zootaxa.5082.5.1/46273","filename":"nola-estonica-original-2021.pdf","publication_year":2021},
+    "kaila":{"title":"Kaila 2019, World catalogue of Elachistinae, s. 71","url":"https://www.biotaxa.org/Zootaxa/article/download/zootaxa.4632.1.1/48837","filename":"kaila-2019-elachistinae.pdf","publication_year":2019,"reviewed_page":71,"reviewed_via":"Fulltext i webbverktygets PDF-läsning. Direkt serverhämtning gav HTTP 403; ingen lokal originalfil eller originalhash påstås finnas.","snapshot_policy":"web-reviewed-without-local-copy"},
+    "pyrgus":{"title":"Wolfgang Wagner: Drymonia obliterata, egna ekologiska artuppgifter","url":"https://www.pyrgus.de/Drymonia_obliterata_en.html","filename":"drymonia-obliterata-pyrgus.html"},
+    "norway-report":{"title":"Gaarder & Gustad, MU2022-68, Stigen – nedre s. 18–19","url":"https://www.nasjonalparkstyre.no/uploads/files_naeroyfjorden/Fagrapportar/MU2022-68-Insektundersokelser-Undredal.pdf","filename":"undredal-original-report.pdf","publication_year":2023}
+  },
+  "profiles": [
+    {"scientific_name":"Blastobasis phycidella","facts":[
+      {"category":"habitat","text":"Lepiforum återger Schützes äldre observationer från torra svampar på skogsmark och skymningsflygning vid skogsbryn med unga tallar. Detta är dokumenterade miljöexempel, inte en verifierad svensk habitatmodell."},
+      {"category":"search","source":"nrm","text":"NRM anger juni–juli och nattlig flygning med attraktion till UV-ljus. Det är ett utländskt sökfönster, inte belagd svensk flygtid."}
+    ]},
+    {"scientific_name":"Phyllonorycter messaniella","facts":[
+      {"category":"habitat","text":"Ekar är den viktigaste dokumenterade larvmiljön. Lepiforum redovisar även kläckta exemplar från odlade ekar i en belgisk botanisk trädgård; fynden visar att planterade träd också kan användas."},
+      {"category":"hosts","text":"Quercus-arter dominerar larvunderlaget; även bok, äkta kastanj och avenbok är belagda. Enstaka uppgifter från andra växtfamiljer bedöms som tveksamma i källan."}
+    ]},
+    {"scientific_name":"Isotrias rectifasciana","facts":[
+      {"category":"hosts","status":"unresolved","text":"Larvens föda är inte säkert klarlagd. Lepiforum ifrågasätter uppgifterna om Crataegus, Acer och Quercus: ursprungliga kläckningsbelägg saknas och uppgifter kan ha blandats med I. hybridana."}
+    ]},
+    {"scientific_name":"Rhagades pruni","facts":[
+      {"category":"habitat","text":"Dokumenterade exempel omfattar hedmark, lågväxande slånbuskage och larvmiljöer med blåbär, odon eller björnbär. Exemplen visar variation mellan lokaler; de fastställer inte en enda primär svensk biotop."},
+      {"category":"search","text":"Lepiforum har vårfynd av larver på bland annat blåbär och slånbuskage samt sommarfynd på hedmark. Leta efter larver på den faktiskt verifierade värdväxten; datumen är platsexempel, inte ett fast svenskt schema."}
+    ]},
+    {"scientific_name":"Metalampra italica","facts":[
+      {"category":"habitat","source":"nrm","text":"NRM knyter arten främst till lövskog. Larvunderlaget omfattar vedlevande svampar, bland annat Lenzites betulinus och Stereum hirsutum."},
+      {"category":"search","source":"nrm","text":"NRM anger juli–augusti. Vuxna kan ses både dag och natt och kommer till ljus. Perioden avser källans utländska underlag."}
+    ]},
+    {"scientific_name":"Gastropacha populifolia","facts":[
+      {"category":"habitat","text":"Lepiforums daterade belägg omfattar Rhenens flodnära miljöer, trädgård vid blandskogsbryn och ett torrängs-/busklandskap i Österrike. Det är fyndmiljöer, inte belägg för att alla dessa är likvärdiga larvhabitat."},
+      {"category":"search","text":"Ljusfångade vuxna dokumenteras från juni och augusti i Centraleuropa. Ett odlat larvfynd från asp gav en vuxen i slutet av maj. Skilj kläckningsdatum från naturliga flygfynd och överför inte ett enskilt datum till svensk fenologi."}
+    ]},
+    {"scientific_name":"Odonestis pruni","facts":[
+      {"category":"habitat","text":"Ett habitatfoto från Istrien visar öppet karstlandskap med gles buskvegetation och torrängar. Det är ett sydligt platsexempel och ska inte ensamt användas som svensk habitatbeskrivning."}
+    ]},
+    {"scientific_name":"Drymonia obliterata","facts":[
+      {"category":"habitat","source":"pyrgus","text":"Wolfgang Wagners ekologiska artblad anger lövskog med bok som livsmiljö. Bok är den huvudsakliga larvvärden i sammanställningen, men även ek används."},
+      {"category":"search","source":"pyrgus","text":"I Wagners underlag flyger vuxna främst från mitten av maj till juli, med en sällsynt partiell andrageneration i augusti–september. Larver anges juli–september och övervintring sker som puppa. Detta är utländskt underlag."},
+      {"category":"habitat","text":"Lepiforums fyndtexter omfattar bland annat skogsnära marker med gamla träd vid Mölln i Schleswig-Holstein och trädgård vid blandskogsbryn. Ljusfynd kan komma från omgivande skog och visar inte exakt larvhabitat."},
+      {"category":"search","text":"Ljusfynd från juni–juli samt ett uttryckligt andragenerationsfynd i augusti dokumenteras i Tyskland. Antal generationer varierar regionalt; underlaget är inte svensk flygtid."}
+    ]},
+    {"scientific_name":"Horisme radicaria","facts":[
+      {"category":"habitat","text":"Lepiforum dokumenterar arten vid en skogsgata med högörtvegetation nära Jena i Thüringen. Det är ett konkret fyndmiljöexempel, inte en heltäckande habitatmodell."}
+    ]},
+    {"scientific_name":"Adela violella","facts":[
+      {"category":"habitat","source":"nrm","text":"NRM anger torra marker. Värdväxtens identitet och larvstadiet behöver kontrolleras: födovalet förändras under utvecklingen."},
+      {"category":"search","source":"nrm","text":"NRM anger dagflygning under juni–juli. Sök vuxna och dokumentera johannesörtbestånden; källans period är ingen verifierad svensk flygtid."},
+      {"category":"hosts","text":"Lepiforum beskriver en kläckning där unga larver först åt i johannesörtens fruktställningar och senare levde i säck på nedfallna blad. Uppfödningsbelägg omfattar Hypericum hirsutum och H. × desetangsii; enbart växtnamn utan larvstadium blir missvisande."}
+    ]},
+    {"scientific_name":"Calybites quadrisignella","facts":[
+      {"category":"hosts","text":"Larven minerar blad av getapelsläktet Rhamnus och brakved. Rhamnus cathartica framhålls som den viktigaste födoväxten i Lepiforums sammanställning."}
+    ]},
+    {"scientific_name":"Phyllonorycter muelleriella","facts":[
+      {"category":"habitat","text":"Ett daterat exempel från Graz gäller trädgård vid blandskogsbryn. Larverna är knutna till lövfällande ekar; ett vuxet fynd vid ljus anger inte exakt var larven utvecklats."},
+      {"category":"hosts","text":"Undersidiga minor på Quercus robur och Q. petraea är belagda. Källsammanställningen tar även upp andra lövfällande ekar."}
+    ]},
+    {"scientific_name":"Synanthedon mesiaeformis","facts":[
+      {"category":"habitat","text":"Gamla klibbalsstammar är dokumenterad larvmiljö. Lepiforum visar bland annat en alallé i Grekland med angripna träd och gamla kläckhål."},
+      {"category":"hosts","text":"Larven lever i barken på äldre Alnus glutinosa. Förekomst av al i ett område bevisar däremot inte att lämpliga, angripna stammar finns."},
+      {"category":"search","text":"Dokumentera misstänkta kläckhål på äldre alstammar och låt tecknen granskas av sakkunnig. Bilderna i källan visar vad man kan leta efter; de ger ingen fastställd svensk flygperiod."}
+    ]},
+    {"scientific_name":"Synanthedon soffneri","facts":[
+      {"category":"hosts","text":"Larven lever inne i stammar av flera Lonicera-arter. Lepiforum anger bland annat L. xylosteum, L. caerulea och L. nigra; uppgifter om trädgårdsplanterade exotiska arter saknar belägg i sammanställningen."}
+    ]},
+    {"scientific_name":"Synanthedon conopiformis","facts":[
+      {"category":"habitat","text":"Varmt belägna, äldre ekar med barkskador och övervallningsvävnad anges som larvmiljö. Dokumenterade exempel omfattar skadade ekar vid blandskogsbryn och i parkmiljö."},
+      {"category":"search","text":"Källan beskriver gnagmjöl vid skadade barkpartier och vuxnas framträdande från senare delen av maj i det tyska underlaget. Dokumentera spår utan att skada stammen; exakt svensk period och lämplighet är inte verifierade."}
+    ]},
+    {"scientific_name":"Pyropteron triannuliformis","facts":[
+      {"category":"habitat","text":"I Brandenburg beskrivs torr, människopåverkad ruderatmark med glest vegetationstäcke. Rumex thyrsiflorus anges som den huvudsakliga larvvärden där; andra regioner har delvis andra Rumex-värdar."},
+      {"category":"hosts","text":"Rumex thyrsiflorus och R. scutatus har dokumenterade larvbelägg i olika regioner. Flera andra äldre värdväxtuppgifter markeras som osäkra i Lepiforum och ska inte ges samma bevisvärde."}
+    ]},
+    {"scientific_name":"Dichomeris ustalella","facts":[
+      {"category":"habitat","text":"Lepiforum har uttryckliga miljöbilder från lövblandskog och blandskog i Tyskland. Larvuppgifter från hassel och avenbok ger en mer precis sökingång än enbart ett vuxet ljusfynd."},
+      {"category":"search","text":"Äldre originalobservationer återgivna i Lepiforum beskriver larver mellan platt hopspunna blad av hassel och avenbok i september–oktober. Kläckning och artbestämning behövs för att skilja från andra bladspinnare."}
+    ]},
+    {"scientific_name":"Dichomeris rasilella","facts":[
+      {"category":"habitat","text":"Ett larvbelägg från Poslätten gäller en obebyggd gräsmark med gråbo. Ett spanskt ljusfångstställe finns också dokumenterat, men det anger inte ensamt artens huvudsakliga biotop."},
+      {"category":"hosts","text":"Artemisia vulgaris är dokumenterad larvvärd. Uppgifter om Centaurea bedöms som osäkra av Lepiforum."}
+    ]},
+    {"scientific_name":"Elachista rufocinerea","facts":[
+      {"category":"habitat","text":"Daterade tyska fynd omfattar frisk äng och fruktträdsäng nära vatten samt en flodvall vid strandskog. Dessa är dokumenterade miljöexempel, inte ett mått på vilken svensk biotop som skulle vara viktigast."},
+      {"category":"search","text":"Lepiforums daterade vuxenfynd omfattar april–maj; både kvälls-/skymningsfångst och håvning dokumenteras. Fynddatumen är exempel, inte en fullständig fenologisk modell."}
+    ]},
+    {"scientific_name":"Scythris obscurella","facts":[
+      {"category":"habitat","source":"nrm","text":"NRM anger främst torräng. Bekräftade bestånd av Cerastium arvense ger en konkret ingång för eftersök av larvernas vävrör."},
+      {"category":"search","text":"Lepiforum anger vuxna från juni till början av augusti, ofta på födoväxtens blommor och ibland vid ljus. Detta är ett bredare utländskt fönster än enbart juni i det äldre NRM-bladet."}
+    ]},
+    {"scientific_name":"Thyris fenestrella","facts":[
+      {"category":"habitat","text":"Dokumenterade miljöer omfattar blandskog med Clematis vitalba och skogsvägar. Förekomst av Clematis och solbelysta bryn behöver kontrolleras på plats innan en svensk sökhypotes prövas."},
+      {"category":"search","text":"Lepiforum dokumenterar dagaktiva vuxna i juni–juli, bland annat vid fuktiga skogsvägar. Det är daterade platsexempel, inte ett fast svenskt flygschema."}
+    ]},
+    {"scientific_name":"Platyptilia nemoralis","facts":[
+      {"category":"habitat","source":"nrm","text":"NRM anger blandskog med korsörter. Lepiforum återger också historiska larvobservationer från fuktig skogsmark."},
+      {"category":"search","source":"nrm","text":"NRM anger dagflygning från slutet av juli till augusti och larver i skott/stjälkar under maj–juni. Datumen är utländskt underlag; kontrollera värdväxt och stadium separat."}
+    ]},
+    {"scientific_name":"Pyrgus serratulae","facts":[
+      {"category":"habitat","text":"Larver är dokumenterade på varm, grundjordig fårbetesmark över kalkgrus med Potentilla-bestånd. Andra tyska exempel gäller torräng; underlaget är regionalt, inte en svensk habitatinventering."},
+      {"category":"search","text":"I Schwäbische Alb beskrivs eftersök av övervintrade larver under Potentilla-tuvor från slutet av mars till mitten av april. Vårdatum från Tyskland kan inte användas som ett fast svenskt schema."}
+    ]},
+    {"scientific_name":"Colias alfacariensis","facts":[
+      {"category":"habitat","text":"Lepiforums habitatbilder omfattar varma torrängar, kalk-/gipssluttningar och ljus torrskog. Larvbilder på värdväxt ger starkare habitatstöd än ett enstaka vuxet fynd."}
+    ]},
+    {"scientific_name":"Boloria titania","facts":[
+      {"category":"habitat","text":"Källan skiljer regioner: i norra Europa anges fuktängar och kärr med rikligt med Bistorta, medan vissa alpina populationer använder torrare skogsängar och skogsvägar. Blanda inte dessa till en enda svensk biotop."}
+    ]},
+    {"scientific_name":"Boloria dia","facts":[
+      {"category":"habitat","text":"Källan beskriver framför allt soliga, torra och magra gräsmarker, ljus torrskog och blomrika slänter. Larvbelägg finns även från extensivt betad kalkgräsmark med Viola hirta."}
+    ]},
+    {"scientific_name":"Melitaea phoebe","facts":[
+      {"category":"habitat","text":"Torra ängar, betesmarker, skogsslänter och klippstäpp anges i Lepiforum. Dokumenterade larvvärdar omfattar Centaurea och tistlar, men värdväxt och artbestämning behöver verifieras lokalt."},
+      {"category":"search","text":"I varmare centraleuropeiska lägen anges maj–juni och en senare generation i augusti. I svalare områden anges en generation från mitten av juni till början av augusti. Sydliga tre-generationsmönster är inte en svensk prognos."}
+    ]},
+    {"scientific_name":"Hyponephele lycaon","facts":[
+      {"category":"habitat","text":"Östtyska exempel gäller sandiga hedmarker, tidigare militära övningsområden och restaurerade gruvlandskap. Även kustdynmiljö vid Usedom är dokumenterad. Sandblottor används som viloplatser."}
+    ]},
+    {"scientific_name":"Hipparchia statilinus","facts":[
+      {"category":"habitat","text":"Dokumenterade larvmiljöer omfattar inlandsdyner med Corynephorus canescens och Festuca ovina-gruppen. Andra platsexempel är torra sandmarker och öppna, heta sluttningar; regional variation är viktig."},
+      {"category":"search","text":"Lepiforum beskriver regionalt varierande sensommar-/höstflygning och tidigarelagd flygstart i delar av utbredningen. Ett sökfönster måste därför kopplas till region, år och stadium; ett enda generellt datum blir missvisande."}
+    ]},
+    {"scientific_name":"Lycaena alciphron","facts":[
+      {"category":"habitat","text":"Tyska äggbelägg från Rumex omfattar glest bevuxen sydsluttning, stenmur och extensivt slagen sluttäng. Alpina uppgifter avser ibland andra underarter och ska inte blandas ihop med den nordliga nominatformen."}
+    ]},
+    {"scientific_name":"Satyrium spini","facts":[
+      {"category":"habitat","text":"Dokumenterade ägg-/larvmiljöer omfattar torr, mycket ljus ekblandskog med Rhamnus cathartica och solöppna luckor. Även kalkgräsmark är dokumenterad; ett värdväxtbestånd bör kontrolleras för rätt mikroklimat."}
+    ]},
+    {"scientific_name":"Acrobasis obtusella","facts":[
+      {"category":"hosts","text":"Lepiforum dokumenterar larvens födoväxt med ett päronträd från Jena-Göschwitz. Trädets förekomst ger en sökingång men fastställer inte artens regionala huvudbiotop."}
+    ]},
+    {"scientific_name":"Udea elutalis","facts":[
+      {"category":"hosts","text":"Äldre direkta observationer gäller Artemisia utan säkert angiven art. Ytterligare uppgifter om Senecio och Aegopodium har oklar ursprungskälla och markeras som osäkra i Lepiforum."},
+      {"category":"search","text":"Schützes larvobservationer från april–maj beskriver silkesrör mellan unga Artemisia-skott nära marken. Det är ett historiskt eftersöksexempel, inte en fastställd svensk fenologi."}
+    ]},
+    {"scientific_name":"Eurrhypis pollinalis","facts":[
+      {"category":"habitat","text":"Ett italienskt habitatfoto visar en delvis igenbuskad torrsluttning; ett österrikiskt exempel gäller stenbrott. Flera ginsterarter är dokumenterade larvvärdar, men varje plats behöver bedömas separat."}
+    ]},
+    {"scientific_name":"Cosmopterix sibirica","facts":[
+      {"category":"hosts","text":"Kvickrot, Elymus repens (även benämnd Elytrigia repens), är nu dokumenterad larvvärd i det finska underlag som Lepiforum återger från Vähätalo m.fl. 2022. Den äldre NRM-uppgiften om okänd värdväxt är därför inaktuell för detta underlag; gissningar om Phalaris ska hållas isär från belägget."},
+      {"category":"habitat","text":"Larvminor hittades i kvickrot på en återställd deponi vid Kurkisuo i Imatra, sydöstra Finland. Det är ett konkret lokalt larvhabitat, inte belägg för att alla strand- eller ruderatmarker är lämpliga."},
+      {"category":"search","text":"Sök minor i kvickrotsblad och dokumentera larv och växt. Ett daterat finskt vuxen-/habitatexempel gäller 17 juni 2020; den lettiska litteraturen anger sent i maj till sent i juni. Originalartikeln Baptria 47(3):88–94 är här återgiven via Lepiforum, inte fulltextgranskad."}
+    ]},
+    {"scientific_name":"Coleophora polonicella","facts":[
+      {"category":"habitat","text":"Lepiforum återger ett lettiskt belägg från kustdyner vid Užava, där fullvuxna larver hittades på Astragalus arenarius. Detta är en dokumenterad larvmiljö; förekomst i hela Lettland följer inte av fyndet."},
+      {"category":"search","text":"Larvsäckar på Astragalus arenarius är den starkaste sökingången i det lettiska belägget. Vuxna noterades vid ljus 9 juli 2011. Datumet är ett platsexempel, inte en generell svensk flygperiod."}
+    ]},
+    {"scientific_name":"Cacoecimorpha pronubana","facts":[
+      {"category":"habitat","text":"Dokumenterade larv-/utvecklingsmiljöer omfattar trädgårdar och planterade buskar i bebyggelse. Ett fynd i en kall, helt skuggad passage visar att alla belägg inte gäller varma frilandsbryn."}
+    ]},
+    {"scientific_name":"Cameraria ohridella","facts":[
+      {"category":"habitat","source":"nrm","text":"NRM anger hästkastanj i parker och trädgårdar. Arten är svensk referensart i verktyget, inte en kandidat som ännu väntas till Sverige."},
+      {"category":"search","source":"nrm","text":"NRM anger minst två generationer, maj–juni och juli–augusti. Leta efter bladminor på hästkastanj och håll minor, larver och vuxna åtskilda i dokumentationen."}
+    ]},
+    {"scientific_name":"Chrysodeixis chalcites","facts":[
+      {"category":"hosts","text":"Lepiforum dokumenterar larvgnag på tomat i Österrike i september 2024. Det är ett födobelägg; fyndet bevisar inte en övervintrande population eller att växthus och friland är likvärdiga."}
+    ]},
+    {"scientific_name":"Etiella zinckenella","facts":[
+      {"category":"habitat","text":"Ett tyskt larvbelägg från juni 2024 gäller en gipstorrsluttning med Oxytropis pilosa vid ett tidigare vinodlingsområde. Detta är ett larvhabitatexempel, inte en heltäckande beskrivning av artens breda utbredning."}
+    ]},
+    {"scientific_name":"Phyllonorycter issikii","facts":[
+      {"category":"habitat","source":"nrm","text":"NRM anger skogs- och parkmiljöer med lind. Larvens minor ger en tydligare koppling till växtbeståndet än vuxenfynd vid ljus."},
+      {"category":"search","source":"nrm","text":"NRM anger två generationer, maj–juni och augusti–september. Dokumentera undersidiga minor mellan bladets sidonerver på Tilia och låt bestämningen granskas."}
+    ]},
+    {"scientific_name":"Phyllonorycter leucographella","facts":[
+      {"category":"habitat","source":"nrm","text":"NRM anger hagmark och trädgårdar med eldtorn. Lepiforums daterade exempel omfattar även eldtornshäckar i bebyggelse."},
+      {"category":"search","source":"nrm","text":"NRM anger vuxna i maj–juni och juli–augusti. Sök översidiga minor på Pyracantha; dokumentera värdväxt och minans form, eftersom andra minerare kan förekomma."}
+    ]},
+    {"scientific_name":"Phyllonorycter platani","facts":[
+      {"category":"habitat","source":"nrm","text":"NRM anger parker med platan. Det är framför allt bladminor på själva värdträdet som visar utvecklingsplatsen."},
+      {"category":"search","source":"nrm","text":"NRM anger två generationer, maj–juni och juli–augusti. Vuxna kan ses på stammar dagtid; larven gör stora undersidiga bladminor på Platanus."}
+    ]},
+    {"scientific_name":"Nola estonica","facts":[
+      {"category":"habitat","source":"nola-original","text":"Originalbeskrivningens estniska typserie kommer huvudsakligen från en torr, smal ängsremsa i en järnvägskorridor genom sandig tallskog. Författarna kan inte avgöra om fjärilarna utvecklats i ängen eller lockats från skogen intill."},
+      {"category":"search","source":"nola-original","text":"De flesta kända exemplaren i originalbeskrivningen samlades i juli och början av augusti. Två septemberfynd antyder en möjlig partiell andra generation, men fastställer den inte. Ljusfångst användes vid den estniska typlokalen."},
+      {"category":"hosts","source":"nola-original","status":"unresolved","text":"Larvens födoväxt och övriga detaljer i livscykeln var okända i originalbeskrivningen 2021. Ingen säker senare värdväxtuppgift hittades i denna genomgång. En granskad kunskapslucka behålls därför öppet."}
+    ]},
+    {"scientific_name":"Elachista herrichii","facts":[
+      {"category":"hosts","source":"kaila","text":"Kaila 2019 sammanställer larvvärdar bland gräs: Agrostis, Bromus pannonicus, Festuca arvernensis, Holcus och flera Koeleria-arter. Katalogen hänvisar vidare till Wörz, Szöcs, Buszko samt Parenti & Varalda; den fastställer inte en svensk huvudvärd."},
+      {"category":"habitat","source":"kaila","status":"unresolved","text":"Den granskade världskatalogen ger värdväxter men ingen entydig primär biotop. En specifik svensk livsmiljö kan därför inte sättas enbart utifrån grässläktena."},
+      {"category":"search","text":"Lepiforum dokumenterar vuxenbelägg från Schweiz 5 maj 2014 och Slovakien 28 maj 1999. De visar majfynd men är inte en fullständig flygperiod eller ett svenskt sökschema."}
+    ]},
+    {"scientific_name":"Coleophora algidella","facts":[
+      {"category":"habitat","source":"norway-report","text":"Fältarbetet 30 juni 2022 vid Stigen – nedre avser en brant, delvis raspräglad och relativt torr naturbetesmark under Stigengårdarna vid yttre Aurlandsfjorden. Arten redovisas från lokaliteten, men dess exakta larvplats anges inte."},
+      {"category":"search","source":"norway-report","text":"Det norska belägget är från fältarbetet 30 juni 2022. Rapporten framhåller genitalieskillnader för att skilja från C. striatipennella; DNA ensamt räcker inte enligt den sakkunniga bedömning som återges där."}
+    ]},
+    {"scientific_name":"Clepsis mehli","facts":[
+      {"category":"hosts","source":"nrm","status":"unresolved","text":"NRM-artbladet, uppdaterat 2015, anger att larven är okänd. Ingen säker värdväxt hittades i de artkällor som kontrollerades 3 november 2026. Fynd på gräsäng ger inte i sig belägg för ett visst födogräs."}
+    ]}
+  ]
+}

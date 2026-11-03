@@ -1,0 +1,1196 @@
+{
+  "checked_at": "2026-11-03",
+  "sources": [
+    {
+      "scientific_name": "Blastobasis phycidella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/b/blastobasis_phycidella.html",
+      "status": 200,
+      "sha256": "11ab0ea5596643e23430fc2ee82a92bd3afa3b2f437d4426688f3e817e9dc974"
+    },
+    {
+      "scientific_name": "Blastobasis phycidella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Blastobasis_phycidella",
+      "status": 200,
+      "sha256": "b71f1b65c5927ffd8945f75ce72c07795d50f678ee029416579ab8dbe564be3a"
+    },
+    {
+      "scientific_name": "Parectopa robiniella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/parectopa_robiniella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Parectopa robiniella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Parectopa_robiniella",
+      "status": 200,
+      "sha256": "78b6d7c98dbb379d1773caff1a9d1ff738d2321f1bba20766751fe681d1044fe"
+    },
+    {
+      "scientific_name": "Thysanoplusia orichalcea",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/t/thysanoplusia_orichalcea.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Thysanoplusia orichalcea",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Thysanoplusia_orichalcea",
+      "status": 200,
+      "sha256": "dae1574a2b9f78fe48294feb8b05f8aed7fd2b1af4963f8de220e7030c1bbbd8"
+    },
+    {
+      "scientific_name": "Phyllonorycter messaniella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/phyllonorycter_messaniella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Phyllonorycter messaniella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Phyllonorycter_messaniella",
+      "status": 200,
+      "sha256": "77b65a42ed3517a7540dafef0864253421e24a50dc7954ac7daf61ffd4587ea8"
+    },
+    {
+      "scientific_name": "Isotrias rectifasciana",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/i/isotrias_rectifasciana.html",
+      "status": 200,
+      "sha256": "4e358f9c32b1411d82e50579d99e9247e204cd5e9de8528fe02027e793caaebb"
+    },
+    {
+      "scientific_name": "Isotrias rectifasciana",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Isotrias_rectifasciana",
+      "status": 200,
+      "sha256": "c667e08e09c124df3eafd21e7500155f0bc21b201b2c3cb207f1b4f22ec148b1"
+    },
+    {
+      "scientific_name": "Rhagades pruni",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/r/rhagades_pruni.html",
+      "status": 200,
+      "sha256": "9d813c7734fe68ce0ca88da586a7c4f60c88a52a3b6071ca0d04269c0d6d91ec"
+    },
+    {
+      "scientific_name": "Rhagades pruni",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Rhagades_pruni",
+      "status": 200,
+      "sha256": "5fba1219a10a828cc9455311a32c1d6194e23e3bd3cd122e578ec00360a87a4a"
+    },
+    {
+      "scientific_name": "Zygaena trifolii",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/z/zygaena_trifolii.html",
+      "status": 200,
+      "sha256": "eb1a77f370df29a938cf1dffbd47d0cba8767f8e8fdab68efb489ad6f481fcb5"
+    },
+    {
+      "scientific_name": "Zygaena trifolii",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Zygaena_trifolii",
+      "status": 200,
+      "sha256": "4989f9e4e21b86ade9fd15e3786e6791403c546fd7eca35efecfeee7a16143d9"
+    },
+    {
+      "scientific_name": "Metalampra italica",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/m/metalampra_italica.html",
+      "status": 200,
+      "sha256": "e5ce024857f47d13a0cf261a722c30f13da9fc4361067ca49d01dfe400548ec0"
+    },
+    {
+      "scientific_name": "Metalampra italica",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Metalampra_italica",
+      "status": 200,
+      "sha256": "ceb43019e148bb3bf900c158d21e1a16ad8f4c645312d2a6d248e66ba9c6640a"
+    },
+    {
+      "scientific_name": "Scopula emutaria",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/scopula_emutaria.html",
+      "status": 200,
+      "sha256": "16098941391e0c60d34a8387a906c51671325ddcbb01dcf8b559bfc9659cb9a2"
+    },
+    {
+      "scientific_name": "Scopula emutaria",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Scopula_emutaria",
+      "status": 200,
+      "sha256": "fc1d65fcdf6d08393a3ed85cb3865066630b21dda1b57b7dd98fbac693882c4e"
+    },
+    {
+      "scientific_name": "Gastropacha populifolia",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/g/gastropacha_populifolia.html",
+      "status": 200,
+      "sha256": "5aa6782548feb2d6ea31cd067fc906b5a6ddbb3d15de24b694658191df1ec627"
+    },
+    {
+      "scientific_name": "Gastropacha populifolia",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Gastropacha_populifolia",
+      "status": 200,
+      "sha256": "40c4e59b21a115fc6ddc1dfcf37b351a94b8d20184bbd448205e692f55576a1c"
+    },
+    {
+      "scientific_name": "Odonestis pruni",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/o/odonestis_pruni.html",
+      "status": 200,
+      "sha256": "c29a6508cd3dd3d5f2485f7ef34e5b6d8023a285417aa8d814a51d95dfe0b4fb"
+    },
+    {
+      "scientific_name": "Odonestis pruni",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Odonestis_pruni",
+      "status": 200,
+      "sha256": "37250e9a71a3ad1249953f66a107908e0ff5d7bb5d79440d819e9629686ead48"
+    },
+    {
+      "scientific_name": "Proserpinus proserpina",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/proserpinus_proserpina.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Proserpinus proserpina",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Proserpinus_proserpina",
+      "status": 200,
+      "sha256": "96e2d2d4f0f3bc8169c31ba3c1eac5c57a43a61c863a404acf0ac883b34a6a11"
+    },
+    {
+      "scientific_name": "Drymonia obliterata",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/d/drymonia_obliterata.html",
+      "status": 200,
+      "sha256": "9f0d722f74630b74ccb391013f833ea1dfff1ba38e00c542138cbc9d4a0c96a2"
+    },
+    {
+      "scientific_name": "Drymonia obliterata",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Drymonia_obliterata",
+      "status": 200,
+      "sha256": "8e7a96b815588dea506b18c8fa5d8683e88aee6ddd0d28dc2c5dd84149fe12c6"
+    },
+    {
+      "scientific_name": "Ptilodon cucullina",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/ptilodon_cucullina.html",
+      "status": 200,
+      "sha256": "ebdd9ed1ca9e17eaa8a8cd2828c7c308a0377f95ec24b3f46c9521d2f854a7e7"
+    },
+    {
+      "scientific_name": "Ptilodon cucullina",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Ptilodontella_cucullina",
+      "status": 200,
+      "sha256": "4ba15f8b20519af1b1d0074f293a67eda0595fcefd5bd46358cbaefe2c952ea0"
+    },
+    {
+      "scientific_name": "Theria primaria",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/t/theria_primaria.html",
+      "status": 200,
+      "sha256": "9ec81e2513ae552567dceebf184108f85fc9f3a55520c49e940b69063c3fa270"
+    },
+    {
+      "scientific_name": "Theria primaria",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Theria_primaria",
+      "status": 200,
+      "sha256": "149007f8d907e055a36c53d34ffe7c4eab8daf9badaafed6fcf8a4eff8c4515d"
+    },
+    {
+      "scientific_name": "Brenthis daphne",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/b/brenthis_daphne.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Brenthis daphne",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Brenthis_daphne",
+      "status": 200,
+      "sha256": "bbb79b08624ad6134c8c0d21ed0f3e05f8e951f4f2c96ec5b0c71849551bcad8"
+    },
+    {
+      "scientific_name": "Clepsis dumicolana",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/clepsis_dumicolana.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Clepsis dumicolana",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Clepsis_dumicolana",
+      "status": 200,
+      "sha256": "c1ba0169b8b90b7f55e7ad2ea88424ed146dad9046d86f77e5b1e7f062659faf"
+    },
+    {
+      "scientific_name": "Carcharodus alceae",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/carcharodus_alceae.html",
+      "status": 200,
+      "sha256": "26a2498fd5cfa2f6f5a53eb5b18925fb73f8284f72c1e23df29b842c622b31a7"
+    },
+    {
+      "scientific_name": "Carcharodus alceae",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Carcharodus_alceae",
+      "status": 200,
+      "sha256": "8384febef126a195217c73ee302401e38593ac51ff480118dc6229b2f95a4f8b"
+    },
+    {
+      "scientific_name": "Pyronia tithonus",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/pyronia_tithonus.html",
+      "status": 200,
+      "sha256": "f0531ee9b56b1d5d30eb364e8545f96593f39e116982feaa5e8af9e4bb066edb"
+    },
+    {
+      "scientific_name": "Pyronia tithonus",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Pyronia_tithonus",
+      "status": 200,
+      "sha256": "d575586a39a98d082c9c8b0467e675c848f8536114a699bd3143597a3a889196"
+    },
+    {
+      "scientific_name": "Euplagia quadripunctaria",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/e/euplagia_quadripunctaria.html",
+      "status": 200,
+      "sha256": "018005257d9d76019c6785154ca40a5116847f39da578d51c985a25e2f6c92fd"
+    },
+    {
+      "scientific_name": "Euplagia quadripunctaria",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Euplagia_quadripunctaria",
+      "status": 200,
+      "sha256": "e63d3faf444e01f5ed26e05de91c93e2f68d4198c879585ccce4696cbd47a98c"
+    },
+    {
+      "scientific_name": "Aleucis distinctata",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/aleucis_distinctata.html",
+      "status": 200,
+      "sha256": "de28c20c319f78ecd5372c74e24f4ca002a43a2a98209648b5e92f3d09fde414"
+    },
+    {
+      "scientific_name": "Aleucis distinctata",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Aleucis_distinctata",
+      "status": 200,
+      "sha256": "953666319ac7c17de3e75cecdc6bc6cbe90e8b2258070cba23f35222f1f26a10"
+    },
+    {
+      "scientific_name": "Horisme radicaria",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/h/horisme_radicaria.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Horisme radicaria",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Horisme_radicaria",
+      "status": 200,
+      "sha256": "9bcff4be19b7762c7eb9cbe7f5167b8bc6b7d72f0033270f5a6b994766cf01df"
+    },
+    {
+      "scientific_name": "Nemophora fasciella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/n/nemophora_fasciella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Nemophora fasciella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Nemophora_fasciella",
+      "status": 200,
+      "sha256": "1ff9cecb51df0b3cb9ec8685f1eea7d0991d9d447ab803ea268af3d7c2e1976b"
+    },
+    {
+      "scientific_name": "Adela violella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/adela_violella.html",
+      "status": 200,
+      "sha256": "c0283a6c0ce763306915929e273be1146f69c62786f9ef101183ce6f8ca44659"
+    },
+    {
+      "scientific_name": "Adela violella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Adela_violella",
+      "status": 200,
+      "sha256": "943f51d3ef06df988cd741373e76358a63c6f228f09d4694cb2b5546221bb04b"
+    },
+    {
+      "scientific_name": "Calybites quadrisignella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/calybites_quadrisignella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Calybites quadrisignella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Calybites_quadrisignella",
+      "status": 200,
+      "sha256": "e60833cc8da2e6aeac48d0070d256f30232c512ab2b97e46c230a2ea2c1c00b0"
+    },
+    {
+      "scientific_name": "Phyllonorycter muelleriella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/phyllonorycter_muelleriella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Phyllonorycter muelleriella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Phyllonorycter_muelleriella",
+      "status": 200,
+      "sha256": "91f34c550323c1c12cd7662af93eefcc5a0ace91e0cfc8866a80c558b8c9cb16"
+    },
+    {
+      "scientific_name": "Tinagma balteolella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/t/tinagma_balteolella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Tinagma balteolella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Tinagma_balteolella",
+      "status": 200,
+      "sha256": "4bae28129cf9e0c600e76cd64e6a2e409c96d3444023d540680d1b1805b43a93"
+    },
+    {
+      "scientific_name": "Synanthedon mesiaeformis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/synanthedon_mesiaeformis.html",
+      "status": 200,
+      "sha256": "e4488f28d8fdfb7150e124056758cd00ab0c57709ac1bc127034ddc088fc517c"
+    },
+    {
+      "scientific_name": "Synanthedon mesiaeformis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Synanthedon_mesiaeformis",
+      "status": 200,
+      "sha256": "8c2957e54af99edc99b60e478056a72ac1dbbaf4a5b71f4a16791ea037e6ac9a"
+    },
+    {
+      "scientific_name": "Synanthedon soffneri",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/synanthedon_soffneri.html",
+      "status": 200,
+      "sha256": "49fb67e8ad2fe9be60e6369e6ab816f7ffb94335fc20c63c21a751ba55c1ffe6"
+    },
+    {
+      "scientific_name": "Synanthedon soffneri",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Synanthedon_soffneri",
+      "status": 200,
+      "sha256": "1e5b16378cefc326091c302a19d5101ccb1b41f268c3f9a30b14f2ab3a2e58ab"
+    },
+    {
+      "scientific_name": "Synanthedon conopiformis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/synanthedon_conopiformis.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Synanthedon conopiformis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Synanthedon_conopiformis",
+      "status": 200,
+      "sha256": "277f1c0e52839a65e694c0756fd4346e886d523f23d72b5a0b41b9a3e05b3084"
+    },
+    {
+      "scientific_name": "Pyropteron triannuliformis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/pyropteron_triannuliformis.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Pyropteron triannuliformis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Pyropteron_triannuliformis",
+      "status": 200,
+      "sha256": "292fb4eaef25cb54e2d67395db6718c44f26ef44c6514eb2585ca99f9147ca6b"
+    },
+    {
+      "scientific_name": "Dichomeris ustalella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/d/dichomeris_ustalella.html",
+      "status": 200,
+      "sha256": "74e88a016f3945f5c020f71c5d9b602a894138947930321f2b33cfec72e445b5"
+    },
+    {
+      "scientific_name": "Dichomeris ustalella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Dichomeris_ustalella",
+      "status": 200,
+      "sha256": "597f59a51ae329dfacaf70399cd8e90be6a28c1859d7fd0209b3fa3d10433630"
+    },
+    {
+      "scientific_name": "Dichomeris rasilella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/d/dichomeris_rasilella.html",
+      "status": 200,
+      "sha256": "04c074baef1d9e5fdf96bc00a434c4b522354a216e9404960f7371467f35d48e"
+    },
+    {
+      "scientific_name": "Dichomeris rasilella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Dichomeris_rasilella",
+      "status": 200,
+      "sha256": "bfa696b48cacc3a5a5cbe182811061afabc9d31bece27e30ce5daa851ea479ad"
+    },
+    {
+      "scientific_name": "Elachista herrichii",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/e/elachista_herrichii.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Elachista herrichii",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Elachista_herrichii",
+      "status": 200,
+      "sha256": "993268df0594a47676a2dcd59979fa4eca1c233b8bdf23f83cf32dd56444a4ae"
+    },
+    {
+      "scientific_name": "Elachista rufocinerea",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/e/elachista_rufocinerea.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Elachista rufocinerea",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Elachista_rufocinerea",
+      "status": 200,
+      "sha256": "8fd6f70af8d27992d2c35e2efac225fe7be7d7038fffa7c42d205fdd39d7b2e5"
+    },
+    {
+      "scientific_name": "Scythris obscurella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/scythris_obscurella.html",
+      "status": 200,
+      "sha256": "4a13383390abb66d7c400e027a2990f7d432befa45ee9301ef16a649e0a22336"
+    },
+    {
+      "scientific_name": "Scythris obscurella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Scythris_obscurella",
+      "status": 200,
+      "sha256": "b1ae76e23fa8778410c887d4c2244f0df1d48b41652e74ad18cc6e4d8dfb7f9f"
+    },
+    {
+      "scientific_name": "Thyris fenestrella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/t/thyris_fenestrella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Thyris fenestrella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Thyris_fenestrella",
+      "status": 200,
+      "sha256": "983e7dcf55ca9e695adfbcfb35c92b565d7958fe5937a93a3ca6c307f8153836"
+    },
+    {
+      "scientific_name": "Platyptilia nemoralis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/platyptilia_nemoralis.html",
+      "status": 200,
+      "sha256": "c66ac4c41d8a7d593b403db206436ecb03a0786ff44b70680fb212b9be6ace91"
+    },
+    {
+      "scientific_name": "Platyptilia nemoralis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Platyptilia_nemoralis",
+      "status": 200,
+      "sha256": "d08ba11dae3cc33109c5bdfe1780792b1c6747e3d9f716ee62859301427ea168"
+    },
+    {
+      "scientific_name": "Pyrgus serratulae",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/pyrgus_serratulae.html",
+      "status": 200,
+      "sha256": "a8f722841e967d5fe7fbcd099bdc263f1217ab5f274fee5bded49673817476aa"
+    },
+    {
+      "scientific_name": "Pyrgus serratulae",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Pyrgus_serratulae",
+      "status": 200,
+      "sha256": "fa8cba2e5a0cba3857f9253c46d52603ce203d82004a858bbdb24b108f27eea7"
+    },
+    {
+      "scientific_name": "Colias alfacariensis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/colias_alfacariensis.html",
+      "status": 200,
+      "sha256": "ebbb14eb246b0265a590dd624ceb47894de7f8fdcc635b9741b925a71de7e1a1"
+    },
+    {
+      "scientific_name": "Colias alfacariensis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Colias_alfacariensis",
+      "status": 200,
+      "sha256": "280bb6f461c47824625eb92db54715dd38e0ff3a50d90a1687fc4ee8bcebda6e"
+    },
+    {
+      "scientific_name": "Boloria titania",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/b/boloria_titania.html",
+      "status": 200,
+      "sha256": "14fe5dc1dfa653d865db37027a6ac667afbb7158c183cce5313f247b995cd1a6"
+    },
+    {
+      "scientific_name": "Boloria titania",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Boloria_titania",
+      "status": 200,
+      "sha256": "c917378af0567afa3e6f14a5e13050e541224e642cd5a9fed8322ed0a9f1ef23"
+    },
+    {
+      "scientific_name": "Boloria dia",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/b/boloria_dia.html",
+      "status": 200,
+      "sha256": "4cb05e502a2110a908a338aafc3b3d9564ba72bb98cbe1dcbf5c74cda4cf5695"
+    },
+    {
+      "scientific_name": "Boloria dia",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Boloria_dia",
+      "status": 200,
+      "sha256": "c381e15e83355bc6a20cb840cab5404105821d476e18f7e5f52f36f52399ca23"
+    },
+    {
+      "scientific_name": "Melitaea phoebe",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/m/melitaea_phoebe.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Melitaea phoebe",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Melitaea_phoebe",
+      "status": 200,
+      "sha256": "ebaecb7195bfafc7f5b3ad78aa0df3e5009f3cb62173b0dec2416613f54a1712"
+    },
+    {
+      "scientific_name": "Hyponephele lycaon",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/h/hyponephele_lycaon.html",
+      "status": 200,
+      "sha256": "5be1bdf505721cc8e2f79e039adb4948151cfa70cd4324b9d0a5d78a69b18483"
+    },
+    {
+      "scientific_name": "Hyponephele lycaon",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Hyponephele_lycaon",
+      "status": 200,
+      "sha256": "88a112379bfbbb3c49fbdf7365e4503446e1aa15d9354120249bdfa704f64a98"
+    },
+    {
+      "scientific_name": "Hipparchia statilinus",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/h/hipparchia_statilinus.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Hipparchia statilinus",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Hipparchia_statilinus",
+      "status": 200,
+      "sha256": "c73746e0e75240f2307741685beba13e5c7bf532551e10ae914c6740cbb53dcc"
+    },
+    {
+      "scientific_name": "Lycaena alciphron",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/l/lycaena_alciphron.html",
+      "status": 200,
+      "sha256": "10e35f78ccdc0b0474eecb0736daaceadd9e912235c8b88e582c46fb31c9c042"
+    },
+    {
+      "scientific_name": "Lycaena alciphron",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Lycaena_alciphron",
+      "status": 200,
+      "sha256": "e4e42e9dc453f61f9bcb15689fd6707a4f8f25d074d61942f97d8b8e414d99a6"
+    },
+    {
+      "scientific_name": "Satyrium spini",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/satyrium_spini.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Satyrium spini",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Satyrium_spini",
+      "status": 200,
+      "sha256": "2501246f25a5ced1ea4ee2cae2a2d064a79c25369710b7a143c822a96433893d"
+    },
+    {
+      "scientific_name": "Acrobasis obtusella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/acrobasis_obtusella.html",
+      "status": 200,
+      "sha256": "24307c79a27f03061b0616432c21de0190c12d7f3991b45d1fd76d0e9ab261f4"
+    },
+    {
+      "scientific_name": "Acrobasis obtusella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Acrobasis_obtusella",
+      "status": 200,
+      "sha256": "73eb80ae4be7875a0196aa955b1a574d89b2ff5a920965c60a5d6fa261a03b3d"
+    },
+    {
+      "scientific_name": "Udea elutalis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/u/udea_elutalis.html",
+      "status": 200,
+      "sha256": "174f06fc1a4da352c9563c076c9106fec10b0f3e94d3af438f9cbb1edcddc1e7"
+    },
+    {
+      "scientific_name": "Udea elutalis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Udea_elutalis",
+      "status": 200,
+      "sha256": "d68389224ff911182da6e93a0a573e1340bf986bd6f5dc5f6d799dab095d214b"
+    },
+    {
+      "scientific_name": "Eurrhypis pollinalis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/e/eurrhypis_pollinalis.html",
+      "status": 200,
+      "sha256": "640b9c74ee53065346e01fdb75bf8e1a5cf1b57b35d54af29c56080f2bb99ecd"
+    },
+    {
+      "scientific_name": "Eurrhypis pollinalis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Eurrhypis_pollinalis",
+      "status": 200,
+      "sha256": "5d6502a28c125278e09aaa95470842de5d2ca1218cdb4ff6af2d944878501199"
+    },
+    {
+      "scientific_name": "Heliomata glarearia",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/h/heliomata_glarearia.html",
+      "status": 200,
+      "sha256": "cc175c19623ad337144a54285f5ed50283e52321e6784486c0bba427f8f9779d"
+    },
+    {
+      "scientific_name": "Heliomata glarearia",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Heliomata_glarearia",
+      "status": 200,
+      "sha256": "17990544f626f962a44165dcb31013f3a88500ccab3cf1506e38defb188fbfcb"
+    },
+    {
+      "scientific_name": "Polymixis lichenea",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/polymixis_lichenea.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Polymixis lichenea",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Polymixis_lichenea",
+      "status": 200,
+      "sha256": "64882c4fc761e4c28ef7bee96448d3510aa8036b72917970544aa068be49f869"
+    },
+    {
+      "scientific_name": "Scopula imitaria",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/scopula_imitaria.html",
+      "status": 200,
+      "sha256": "a8ac22627a451d5a3b85e3fbe425df67199ae5ef5faae15c7718e239f5b2c8ee"
+    },
+    {
+      "scientific_name": "Scopula imitaria",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Scopula_imitaria",
+      "status": 200,
+      "sha256": "1fd7bd8041fe1cfc9bc80278443d1248da88670cde0d0a61f66533e0b9dbda6a"
+    },
+    {
+      "scientific_name": "Aporophyla nigra",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/aporophyla_nigra.html",
+      "status": 200,
+      "sha256": "2d8c64a4ad0966d66f01b0317024f39d7acfd3cb001901188f48816067c28a02"
+    },
+    {
+      "scientific_name": "Aporophyla nigra",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Aporophyla_nigra",
+      "status": 200,
+      "sha256": "cf81e08f6b8eb21e14234fce8613780b91a02408748405aac234fe351680f3f0"
+    },
+    {
+      "scientific_name": "Conistra ligula",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/conistra_ligula.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Conistra ligula",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Conistra_ligula",
+      "status": 200,
+      "sha256": "1f4c48a53f9b822790efc3ce8d94b7ff5bf4aa91419fe6e8fac29797bbf5a995"
+    },
+    {
+      "scientific_name": "Lithophane leautieri",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/l/lithophane_leautieri.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Lithophane leautieri",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Lithophane_leautieri",
+      "status": 200,
+      "sha256": "6aa718026bd5edc25b886df795b5bd51b3ad85da20a45a70452eaea71be6561e"
+    },
+    {
+      "scientific_name": "Nola estonica",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/n/nola_estonica.html",
+      "status": 200,
+      "sha256": "8fc66da9b04679568f3a6160d3489cb1d3983c58abbc7706585d8bb4dcf596cc"
+    },
+    {
+      "scientific_name": "Nola estonica",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Nola_estonica",
+      "status": 200,
+      "sha256": "9d1511fabf8919aeaaaf0640d9c99e3c4de5ad208f08bd37b1e6c5becd7438de"
+    },
+    {
+      "scientific_name": "Xylomoia strix",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/x/xylomoia_strix.html",
+      "status": 200,
+      "sha256": "8531629b2905f849258532b982eff098faa4bc49decdce02012693ed67094fdd"
+    },
+    {
+      "scientific_name": "Xylomoia strix",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Xylomoia_strix",
+      "status": 200,
+      "sha256": "8ed8a2bfb1dffbf483f2a567d0f7026f0bfa6eec354dda4f74ed0a5d03f09b5e"
+    },
+    {
+      "scientific_name": "Eversmannia exornata",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/e/eversmannia_exornata.html",
+      "status": 200,
+      "sha256": "fcd0e8396a876eaa3abeb4fe73c9c342421bd5927f101a45c4a3657de331937b"
+    },
+    {
+      "scientific_name": "Eversmannia exornata",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Eversmannia_exornata",
+      "status": 200,
+      "sha256": "6a7d3c0aae908b5d51c11c545c9e48e86df3cf2f8f3db28b42da13074654af20"
+    },
+    {
+      "scientific_name": "Cosmopterix sibirica",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/cosmopterix_sibirica.html",
+      "status": 200,
+      "sha256": "ea3663bf45e6dab70aaeec56e216a5810bbf090fddc219225730f1faf929c739"
+    },
+    {
+      "scientific_name": "Cosmopterix sibirica",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Cosmopterix_sibirica",
+      "status": 200,
+      "sha256": "094354ae9271fae4fef4e4ec17f8ba5d4a7612bd83ac503063f6ce1075ff19e6"
+    },
+    {
+      "scientific_name": "Phyllonorycter trifoliella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/phyllonorycter_trifoliella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Phyllonorycter trifoliella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Phyllonorycter_trifoliella",
+      "status": 200,
+      "sha256": "346c055f82cdd90b19e7f46931954e564edb414ffbaa94387f01d7bc02130348"
+    },
+    {
+      "scientific_name": "Ypsolopha sarmaticella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/y/ypsolopha_sarmaticella.html",
+      "status": 200,
+      "sha256": "56ae3b47c24f727b1f1c684a5a6d04fce16f243c01be30c4a00b3c86df9fdbc4"
+    },
+    {
+      "scientific_name": "Ypsolopha sarmaticella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Ypsolopha_sarmaticella",
+      "status": 200,
+      "sha256": "9be47fca9d9376b8807719df11d392a3544525bf29fba58ecc1ccc95c8e75468"
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/scythris_sinensis.html",
+      "status": 200,
+      "sha256": "3074155d398895951218156ec45aa5c266b5e78b50154e9b15b40fc43e9eb8c8"
+    },
+    {
+      "scientific_name": "Scythris sinensis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Scythris_sinensis",
+      "status": 200,
+      "sha256": "abc7103fdd820ccf16f98b6d43f3eb10bbe56804ca67507881ae8f20d2e0ee0f"
+    },
+    {
+      "scientific_name": "Atypha pulmonaris",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/atypha_pulmonaris.html",
+      "status": 200,
+      "sha256": "430dc16c2ea7d356c22f2318c1e6730bf1a9dc7d96073f27ee449b929c275222"
+    },
+    {
+      "scientific_name": "Atypha pulmonaris",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Atypha_pulmonaris",
+      "status": 200,
+      "sha256": "d9d3752c16d133f44ff3aca5eb872d617fe0195bca27d1b4abcc20c156919c66"
+    },
+    {
+      "scientific_name": "Euchalcia modestoides",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/e/euchalcia_modestoides.html",
+      "status": 200,
+      "sha256": "6e42791a5ab11640afd8997f40f95faaa081c64d28d4cba5a8a3acaae75379c1"
+    },
+    {
+      "scientific_name": "Euchalcia modestoides",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Euchalcia_modestoides",
+      "status": 200,
+      "sha256": "8331b131af0ec509f81b36271c0c85aa057787b29cca370c29881f55d71027c6"
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/phyllonorycter_lantanella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Phyllonorycter lantanella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Phyllonorycter_lantanella",
+      "status": 200,
+      "sha256": "1e9ca763bc104ab0c06185ac217499cbabb12745885d633e7548b0b93080f21f"
+    },
+    {
+      "scientific_name": "Coleophora algidella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/coleophora_algidella.html",
+      "status": 200,
+      "sha256": "9a5f96a1b4bea7aaa920c560cbed78c66ced92b37bed5bb61c680dc776489893"
+    },
+    {
+      "scientific_name": "Coleophora algidella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Coleophora_algidella",
+      "status": 200,
+      "sha256": "0f12e855833a0f6a3605ae32b3d97d9e57ac9603bb3c6e2fa43bb032873bf5f7"
+    },
+    {
+      "scientific_name": "Stilbia anomala",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/stilbia_anomala.html",
+      "status": 200,
+      "sha256": "4a6e3b8001166973b17970eed5833a7081bc53cd6577603c37719e136af23970"
+    },
+    {
+      "scientific_name": "Stilbia anomala",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Stilbia_anomala",
+      "status": 200,
+      "sha256": "b72a9115fc682dc3b388b09cad8e8cc65d928c13b7cddc2b8a7d8b933f0d06fd"
+    },
+    {
+      "scientific_name": "Ostrinia quadripunctalis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/o/ostrinia_quadripunctalis.html",
+      "status": 200,
+      "sha256": "8cdcd510010020e64a79f13b6c8b67f7518cd6683e69d893531e01d63f87bf91"
+    },
+    {
+      "scientific_name": "Ostrinia quadripunctalis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Ostrinia_quadripunctalis",
+      "status": 200,
+      "sha256": "34b01560d1835b9c0285eaf0869a3b0d5d9a9853ecd8777016587a859dd9208b"
+    },
+    {
+      "scientific_name": "Capperia britanniodactylus",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/capperia_britanniodactylus.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Capperia britanniodactylus",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Capperia_britanniodactylus",
+      "status": 200,
+      "sha256": "53dd2191cdd8c47fbb22fb296074901d7e98c378336e4c5687cea82c9564df59"
+    },
+    {
+      "scientific_name": "Clepsis mehli",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/clepsis_mehli.html",
+      "status": 200,
+      "sha256": "5b7adcfc69d2d2810f8cd8d8127101b26c9eeda73194e3989487caee54b76637"
+    },
+    {
+      "scientific_name": "Clepsis mehli",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Clepsis_mehli",
+      "status": 200,
+      "sha256": "dff136d1aa6d7c44d72b516ec9ff6db2adfdc2e97f096bb1b9dc6226504fee59"
+    },
+    {
+      "scientific_name": "Scrobipalpa costella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/s/scrobipalpa_costella.html",
+      "status": 200,
+      "sha256": "ed4aa54f2f27695fafe1570706d0a319b42d8949a8686e915a6a7a32d2463817"
+    },
+    {
+      "scientific_name": "Scrobipalpa costella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Scrobipalpa_costella",
+      "status": 200,
+      "sha256": "3eecb5a8aa6cef121146194e2bcececce7fe4ebdc229b748e57330efb7721703"
+    },
+    {
+      "scientific_name": "Phyllonorycter hostis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/phyllonorycter_hostis.html",
+      "status": 200,
+      "sha256": "0d70737d521c30e031a78f7532063b8a716a91cb48d053a2a87c022bee0446cf"
+    },
+    {
+      "scientific_name": "Phyllonorycter hostis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Phyllonorycter_hostis",
+      "status": 200,
+      "sha256": "c4adaf25c7c592b1d5ff80ffb101bb87b8287168a2d703cc10920005c82cd460"
+    },
+    {
+      "scientific_name": "Gracillaria loriolella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/g/gracillaria_loriolella.html",
+      "status": 200,
+      "sha256": "6fba204964513eb617597b40d5f8d339de948cd828b20bf3d8a60946ee344f93"
+    },
+    {
+      "scientific_name": "Gracillaria loriolella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Gracillaria_loriolella",
+      "status": 200,
+      "sha256": "95694faa23dbd1f12170538333a5f7aaafc5678ad7bc3144c6e2fdf7af3270f0"
+    },
+    {
+      "scientific_name": "Coleophora filaginella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/coleophora_filaginella.html",
+      "status": 200,
+      "sha256": "4027aa2e6b0f29594aa7680cf4a8e7938bc1ac1f8b57c7ec9c2c46c502849b03"
+    },
+    {
+      "scientific_name": "Coleophora filaginella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Coleophora_filaginella",
+      "status": 200,
+      "sha256": "01ba53fdc7c16da0ad46d06325c742fd7d5f8ae0e1e1a33591aef24be97d2297"
+    },
+    {
+      "scientific_name": "Coleophora inulae",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/coleophora_inulae.html",
+      "status": 200,
+      "sha256": "e49b260993c621ff35ce8044abb6e996a68fef85d935e20c3a02a4a9ba0ce885"
+    },
+    {
+      "scientific_name": "Coleophora inulae",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Coleophora_inulae",
+      "status": 200,
+      "sha256": "9b1231d38b2ddaa10b14f242ac582ab6bc8868babfc0c4e0f1482ad616ea5e7d"
+    },
+    {
+      "scientific_name": "Coleophora niveistrigella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/coleophora_niveistrigella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Coleophora niveistrigella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Coleophora_niveistrigella",
+      "status": 200,
+      "sha256": "97b03fd0b27ecfd0942e7e687d731ae88704d60b2bf17b8022c4fe92f44a744d"
+    },
+    {
+      "scientific_name": "Coleophora polonicella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/coleophora_polonicella.html",
+      "status": 404
+    },
+    {
+      "scientific_name": "Coleophora polonicella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Coleophora_polonicella",
+      "status": 200,
+      "sha256": "36efd6d77a5c6ff61a6edb080516a4ce07fa098fbfd5fd02681330f721fa7346"
+    },
+    {
+      "scientific_name": "Cacoecimorpha pronubana",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/cacoecimorpha_pronubana.html",
+      "status": 200,
+      "sha256": "ddf52ca88c0d390baec31be9e33e6da751d07d982fb982ee0f328ce927c38871"
+    },
+    {
+      "scientific_name": "Cacoecimorpha pronubana",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Cacoecimorpha_pronubana",
+      "status": 200,
+      "sha256": "62c1a5bf4db0c5d41116ff5874d0734d5c5f46351ddb1acdf544a6f65d00c46a"
+    },
+    {
+      "scientific_name": "Cameraria ohridella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/cameraria_ohridella.html",
+      "status": 200,
+      "sha256": "56acf8ff8307c81ed3bcb00592b6949cd58c1df2c84a44dccfb8160bab80b36c"
+    },
+    {
+      "scientific_name": "Cameraria ohridella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Cameraria_ohridella",
+      "status": 200,
+      "sha256": "7e2840449a387d1430b34315dd556d37c95244fd369f96257302c29201fe79f5"
+    },
+    {
+      "scientific_name": "Chrysodeixis chalcites",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/chrysodeixis_chalcites.html",
+      "status": 200,
+      "sha256": "39d47f2cf4968d0767b951dd0b226161169f2c83efe811f54df6f9cdf8647501"
+    },
+    {
+      "scientific_name": "Chrysodeixis chalcites",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Chrysodeixis_chalcites",
+      "status": 200,
+      "sha256": "1a584429f1634bcf44431ced3647f2bd5f96c41443a8d19e8cf46e5db401899f"
+    },
+    {
+      "scientific_name": "Cydalima perspectalis",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/cydalima_perspectalis.html",
+      "status": 200,
+      "sha256": "f7d42534ed4afa0c339c7dde6bc7cdf788699013e6c0c62535735e5a0aa34f6b"
+    },
+    {
+      "scientific_name": "Cydalima perspectalis",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Cydalima_perspectalis",
+      "status": 200,
+      "sha256": "301aa8d32e7e0d71a8eab0d494082491b94affe31da91bd33bfe7e6f01007339"
+    },
+    {
+      "scientific_name": "Etiella zinckenella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/e/etiella_zinckenella.html",
+      "status": 200,
+      "sha256": "34e1b63e601c068c9d0e6d58f52866052cb7a0923e06748aa6e44d4e5bafddc0"
+    },
+    {
+      "scientific_name": "Etiella zinckenella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Etiella_zinckenella",
+      "status": 200,
+      "sha256": "33f070a3016c2ff585eb1b6f81bf7bfe39f33773e3f5031a8834865e9119c73b"
+    },
+    {
+      "scientific_name": "Phyllonorycter issikii",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/phyllonorycter_issikii.html",
+      "status": 200,
+      "sha256": "e18a8b26bc210eab641eab2b037d88a19a39ab5550928a86e360d4d16341a746"
+    },
+    {
+      "scientific_name": "Phyllonorycter issikii",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Phyllonorycter_issikii",
+      "status": 200,
+      "sha256": "5d385044e5bb90551e8754059740b23570d8cc6ce8fad4b990c0c571f36b8e2f"
+    },
+    {
+      "scientific_name": "Phyllonorycter leucographella",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/phyllonorycter_leucographella.html",
+      "status": 200,
+      "sha256": "c347d304ad5017c807bd001007aff20bca2935315a8482e795990027a9a54e78"
+    },
+    {
+      "scientific_name": "Phyllonorycter leucographella",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Phyllonorycter_leucographella",
+      "status": 200,
+      "sha256": "b2ef572178a915cd134b4792f2d15bfdb235d72160214c1259984dd053f30297"
+    },
+    {
+      "scientific_name": "Phyllonorycter platani",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/p/phyllonorycter_platani.html",
+      "status": 200,
+      "sha256": "beca348ef389f1e4836edbe10f8c6f463dc164e4a8248652dd6178669bb7d858"
+    },
+    {
+      "scientific_name": "Phyllonorycter platani",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Phyllonorycter_platani",
+      "status": 200,
+      "sha256": "d77d6ddf52ce4cc64eefb0a108b29a6085e899f172e3b07421e2dc77e4af9615"
+    },
+    {
+      "scientific_name": "Vanessa cardui",
+      "source": "nrm",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/v/vanessa_cardui.html",
+      "status": 200,
+      "sha256": "d4c93bff298280866084c30bc4fd036ff9340a5430d1a6f6156b6f079cc7e5a6"
+    },
+    {
+      "scientific_name": "Vanessa cardui",
+      "source": "lepiforum",
+      "url": "https://lepiforum.org/wiki/page/Vanessa_cardui",
+      "status": 200,
+      "sha256": "debbabc882e93f4100e8a660895db38b88c975f81cfb00f0b9abf2bf5082b1ab"
+    }
+  ]
+}
