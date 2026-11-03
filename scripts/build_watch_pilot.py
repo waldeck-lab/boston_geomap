@@ -10,6 +10,7 @@ from pathlib import Path
 import requests
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from geomap.watch_scope import get_scope
+from review_watch_selection import validate_watch_assessment
 from geomap.watch_store import connect,initialize,source,import_matrix,import_traits,import_occurrences,import_search_guides,import_swedish_names,import_expansion_assessments,import_species_supplements,inventory,profile,normalized
 
 def main():
@@ -41,7 +42,7 @@ def main():
     if not 10<=len(names)<=100 or any(selection['assessments'][n]['classification']!='watch_candidate' for n in names):raise RuntimeError('Candidate screening is required before import')
     for name in names:
         assessment=selection['assessments'][name]
-        if 'S' in assessment['checklist']['countries'] or assessment.get('gbif_sweden_count')!=0 or assessment.get('front_2015_2026_count',0)<1:raise RuntimeError('Swedish record or missing front evidence in candidate list: '+name)
+        validate_watch_assessment(name,assessment)
     initialize(stage/'future-species.sqlite');db=connect(stage/'future-species.sqlite')
     run=db.execute("INSERT INTO import_runs(status) VALUES('running') RETURNING id").fetchone()[0];db.commit()
     try:

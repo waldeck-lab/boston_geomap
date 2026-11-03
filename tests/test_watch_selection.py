@@ -2,9 +2,17 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from review_watch_selection import baseline,add_updates,front_params,BAB_2025
+from review_watch_selection import baseline,add_updates,front_params,BAB_2025,validate_watch_assessment
 
 class WatchSelectionTests(unittest.TestCase):
+    def test_publication_can_support_presence_without_inventing_gbif_records(self):
+        row=dict(checklist=dict(countries=['N']),gbif_sweden_count=0,front_2015_2026_count=0,checked_at='2026-11-03',occurrence_scope='nordic-front',published_front_evidence=[dict(scientific_name='Coleophora algidella',review_status='primary_source_checked',country='NO',event_year=2022,url='https://example.org/report.pdf',source_sha256='a'*64,document_page=20)])
+        validate_watch_assessment('Coleophora algidella',row)
+        row['gbif_sweden_count']=1
+        with self.assertRaises(ValueError):validate_watch_assessment('Coleophora algidella',row)
+    def test_unclear_or_mismatched_publication_is_not_an_admission_override(self):
+        row=dict(checklist=dict(countries=['N']),gbif_sweden_count=0,front_2015_2026_count=0,checked_at='2026-11-03',occurrence_scope='nordic-front',published_front_evidence=[dict(url='https://example.org/report.pdf')])
+        with self.assertRaises(ValueError):validate_watch_assessment('Coleophora algidella',row)
     def test_biological_presence_does_not_require_a_map_reuse_license(self):
         biological=front_params(1759673)
         self.assertNotIn('license',biological)

@@ -1,12 +1,21 @@
 {
-  "version": "2026-11-02-v3",
+  "version": "2026-11-03-norway-v2",
   "swedish_names": {
     "Heliomata glarearia": "stäppnätmätare",
     "Polymixis lichenea": "kusthöstfly",
     "Scopula imitaria": "rödgul lövmätare",
     "Aporophyla nigra": "svart puckelfly",
     "Conistra ligula": "",
-    "Lithophane leautieri": ""
+    "Lithophane leautieri": "",
+    "Coleophora algidella": "ängsfrylesäckmal",
+    "Stilbia anomala": "kustfly",
+    "Ostrinia quadripunctalis": "fyrpunktsmott",
+    "Clepsis mehli": "ishavsvecklare",
+    "Scrobipalpa costella": "fläcksmåstävmal",
+    "Phyllonorycter hostis": "kvittenguldmal",
+    "Gracillaria loriolella": "mörk askstyltmal",
+    "Coleophora filaginella": "ullörtssäckmal",
+    "Coleophora inulae": "gullinjerad krisslesäckmal"
   },
   "assessments": {
     "Heliomata glarearia": {
@@ -443,6 +452,325 @@
       "occurrence_scope": "baltic-finland",
       "ecology_gap_acknowledged": true,
       "reason": "Finsk/östlig bevakningskandidat efter artvis källkontroll. Inte svensk i granskat checklist- och senare öppet årsrapportunderlag; inga svenska publika GBIF-poster i kontrollen. Detta är inte bevis för svensk frånvaro. Finska belägg och artbiologi redovisas separat från osäkra svenska sökhypoteser. Expansion markeras endast där ett daterat källstöd finns."
+    },
+    "Coleophora algidella": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "2112",
+        "countries": [
+          "I",
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 0,
+      "gbif_key": 5120816,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5120816&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5120816&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Coleophora_algidella",
+        "http://www3.nrm.se/en/svenska_fjarilar/c/coleophora_algidella.html"
+      ],
+      "occurrence_scope": "nordic-front",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg. Norsk förekomst stöds av publicerad inventering, inte av GBIF-antal.",
+      "published_front_evidence": [
+        {
+          "scientific_name": "Coleophora algidella",
+          "country": "NO",
+          "event_year": 2022,
+          "review_status": "primary_source_checked",
+          "url": "https://www.nasjonalparkstyre.no/uploads/files_naeroyfjorden/Fagrapportar/MU2022-68-Insektundersokelser-Undredal.pdf",
+          "document_page": "3, 19",
+          "source_sha256": "90bec25a30cfc8ae47f12b8269075f26173ecccc0c7f591bbee75ccfa01c0ed6"
+        }
+      ]
+    },
+    "Stilbia anomala": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "4127",
+        "countries": [
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 164,
+      "gbif_key": 1789481,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1789481&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1789481&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Stilbia_anomala",
+        "http://www3.nrm.se/en/svenska_fjarilar/s/stilbia_anomala.html"
+      ],
+      "occurrence_scope": "nordic-front",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Ostrinia quadripunctalis": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "2890",
+        "countries": [
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 31,
+      "gbif_key": 1886353,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1886353&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1886353&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Ostrinia_quadripunctalis",
+        "http://www3.nrm.se/en/svenska_fjarilar/o/ostrinia_quadripunctalis.html"
+      ],
+      "occurrence_scope": "nordic-front",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Capperia britanniodactylus": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "2410",
+        "countries": [
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 23,
+      "gbif_key": 1859872,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1859872&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1859872&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Capperia_britanniodactylus"
+      ],
+      "occurrence_scope": "nordic-front",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Clepsis mehli": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "828",
+        "countries": [
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 21,
+      "gbif_key": 1737390,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737390&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1737390&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Clepsis_mehli",
+        "http://www3.nrm.se/en/svenska_fjarilar/c/clepsis_mehli.html"
+      ],
+      "occurrence_scope": "nordic-front",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Scrobipalpa costella": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "1904",
+        "countries": [
+          "D",
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf",
+          "update-2025.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 40,
+      "gbif_key": 1849897,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1849897&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1849897&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Scrobipalpa_costella",
+        "http://www3.nrm.se/en/svenska_fjarilar/s/scrobipalpa_costella.html"
+      ],
+      "occurrence_scope": "nordic-front",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Phyllonorycter hostis": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "547",
+        "countries": [
+          "N",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 14,
+      "gbif_key": 1749773,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749773&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749773&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Phyllonorycter_hostis",
+        "http://www3.nrm.se/en/svenska_fjarilar/p/phyllonorycter_hostis.html"
+      ],
+      "occurrence_scope": "nordic-front",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Gracillaria loriolella": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "481",
+        "countries": [
+          "N"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 6,
+      "gbif_key": 1749720,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749720&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=1749720&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Gracillaria_loriolella",
+        "http://www3.nrm.se/en/svenska_fjarilar/g/gracillaria_loriolella.html"
+      ],
+      "occurrence_scope": "nordic-front",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Coleophora filaginella": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "2158",
+        "countries": [
+          "D",
+          "F",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 14,
+      "gbif_key": 5121445,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121445&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121445&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Coleophora_filaginella",
+        "http://www3.nrm.se/en/svenska_fjarilar/c/coleophora_filaginella.html"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Coleophora inulae": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "2110",
+        "countries": [
+          "F",
+          "E",
+          "Lv"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 13,
+      "gbif_key": 5121481,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121481&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121481&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Coleophora_inulae",
+        "http://www3.nrm.se/en/svenska_fjarilar/c/coleophora_inulae.html"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Coleophora niveistrigella": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "2119",
+        "countries": [
+          "E",
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 1,
+      "gbif_key": 5120826,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5120826&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5120826&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Coleophora_niveistrigella"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
+    },
+    "Coleophora polonicella": {
+      "classification": "watch_candidate",
+      "checked_at": "2026-11-03",
+      "checklist": {
+        "number": "2262",
+        "countries": [
+          "Lv",
+          "Lt"
+        ],
+        "sources": [
+          "checklist-2017.pdf"
+        ]
+      },
+      "gbif_sweden_count": 0,
+      "front_2015_2026_count": 2,
+      "gbif_key": 5121101,
+      "evidence_urls": [
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121101&country=SE&occurrenceStatus=PRESENT&limit=1",
+        "https://api.gbif.org/v1/occurrence/search?taxonKey=5121101&country=DK&country=DE&country=PL&country=LT&country=LV&country=EE&country=FI&country=NO&decimalLatitude=53%2C72&eventDate=2015-01-01%2C2026-11-03&occurrenceStatus=PRESENT&limit=0",
+        "https://lepiforum.org/wiki/page/Coleophora_polonicella"
+      ],
+      "occurrence_scope": "baltic-finland",
+      "ecology_gap_acknowledged": true,
+      "reason": "Regional bevakningskandidat efter individuell källkontroll. Ej svensk i granskat checklist- och öppet senare rapportunderlag; inga svenska positiva GBIF-poster i aktuell kontroll. Detta bevisar inte svensk frånvaro. Ingen expansionsflagga utan separat belägg."
     }
   }
 }

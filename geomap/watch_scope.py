@@ -5,4 +5,6 @@ def get_scope(name=None):
         return dict(name='southern-front',countries=countries,latitude_range=[53,60],label='Södra grannlandsfronten · 53–60° N')
     if name=='baltic-finland':
         return dict(name=name,countries=countries+['FI'],latitude_range=[53,70],label='Finland och grannlandsfronten · 53–70° N')
+    if name=='nordic-front':
+        return dict(name=name,countries=countries+['FI','NO'],latitude_range=[53,72],label='Norge, Finland och grannlandsfronten · 53–72° N')
     raise ValueError('Unreviewed occurrence scope')

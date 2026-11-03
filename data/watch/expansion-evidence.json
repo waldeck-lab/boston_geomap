@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v3",
+  "version": "2026-11-03-norway-v2",
   "assessments": [
     {
       "scientific_name": "Proserpinus proserpina",
@@ -280,6 +280,198 @@
         }
       ],
       "checked_at": "2026-11-02"
+    },
+    {
+      "scientific_name": "Coleophora algidella",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Norsk förekomst är publicerad, men inga norska kartposter ingick i GBIF-kontrollen. En tom karta betyder inte frånvaro. Ingen aktuell expansion är belagd.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Coleophora algidella",
+          "url": "https://lepiforum.org/wiki/page/Coleophora_algidella"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Stilbia anomala",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Norge har långvarig förekomst. Arten ska inte framställas som ny norsk immigrant eller få expansionsflagga utifrån ökande databasantal.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Stilbia anomala",
+          "url": "https://lepiforum.org/wiki/page/Stilbia_anomala"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Ostrinia quadripunctalis",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Ingen dokumenterad expansion mot Sverige är fastställd. Gå inte från en uppgiven växt vid en fyndplats till antagandet att den är larvvärd.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Ostrinia quadripunctalis",
+          "url": "https://lepiforum.org/wiki/page/Ostrinia_quadripunctalis"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Capperia britanniodactylus",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Nya norska lokaler visar regional relevans men är inte i sig bevis för spridning mot Sverige. Svenska värdväxtbestånd har inte kartlagts här.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Capperia britanniodactylus",
+          "url": "https://lepiforum.org/wiki/page/Capperia_britanniodactylus"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Clepsis mehli",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Nordlig grannlandsart, inte belagd sydlig invandrare. Den ingår för regional upptäcktsbevakning; pågående expansion är inte visad.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Clepsis mehli",
+          "url": "https://lepiforum.org/wiki/page/Clepsis_mehli"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Scrobipalpa costella",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "NRM:s äldre text saknar Norge, medan senare norsk publicering och aktuella databasposter finns. Äldre landstexter ska därför inte användas som nutida frånvarobevis.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Scrobipalpa costella",
+          "url": "https://lepiforum.org/wiki/page/Scrobipalpa_costella"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Phyllonorycter hostis",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Förväxlingsrisk med P. blancardella. Nybeskriven art eller nya databasposter betyder inte nödvändigtvis aktuell expansion.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Phyllonorycter hostis",
+          "url": "https://lepiforum.org/wiki/page/Phyllonorycter_hostis"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Gracillaria loriolella",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Ökad uppmärksamhet och verklig expansion kan inte skiljas åt i de lästa tyska fyndserierna. Ingen särskild expansionsflagga sätts.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Gracillaria loriolella",
+          "url": "https://lepiforum.org/wiki/page/Gracillaria_loriolella"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Coleophora filaginella",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Finsk förekomst är känd sedan 2000-talet. Nya landfynd bevisar inte ensamma en pågående nordlig spridning.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Coleophora filaginella",
+          "url": "https://lepiforum.org/wiki/page/Coleophora_filaginella"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Coleophora inulae",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Åländsk förekomst och svensk publicerad sökrekommendation ger hög regional relevans. Aktuell expansion är ändå inte visad.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Coleophora inulae",
+          "url": "https://lepiforum.org/wiki/page/Coleophora_inulae"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Coleophora niveistrigella",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Det aktuella närliggande databasunderlaget är litet. Varken expansion eller svensk etableringsförmåga är visad.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Coleophora niveistrigella",
+          "url": "https://lepiforum.org/wiki/page/Coleophora_niveistrigella"
+        }
+      ],
+      "checked_at": "2026-11-03"
+    },
+    {
+      "scientific_name": "Coleophora polonicella",
+      "high_interest": false,
+      "status": "expansion_not_demonstrated",
+      "direction": "Ej fastställd",
+      "period": "Granskat 2026-11-03",
+      "reason": "Bevakningsförslag med litet aktuellt fyndunderlag. Säckar behöver skiljas från andra Coleophora; någon särskild expansion mot Sverige är inte belagd.",
+      "caveat": "Regional upptäcktsbevakning; inte en ankomstprognos.",
+      "sources": [
+        {
+          "title": "Lepiforum: Coleophora polonicella",
+          "url": "https://lepiforum.org/wiki/page/Coleophora_polonicella"
+        }
+      ],
+      "checked_at": "2026-11-03"
     }
   ]
 }

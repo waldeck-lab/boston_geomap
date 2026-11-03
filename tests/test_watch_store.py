@@ -70,6 +70,15 @@ class WatchStoreTests(unittest.TestCase):
         with self.assertRaises(ValueError):import_search_guides(self.db,p)
         self.assertEqual(self.db.execute('SELECT version FROM search_guides').fetchone()[0],'v1')
 
+    def test_legacy_nrm_reference_links_do_not_allow_arbitrary_http_sources(self):
+        p=self.root/'guides.json'
+        guide=dict(scientific_name='Species alpha',sources=[dict(id='nrm',url='http://www3.nrm.se/en/svenska_fjarilar/c/coleophora_algidella.html')],documented=[],swedish_hypotheses=[])
+        p.write_text(json.dumps(dict(version='v1',guides=[guide])))
+        import_search_guides(self.db,p)
+        for url in ['http://example.org/report','http://www3.nrm.se.evil.test/en/svenska_fjarilar/a','javascript:alert(1)']:
+            guide['sources'][0]['url']=url;p.write_text(json.dumps(dict(version='v2',guides=[guide])))
+            with self.assertRaises(ValueError):import_search_guides(self.db,p)
+
     def test_swedish_names_use_exact_species_and_preserve_provenance(self):
         p=self.root/'names.json';p.write_text(json.dumps(dict(species=[dict(scientific_name='Species alpha',swedish_name='testnamn'),dict(scientific_name='Species beta',swedish_name='fel namn')])))
         import_swedish_names(self.db,p,'fixture')

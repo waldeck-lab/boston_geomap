@@ -31,6 +31,27 @@ def front_params(taxon,mappable=False):
     if mappable:params['license']=['CC0_1_0','CC_BY_4_0']
     return params
 
+def validate_watch_assessment(name,assessment):
+    """Presence may be supported by a checked publication, independently of GBIF."""
+    from urllib.parse import urlsplit
+    from datetime import date
+    if 'S' in assessment['checklist']['countries'] or assessment.get('gbif_sweden_count')!=0:
+        raise ValueError('Swedish record or unreviewed Swedish status: '+name)
+    if assessment.get('front_2015_2026_count',0)>=1:
+        return
+    from geomap.watch_scope import get_scope
+    scope=get_scope(assessment.get('occurrence_scope'))
+    checked=date.fromisoformat(assessment['checked_at'])
+    for evidence in assessment.get('published_front_evidence',[]):
+        url=urlsplit(evidence.get('url',''))
+        if (evidence.get('scientific_name')==name and evidence.get('review_status')=='primary_source_checked'
+            and evidence.get('country') in scope['countries']
+            and 2015<=evidence.get('event_year',0)<=checked.year
+            and re.fullmatch('[a-f0-9]{64}',evidence.get('source_sha256',''))
+            and url.scheme=='https' and url.hostname and evidence.get('document_page')):
+            return
+    raise ValueError('Missing reviewed front evidence: '+name)
+
 def baseline(text,validate=True,accepted_genera=None):
     if accepted_genera is None and validate:
         accepted_genera=json.loads((Path(__file__).resolve().parents[1]/'data/watch/checklist-2017-accepted-genera.json').read_text())['genera']

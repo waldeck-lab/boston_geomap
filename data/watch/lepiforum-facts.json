@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-02-v6",
+  "version": "2026-11-03-norway-v2",
   "profiles": [
     {
       "notes": {
@@ -1508,6 +1508,282 @@
         "locations": [],
         "uncertainties": [
           "Regionala skillnader i värdväxtanvändning finns. Ett minfynd behöver skiljas från andra minerare. Ingen aktuell nordlig expansion är belagd här."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Coleophora algidella",
+      "source_url": "https://lepiforum.org/wiki/page/Coleophora_algidella",
+      "source_sha256": "0f12e855833a0f6a3605ae32b3d97d9e57ac9603bb3c6e2fa43bb032873bf5f7",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Cerastium alpinum och Stellaria-arter har källstöd. Äldre uppgifter om Luzula och Juncus markeras som osäkra av Lepiforum och ska inte styra eftersöket ensamma."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Norsk förekomst är publicerad, men inga norska kartposter ingick i GBIF-kontrollen. En tom karta betyder inte frånvaro. Ingen aktuell expansion är belagd."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Stilbia anomala",
+      "source_url": "https://lepiforum.org/wiki/page/Stilbia_anomala",
+      "source_sha256": "b72a9115fc682dc3b388b09cad8e8cc65d928c13b7cddc2b8a7d8b933f0d06fd",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Kruståtel, Avenella flexuosa, är den tydligast stödda larvvärden. Enstaka uppgifter om andra gräs eller frylen ska inte ges samma vikt."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Norge har långvarig förekomst. Arten ska inte framställas som ny norsk immigrant eller få expansionsflagga utifrån ökande databasantal."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Ostrinia quadripunctalis",
+      "source_url": "https://lepiforum.org/wiki/page/Ostrinia_quadripunctalis",
+      "source_sha256": "34b01560d1835b9c0285eaf0869a3b0d5d9a9853ecd8777016587a859dd9208b",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Larvvärdväxten betraktas som okänd i den litteratur Lepiforum redovisar. NRM:s äldre uppgift om Solidago canadensis står i konflikt med detta och används inte som säker värdväxt."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Ingen dokumenterad expansion mot Sverige är fastställd. Gå inte från en uppgiven växt vid en fyndplats till antagandet att den är larvvärd."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Capperia britanniodactylus",
+      "source_url": "https://lepiforum.org/wiki/page/Capperia_britanniodactylus",
+      "source_sha256": "53dd2191cdd8c47fbb22fb296074901d7e98c378336e4c5687cea82c9564df59",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Teucrium scorodonia är väl belagd. Uppgifter om T. chamaedrys och Marrubium vulgare är osäkra enligt Lepiforum."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Nya norska lokaler visar regional relevans men är inte i sig bevis för spridning mot Sverige. Svenska värdväxtbestånd har inte kartlagts här."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Clepsis mehli",
+      "source_url": "https://lepiforum.org/wiki/page/Clepsis_mehli",
+      "source_sha256": "dff136d1aa6d7c44d72b516ec9ff6db2adfdc2e97f096bb1b9dc6226504fee59",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Larven och larvvärdväxten anges som okända. Gräsäng som fyndmiljö betyder inte att ett visst gräs är dokumenterad föda."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Nordlig grannlandsart, inte belagd sydlig invandrare. Den ingår för regional upptäcktsbevakning; pågående expansion är inte visad."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Scrobipalpa costella",
+      "source_url": "https://lepiforum.org/wiki/page/Scrobipalpa_costella",
+      "source_sha256": "3eecb5a8aa6cef121146194e2bcececce7fe4ebdc229b748e57330efb7721703",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Besksöta, Solanum dulcamara, är väl dokumenterad. Larver kan minera blad och senare leva i stjälkar och bär."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "NRM:s äldre text saknar Norge, medan senare norsk publicering och aktuella databasposter finns. Äldre landstexter ska därför inte användas som nutida frånvarobevis."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Phyllonorycter hostis",
+      "source_url": "https://lepiforum.org/wiki/page/Phyllonorycter_hostis",
+      "source_sha256": "c4adaf25c7c592b1d5ff80ffb101bb87b8287168a2d703cc10920005c82cd460",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Malus domestica, Malus sylvestris och Pyrus communis stöds av typmaterialet. NRM:s bredare släkteslista har inte upphöjts till lika säkra värdar."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Förväxlingsrisk med P. blancardella. Nybeskriven art eller nya databasposter betyder inte nödvändigtvis aktuell expansion."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Gracillaria loriolella",
+      "source_url": "https://lepiforum.org/wiki/page/Gracillaria_loriolella",
+      "source_sha256": "95694faa23dbd1f12170538333a5f7aaafc5678ad7bc3144c6e2fdf7af3270f0",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Larven lever i bladminor på ask, bland annat Fraxinus excelsior. Ask är dokumenterad larvvärd, inte bara vuxnas viloplats."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Ökad uppmärksamhet och verklig expansion kan inte skiljas åt i de lästa tyska fyndserierna. Ingen särskild expansionsflagga sätts."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Coleophora filaginella",
+      "source_url": "https://lepiforum.org/wiki/page/Coleophora_filaginella",
+      "source_sha256": "01ba53fdc7c16da0ad46d06325c742fd7d5f8ae0e1e1a33591aef24be97d2297",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Filago arvensis, även kallad Logfia arvensis, är belagd larvvärd."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Finsk förekomst är känd sedan 2000-talet. Nya landfynd bevisar inte ensamma en pågående nordlig spridning."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Coleophora inulae",
+      "source_url": "https://lepiforum.org/wiki/page/Coleophora_inulae",
+      "source_sha256": "9b1231d38b2ddaa10b14f242ac582ab6bc8868babfc0c4e0f1482ad616ea5e7d",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Pentanema salicinum, synonym Inula salicina, har källstöd. Pulicaria dysenterica och andra Pentanema nämns också. Eupatorium cannabinum är osäker och kan avse förväxling."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Åländsk förekomst och svensk publicerad sökrekommendation ger hög regional relevans. Aktuell expansion är ändå inte visad."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Coleophora niveistrigella",
+      "source_url": "https://lepiforum.org/wiki/page/Coleophora_niveistrigella",
+      "source_sha256": "97b03fd0b27ecfd0942e7e687d731ae88704d60b2bf17b8022c4fe92f44a744d",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Gypsophila fastigiata och Gypsophila repens är dokumenterade larvvärdar."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Det aktuella närliggande databasunderlaget är litet. Varken expansion eller svensk etableringsförmåga är visad."
+        ]
+      }
+    },
+    {
+      "scientific_name": "Coleophora polonicella",
+      "source_url": "https://lepiforum.org/wiki/page/Coleophora_polonicella",
+      "source_sha256": "36efd6d77a5c6ff61a6edb080516a4ce07fa098fbfd5fd02681330f721fa7346",
+      "checked_at": "2026-11-03",
+      "summary_status": "editorial_summary",
+      "availability": {
+        "hosts": true,
+        "habitat": true,
+        "dated_captions": true
+      },
+      "notes": {
+        "habitat": [],
+        "hosts": [
+          "Astragalus arenarius är dokumenterad larvvärd, även för typmaterialet."
+        ],
+        "search": [],
+        "locations": [],
+        "uncertainties": [
+          "Bevakningsförslag med litet aktuellt fyndunderlag. Säckar behöver skiljas från andra Coleophora; någon särskild expansion mot Sverige är inte belagd."
         ]
       }
     }

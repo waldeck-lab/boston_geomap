@@ -171,7 +171,12 @@ def import_search_guides(db,path):
         candidate=db.execute('SELECT id FROM candidates WHERE scientific_name=?',(guide['scientific_name'],)).fetchone()
         if not candidate:raise ValueError('Unknown guide species: '+guide['scientific_name'])
         sources={s['id']:s for s in guide['sources']}
-        if any(urlsplit(s['url']).scheme!='https' or not urlsplit(s['url']).hostname for s in sources.values()):raise ValueError('Invalid guide source URL')
+        def valid_source(url):
+            u=urlsplit(url)
+            # NRM's legacy reference site serves HTTP only. Never invent an HTTPS URL.
+            legacy_nrm=(u.scheme=='http' and u.netloc=='www3.nrm.se' and u.path.startswith('/en/svenska_fjarilar/'))
+            return bool(u.hostname and (u.scheme=='https' or legacy_nrm))
+        if any(not valid_source(s['url']) for s in sources.values()):raise ValueError('Invalid guide source URL')
         for field,kind in [('documented','documented'),('swedish_hypotheses','hypothesis')]:
             for item in guide[field]:
                 if item['kind']!=kind or not item['source_ids'] or any(s not in sources for s in item['source_ids']):raise ValueError('Unlabelled hypothesis or missing source')

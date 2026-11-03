@@ -28,5 +28,12 @@ class TimelineTests(unittest.TestCase):
         row['countryCode']='SE'
         self.assertIsNone(normalize(row,date(2026,11,2),scope='baltic-finland'))
         with self.assertRaises(ValueError):normalize(row,date(2026,11,2),scope='all-countries')
+    def test_norwegian_history_requires_the_explicit_nordic_scope(self):
+        row=self.record(countryCode='NO',decimalLatitude=70,eventDate='2019-07-04')
+        self.assertIsNone(normalize(row,date(2026,11,2)))
+        self.assertIsNone(normalize(row,date(2026,11,2),scope='baltic-finland'))
+        self.assertEqual(normalize(row,date(2026,11,2),scope='nordic-front')['year'],2019)
+        row['countryCode']='SE'
+        self.assertIsNone(normalize(row,date(2026,11,2),scope='nordic-front'))
 
 if __name__=='__main__':unittest.main()
