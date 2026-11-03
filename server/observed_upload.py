@@ -18,8 +18,8 @@ def register_observed_upload(app, db_path, current_auth):
         user=auth.get('user') or {}
         if not auth.get('authenticated') or not user.get('id'):
             return jsonify(ok=False,error='Logga in för att skapa en personlig lista.'),401
-        if request.headers.get('Origin') not in {None,'https://beta.waldeck.se'}:
-            return jsonify(ok=False,error='Uppladdningen måste göras från betan.'),403
+        if request.headers.get('Origin') not in {None,*os.environ.get('WCR_ALLOWED_ORIGINS','https://beta.waldeck.se').split(',')}:
+            return jsonify(ok=False,error='Uppladdningen måste göras från webbplatsen.'),403
         if request.content_length is None or request.content_length>MAX_BYTES+65536:
             return jsonify(ok=False,error='CSV-filen får vara högst 2 MiB.'),413
         upload=request.files.get('file')

@@ -1,5 +1,6 @@
 """Private, owner-scoped map settings; observation data is never copied."""
 import json
+import os
 import math
 import uuid
 from flask import jsonify, request
@@ -65,7 +66,7 @@ def register_saved_views(app,path,current_auth):
             with connect(path,readonly=True) as db:
                 rows=db.execute('SELECT id,title,list_id,created_at FROM saved_map_views WHERE owner_id=? ORDER BY created_at DESC,id DESC',(uid,)).fetchall()
                 return jsonify(views=[dict(r,available=accessible(db,r['list_id'],uid)) for r in rows])
-        if request.headers.get('Origin') not in {None,'https://beta.waldeck.se'}:return jsonify(error='Använd kartformuläret på betan.'),403
+        if request.headers.get('Origin') not in {None,*os.environ.get('WCR_ALLOWED_ORIGINS','https://beta.waldeck.se').split(',')}:return jsonify(error='Använd kartformuläret på webbplatsen.'),403
         if not request.is_json or request.content_length is None or request.content_length>8192:return jsonify(error='Ogiltiga kartinställningar.'),400
         data=request.get_json(silent=True)
         if not isinstance(data,dict):return jsonify(error='Ogiltiga kartinställningar.'),400
@@ -86,7 +87,7 @@ def register_saved_views(app,path,current_auth):
     def saved_view(identifier):
         uid=owner()
         if not isinstance(uid,int):return jsonify(error='Logga in för att använda sparade kartvyer.'),401
-        if request.method=='DELETE' and request.headers.get('Origin') not in {None,'https://beta.waldeck.se'}:return jsonify(error='Använd kartformuläret på betan.'),403
+        if request.method=='DELETE' and request.headers.get('Origin') not in {None,*os.environ.get('WCR_ALLOWED_ORIGINS','https://beta.waldeck.se').split(',')}:return jsonify(error='Använd kartformuläret på webbplatsen.'),403
         with connect(path,readonly=request.method=='GET') as db:
             row=db.execute('SELECT id,title,list_id,state_json FROM saved_map_views WHERE id=? AND owner_id=?',(identifier,uid)).fetchone()
             if row is None:return jsonify(error='Kartvyn hittades inte.'),404

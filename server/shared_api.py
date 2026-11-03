@@ -24,11 +24,11 @@ def register_shared_api(app):
     if not path:
         return
     path=Path(path)
-    if not path.resolve().is_relative_to(Path('/proj/boston/beta/wcr/stage')):
-        raise RuntimeError('Shared database must be inside beta stage')
+    if not path.resolve().is_relative_to(Path(os.environ.get('GEOMAP_DATA_ROOT','/proj/boston/beta/wcr/stage')).resolve()):
+        raise RuntimeError('Shared database must be inside the configured data root')
     documentation_path=os.environ.get('GEOMAP_DOCUMENTATION_DB')
-    if documentation_path and not Path(documentation_path).resolve().is_relative_to(Path('/proj/boston/beta/wcr/stage')):
-        raise RuntimeError('Documentation database must be inside beta stage')
+    if documentation_path and not Path(documentation_path).resolve().is_relative_to(Path(os.environ.get('GEOMAP_DATA_ROOT','/proj/boston/beta/wcr/stage')).resolve()):
+        raise RuntimeError('Documentation database must be inside the configured data root')
     from server.documentation_api import register_documentation_api
     register_documentation_api(app,documentation_path)
     cache=OrderedDict()
