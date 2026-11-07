@@ -29,7 +29,7 @@ class ObservedCsvTests(unittest.TestCase):
         with patch.dict(os.environ,{'GEOMAP_SHARED_DB':str(self.db),'GEOMAP_DEFAULT_LISTS_DIR':str(self.root)}):
             register_shared_api(self.app)
         self.client=self.app.test_client();self.client.set_cookie('session','test-only')
-        self.owner=patch('auth_client.introspect_current_request',return_value={'authenticated':True,'user':{'id':2}})
+        self.owner=patch('auth_client.introspect_current_request',return_value={'authenticated':True,'user':{'id':2,'email':'fixture@example.test','email_verified_at':1,'list_access':{'allowed':True}}})
         self.owner.start();self.addCleanup(self.owner.stop)
 
     def tearDown(self):self.temp.cleanup()
@@ -37,6 +37,23 @@ class ObservedCsvTests(unittest.TestCase):
     def post(self,save=False,raw=b'TaxonId\n1\n',**kw):
         return self.client.post('/geomap-api/lists/from-observed-csv',data={
           'file':(io.BytesIO(raw),'mina.csv'),'save':str(save).lower(),'title':'Min lista','owner_id':'99'},**kw)
+
+    def test_verified_email_and_account_specific_upload_quota(self):
+        with patch('auth_client.introspect_current_request', return_value={
+            'authenticated': True, 'user': {'id': 2, 'list_access': {'allowed': True}},
+        }):
+            self.assertEqual(self.post().status_code, 403)
+        with patch('server.observed_upload.UPLOADS_PER_HOUR', 2):
+            self.assertEqual(self.post().status_code, 200)
+            self.assertEqual(self.post(save=True).status_code, 200)
+            limited = self.post()
+            self.assertEqual(limited.status_code, 429)
+            self.assertGreater(int(limited.headers['Retry-After']), 0)
+            with patch('auth_client.introspect_current_request', return_value={
+                'authenticated': True, 'user': {'id': 3, 'email': 'second@example.test',
+                    'email_verified_at': 1, 'list_access': {'allowed': True}},
+            }):
+                self.assertEqual(self.post().status_code, 200)
 
     def test_delimiters_encodings_and_duplicate_normalization(self):
         for delimiter in [';',',','\t']:
