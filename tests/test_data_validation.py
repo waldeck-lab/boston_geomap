@@ -66,6 +66,31 @@ class DataValidationTests(unittest.TestCase):
         self.assertNotIn("Private fixture",json.dumps(result))
         self.assertNotIn("\"fixture\"",json.dumps(result))
 
+    def test_collective_taxon_detail_keeps_original_id_and_is_owner_scoped(self):
+        source={"taxa":[{
+            "taxonId":2,"category":{"value":"CollectiveTaxon"},"type":{"value":"NonTaxonomic"},
+            "names":[{"name":"Example species s.lat.","isRecommended":True,"category":{"value":"ScientificName"}}],
+        }]}
+        source_path=self.root/"redlisted-lepidoptera/source/complete-run.json"
+        source_path.parent.mkdir(parents=True)
+        source_path.write_text(json.dumps(source))
+        path=self.root/"lepidoptera-species.json"
+        catalogue=json.loads(path.read_text())
+        catalogue["source_sha256"]=hashlib.sha256(source_path.read_bytes()).hexdigest()
+        path.write_text(json.dumps(catalogue))
+        with connect(self.store) as db:
+            db.execute("INSERT INTO taxa VALUES(2,'Example species','')")
+            db.execute("INSERT INTO list_taxa VALUES('fixture',2)")
+        with Validator(self.settings) as validator:
+            result=validator.validate("lists")
+        check=next(row for row in result["checks"] if row["code"]=="list_taxa")
+        self.assertEqual(check["details"],[])
+        detail=check["private_details"]["2"]["details"][0]
+        self.assertEqual(detail["taxon_id"],2)
+        self.assertEqual(detail["category"],"CollectiveTaxon")
+        self.assertEqual(detail["scientific_name"],"Example species s.lat.")
+        self.assertEqual(detail["stored_scientific_name"],"Example species")
+
     def test_missing_database_is_not_created(self):
         missing=self.root/"missing.sqlite"
         self.settings["GEOMAP_SHARED_DB"]=str(missing)

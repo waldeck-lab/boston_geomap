@@ -24,6 +24,8 @@ class Validator:
         self.catalogue_bytes = (Path(settings["GEOMAP_DEFAULT_LISTS_DIR"])/"lepidoptera-species.json").read_bytes()
         self.catalogue = json.loads(self.catalogue_bytes)
         self.species = {int(row["taxon_id"]) for row in self.catalogue["species"]}
+        self.catalogue_names = {int(row["taxon_id"]):row for row in self.catalogue["species"]}
+        self.source_taxa = None
 
     def __enter__(self):
         return self
@@ -56,9 +58,36 @@ class Validator:
             ], "metrics":{},
         }
 
+    def describe_taxon(self, tid, reason, fallback=None):
+        if self.source_taxa is None:
+            path = Path(self.settings["GEOMAP_DEFAULT_LISTS_DIR"])/"redlisted-lepidoptera/source/complete-run.json"
+            raw = path.read_bytes()
+            self.source_taxa = {int(row["taxonId"]):row for row in json.loads(raw)["taxa"]} if (
+                hashlib.sha256(raw).hexdigest()==self.catalogue["source_sha256"]) else {}
+        source = self.source_taxa.get(tid, {})
+        names = self.catalogue_names.get(tid, fallback or {})
+        detail = dict(taxon_id=tid, scientific_name=names.get("scientific_name", ""),
+                      swedish_name=names.get("swedish_name", ""), reason=reason)
+        for kind,key in (("ScientificName","scientific_name"),("SwedishName","swedish_name")):
+            preferred = next((row["name"] for row in source.get("names", [])
+                              if row.get("isRecommended") and (row.get("category") or {}).get("value")==kind),None)
+            if preferred:
+                if detail[key] and detail[key]!=preferred:
+                    detail["stored_"+key] = detail[key]
+                detail[key] = preferred
+        if source:
+            detail["category"] = (source.get("category") or {}).get("value")
+            detail["taxon_type"] = (source.get("type") or {}).get("value")
+        return detail
+
     @staticmethod
-    def check(result, code, count, severity="failed"):
-        result["checks"].append({"code":code, "status":severity if count else "passed", "count":count})
+    def check(result, code, count, severity="failed", details=None, private_details=None):
+        check = {"code":code, "status":severity if count else "passed", "count":count}
+        if details is not None:
+            check.update(details=details[:100], details_total=len(details))
+        if private_details:
+            check["private_details"] = private_details
+        result["checks"].append(check)
 
     def taxonomy(self):
         db, result = self.base("taxonomy", "GEOMAP_DYNTAXA_DB")
@@ -69,7 +98,11 @@ class Validator:
         self.check(result,"catalogue_names",sum(not row.get("scientific_name") for row in rows))
         mapping = self.catalogue["species_mapping"]
         self.check(result,"catalogue_mapping",sum(int(tid) not in self.species for tid in mapping.values()))
-        self.check(result,"catalogue_alignment",len(ids ^ self.species),"warning")
+        stored = {tid:dict(scientific_name=sci,swedish_name=swe)
+                  for tid,sci,swe in db.execute("SELECT taxon_id,sci_name,swe_name FROM taxa WHERE is_active=1")}
+        details = [self.describe_taxon(tid,"csv_only") for tid in sorted(self.species-ids)]
+        details += [self.describe_taxon(tid,"sqlite_only",stored[tid]) for tid in sorted(ids-self.species)]
+        self.check(result,"catalogue_alignment",len(ids ^ self.species),"warning",details=details)
         source = Path(self.settings["GEOMAP_DEFAULT_LISTS_DIR"])/"redlisted-lepidoptera/source/complete-run.json"
         self.check(result,"catalogue_source_hash",int(hashlib.sha256(source.read_bytes()).hexdigest()!=self.catalogue["source_sha256"]))
         result["metrics"] = dict(catalogue_species=len(self.species), sqlite_species=len(ids),
@@ -82,6 +115,8 @@ class Validator:
         db, result = self.base("lists", "GEOMAP_SHARED_DB")
         rows = db.execute("SELECT id,visibility,owner_id,content_hash FROM lists").fetchall()
         invalid_hashes = outside = bad_owners = private = 0
+        public_details = []
+        private_details = {}
         accounts_path = self.settings.get("WCR_BETA_AUTH_SETTINGS")
         owners = None
         if accounts_path:
@@ -91,11 +126,24 @@ class Validator:
         for list_id, visibility, owner, digest in rows:
             ids = [row[0] for row in db.execute("SELECT taxon_id FROM list_taxa WHERE list_id=? ORDER BY taxon_id",(list_id,))]
             invalid_hashes += hashlib.sha256(json.dumps(ids).encode()).hexdigest()!=digest
-            outside += len(set(ids)-self.species)
+            unknown = sorted(set(ids)-self.species)
+            outside += len(unknown)
+            target = public_details if visibility=="public" else private_details.setdefault(str(owner), {"count":0,"details":[]})
+            for tid in unknown:
+                row = db.execute("SELECT scientific_name,swedish_name FROM taxa WHERE taxon_id=?",(tid,)).fetchone()
+                fallback = dict(scientific_name=row[0],swedish_name=row[1]) if row else {}
+                detail = self.describe_taxon(tid,"outside_catalogue",fallback)
+                detail["list_id"] = list_id
+                if visibility=="public":
+                    public_details.append(detail)
+                else:
+                    target["count"] += 1
+                    if len(target["details"]) < 100:
+                        target["details"].append(detail)
             private += visibility=="private"
             bad_owners += visibility=="private" and (owner is None or (owners is not None and owner not in owners))
         self.check(result,"list_content_hashes",invalid_hashes)
-        self.check(result,"list_taxa",outside,"warning")
+        self.check(result,"list_taxa",outside,"warning",details=public_details,private_details=private_details)
         self.check(result,"list_owners",bad_owners)
         if owners is None:
             result["checks"].append({"code":"owner_registry","status":"unavailable"})
@@ -123,7 +171,14 @@ class Validator:
         self.check(result,"coverage_intervals",scalar(db,"""SELECT COUNT(*) FROM coverage
             WHERE date(date_from) IS NULL OR date(date_to) IS NULL OR date_from>date_to"""))
         taxa = {row[0] for row in db.execute("SELECT DISTINCT taxon_id FROM observations")}
-        self.check(result,"observation_taxa",len(taxa-self.species),"warning")
+        details = []
+        for tid in sorted(taxa-self.species):
+            row = db.execute("SELECT scientific_name,swedish_name FROM taxa WHERE taxon_id=?",(tid,)).fetchone()
+            fallback = dict(scientific_name=row[0],swedish_name=row[1]) if row else {}
+            detail = self.describe_taxon(tid,"outside_catalogue",fallback)
+            detail["observations"] = scalar(db,"SELECT COUNT(*) FROM observations WHERE taxon_id=?",(tid,))
+            details.append(detail)
+        self.check(result,"observation_taxa",len(taxa-self.species),"warning",details=details)
         covered = db.execute("""SELECT MIN(date_from),MAX(date_to),MAX(completed_at) FROM coverage
             WHERE source_scope='public-only-start-v1'""").fetchone()
         result["metrics"] = dict(observations=total, taxa=len(taxa), coverage_scopes=scalar(db,"SELECT COUNT(*) FROM coverage"))
@@ -166,7 +221,13 @@ class Validator:
             SELECT 1 FROM documentation d WHERE d.taxon_id=s.taxon_id AND source='artfakta' AND url IS NOT NULL)""")
         self.check(result,"documentation_urls",invalid)
         self.check(result,"documentation_artfakta",missing_artfakta,"warning")
-        self.check(result,"documentation_nrm",missing_nrm,"warning")
+        details = [
+            self.describe_taxon(tid,"nrm_"+status,dict(scientific_name=sci,swedish_name=swe))
+            for tid,sci,swe,status in db.execute("""SELECT s.taxon_id,s.scientific_name,s.swedish_name,d.status
+                FROM species s JOIN documentation d ON d.taxon_id=s.taxon_id
+                WHERE d.source='nrm' AND d.url IS NULL ORDER BY s.scientific_name""")
+        ]
+        self.check(result,"documentation_nrm",missing_nrm,"warning",details=details)
         result["metrics"] = dict(species=len(documented), links=links, missing_nrm=missing_nrm)
         result["source"] = {key:metadata.get(key) for key in ("built_at","nrm_retrieved_at","catalogue_sha256")}
         return result
