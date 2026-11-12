@@ -17,6 +17,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from geomap.consolidation import build_plan, complex_scope, local_slice, apply_plan, taxon_name
 from geomap.shared_store import connect
 from geomap.sos_reconciliation import PublicSOSReader
+from geomap.taxonomy_history import record_source_file
 
 
 def write(path, value):
@@ -66,6 +67,7 @@ def main():
         returned=[int(row["taxonId"]) for row in source["taxa"]]
         if len(returned)!=len(set(returned)) or set(returned)!=set(source["child_ids"]):
             raise ValueError("Incomplete taxonomy snapshot")
+        record_source_file(config["GEOMAP_DYNTAXA_DB"],source_path)
         scope,mapping,taxa=complex_scope(source["taxa"],roots)
         progress(phase="snapshot_local",scope_taxa=scope,
                  taxa=[dict(id=tid,name=taxon_name(taxa[tid],"ScientificName")) for tid in scope])

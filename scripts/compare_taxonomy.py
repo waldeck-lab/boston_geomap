@@ -11,6 +11,8 @@ import subprocess
 import sys
 
 from build_redlist_default import preferred_name, select_rows, category_code
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+from geomap.taxonomy_history import record_source_file
 
 
 def read_json(path):
@@ -104,6 +106,7 @@ def run(job, settings):
     source = read_json(job/"source/complete-run.json")
     if source["root_taxon_id"] != baseline["root_taxon_id"]:
         raise ValueError("Lepidoptera root differs from baseline")
+    record_source_file(config["GEOMAP_DYNTAXA_DB"],job/"source/complete-run.json")
     before, after = taxonomy(baseline), taxonomy(source)
     species = {tid for tid, row in after.items()
                if (row["category"],row["type"],row["status"]) == ("Species","Taxonomic","Accepted")}
