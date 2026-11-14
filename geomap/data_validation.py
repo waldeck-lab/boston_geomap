@@ -114,7 +114,7 @@ class Validator:
     def lists(self):
         db, result = self.base("lists", "GEOMAP_SHARED_DB")
         rows = db.execute("SELECT id,visibility,owner_id,content_hash FROM lists").fetchall()
-        invalid_hashes = outside = bad_owners = private = 0
+        invalid_hashes = outside = bad_owners = private = reviewed = 0
         public_details = []
         private_details = {}
         accounts_path = self.settings.get("WCR_BETA_AUTH_SETTINGS")
@@ -128,8 +128,18 @@ class Validator:
             invalid_hashes += hashlib.sha256(json.dumps(ids).encode()).hexdigest()!=digest
             unknown = sorted(set(ids)-self.species)
             outside += len(unknown)
-            target = public_details if visibility=="public" else private_details.setdefault(str(owner), {"count":0,"details":[]})
             for tid in unknown:
+                from geomap.list_review import approved, source_context
+                jobs=self.settings.get("GEOMAP_TAXONOMY_JOBS")
+                if jobs:
+                    try:
+                        context=source_context(self.settings,jobs,tid)
+                        if approved(db,list_id,tid,context,ids):
+                            reviewed += 1
+                            outside -= 1
+                            continue
+                    except ValueError:
+                        pass
                 row = db.execute("SELECT scientific_name,swedish_name FROM taxa WHERE taxon_id=?",(tid,)).fetchone()
                 fallback = dict(scientific_name=row[0],swedish_name=row[1]) if row else {}
                 detail = self.describe_taxon(tid,"outside_catalogue",fallback)
@@ -137,6 +147,7 @@ class Validator:
                 if visibility=="public":
                     public_details.append(detail)
                 else:
+                    target = private_details.setdefault(str(owner), {"count":0,"details":[]})
                     target["count"] += 1
                     if len(target["details"]) < 100:
                         target["details"].append(detail)
@@ -147,7 +158,7 @@ class Validator:
         self.check(result,"list_owners",bad_owners)
         if owners is None:
             result["checks"].append({"code":"owner_registry","status":"unavailable"})
-        result["metrics"] = dict(lists=len(rows), private_lists=private, out_of_scope_entries=outside)
+        result["metrics"] = dict(lists=len(rows), private_lists=private, out_of_scope_entries=outside, reviewed_entries=reviewed)
         result["source"] = dict(hash=self.catalogue["source_sha256"])
         return result
 

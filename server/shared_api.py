@@ -125,7 +125,14 @@ def register_shared_api(app):
                         AND c.date_from='2000-01-01' AND c.date_to='2026-10-31'
                         AND c.source_scope='public-only-start-v1')) AS taxa_needing_import
                       FROM lists l WHERE l.visibility='public' OR l.owner_id=? ORDER BY l.visibility,l.title''',(uid,)).fetchall()
-                    return jsonify(ok=True,lists=[dict(r) for r in rows],default_list_id='redlisted-lepidoptera',data_import=imported_status())
+                    items=[dict(r) for r in rows]
+                    if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='list_taxonomy_state'").fetchone():
+                        for item in items:
+                            state=db.execute("SELECT needs_regeneration,updated_at FROM list_taxonomy_state WHERE list_id=?",(item['id'],)).fetchone()
+                            if state:
+                                item['taxonomy_needs_regeneration']=bool(state[0])
+                                item['taxonomy_reviewed_at']=state[1]
+                    return jsonify(ok=True,lists=items,default_list_id='redlisted-lepidoptera',data_import=imported_status())
                 chosen=selected(db)
                 revision=db.execute("SELECT value FROM metadata WHERE key='revision'").fetchone()[0]
                 key=(chosen['content_hash'],revision,endpoint,documentation_version(documentation_path) if endpoint in {'cell/taxa','cell/taxa_window'} else None,
