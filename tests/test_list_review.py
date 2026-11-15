@@ -80,16 +80,16 @@ class ListReviewTests(unittest.TestCase):
             self.assertEqual(db.execute("SELECT value FROM metadata WHERE key='revision'").fetchone()[0],"0")
             self.assertEqual(db.execute("SELECT COUNT(*) FROM list_taxonomy_state").fetchone()[0],0)
 
-    def test_keep_is_reviewed_not_deleted_and_revalidation_closes_only_own_issue(self):
+    def test_legacy_keep_does_not_suppress_need_for_fresh_csv(self):
         with connect(self.path) as db:
             apply(db,self.settings,self.root,"mine",1,2,self.body(db,"keep",[]),"backup")
         # Avoid depending on source rendering for the remaining other-owner warning.
         with patch.object(Validator,"describe_taxon",return_value=dict(taxon_id=1,reason="outside_catalogue")):
             with Validator(self.settings) as v:
                 result=v.validate("lists")
-        self.assertEqual(result["metrics"]["reviewed_entries"],1)
-        self.assertEqual(result["metrics"]["out_of_scope_entries"],1)
+        self.assertEqual(result["metrics"]["reviewed_entries"],0)
+        self.assertEqual(result["metrics"]["out_of_scope_entries"],2)
         self.assertEqual(result["metrics"]["lists"],2)
         check=next(c for c in result["checks"] if c["code"]=="list_taxa")
-        self.assertNotIn("2",check["private_details"])
+        self.assertEqual(check["private_details"]["2"]["count"],1)
         self.assertEqual(check["private_details"]["3"]["count"],1)

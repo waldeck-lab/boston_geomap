@@ -155,7 +155,8 @@ def parse_observed_names(raw,source):
 
 
 def build_difference(raw,catalogue_path):
-    source=json.loads(Path(catalogue_path).read_text(encoding='utf-8'))
+    catalogue_bytes=Path(catalogue_path).read_bytes()
+    source=json.loads(catalogue_bytes)
     try:ids,summary=parse_observed_csv(raw)
     except CsvValidationError as exc:
         if not exc.details.get('missing_id_column'):raise
@@ -171,6 +172,8 @@ def build_difference(raw,catalogue_path):
     summary.update(universe_taxa=len(species),observed_species=len(observed),missing_species=len(missing),
         mapped_infraspecific_taxa=sum(tid!=mapping[tid] for tid in ids),
         taxonomy_retrieved_at=source['retrieved_at'],taxonomy_source_sha256=source['source_sha256'],
+        catalogue_sha256=hashlib.sha256(catalogue_bytes).hexdigest(),
+        taxonomy_basis_sha256=hashlib.sha256(json.dumps(dict(species=sorted(species),mapping=source['species_mapping']),sort_keys=True).encode()).hexdigest(),
         upload_sha256=hashlib.sha256(raw).hexdigest(),
         missing_preview=[species[t] for t in missing[:20]])
     return [species[t] for t in missing],observed,summary

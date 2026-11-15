@@ -142,4 +142,26 @@ class ObservedCsvTests(unittest.TestCase):
         self.assertEqual(self.post(save=True,raw=b'TaxonId\n999').status_code,400)
         with connect(self.db,readonly=True) as db:self.assertEqual(db.execute('SELECT count(*) FROM lists').fetchone()[0],0)
 
+    def test_replacement_preview_apply_and_owner_guard(self):
+        item=self.post(save=True).json['list']
+        def replace(save=False,token='',raw=b'TaxonId\n2\n',origin='https://beta.waldeck.se'):
+            return self.client.post('/geomap-api/lists/from-observed-csv',headers={'Origin':origin},data={
+                'file':(io.BytesIO(raw),'fresh.csv'),'replacement_id':item['id'],'save':str(save).lower(),
+                'preview_token':token,'title':'Cannot change existing title'})
+        response=replace()
+        self.assertEqual(response.status_code,200)
+        plan=response.json['preview']['replacement']
+        self.assertEqual(plan['added'],[1]);self.assertEqual(plan['removed'],[2])
+        self.assertEqual(replace(True,'outdated').status_code,409)
+        self.assertEqual(replace(True,plan['token'],origin='https://wrong.example').status_code,403)
+        result=replace(True,plan['token'])
+        self.assertEqual(result.status_code,200)
+        self.assertEqual(result.json['list']['id'],item['id'])
+        self.assertEqual(result.json['list']['title'],'Min lista')
+        with connect(self.db,readonly=True) as db:
+            self.assertEqual([r[0] for r in db.execute('SELECT taxon_id FROM list_taxa ORDER BY taxon_id')],[1,3])
+        with patch('auth_client.introspect_current_request',return_value={'authenticated':True,'user':{
+            'id':3,'email':'other@example.test','email_verified_at':1,'list_access':{'allowed':True}}}):
+            self.assertEqual(replace().status_code,404)
+
 if __name__=='__main__':unittest.main()

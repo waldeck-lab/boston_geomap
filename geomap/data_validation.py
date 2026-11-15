@@ -103,6 +103,15 @@ class Validator:
         details = [self.describe_taxon(tid,"csv_only") for tid in sorted(self.species-ids)]
         details += [self.describe_taxon(tid,"sqlite_only",stored[tid]) for tid in sorted(ids-self.species)]
         self.check(result,"catalogue_alignment",len(ids ^ self.species),"warning",details=details)
+        name_details=[]
+        for tid in sorted(ids & self.species):
+            expected=self.catalogue_names[tid]
+            if any((stored[tid].get(key) or '')!=(expected.get(key) or '') for key in ('scientific_name','swedish_name')):
+                item=self.describe_taxon(tid,'outdated_stored_name',stored[tid])
+                item['stored_scientific_name']=stored[tid]['scientific_name']
+                item['stored_swedish_name']=stored[tid]['swedish_name']
+                name_details.append(item)
+        self.check(result,'taxonomy_name_alignment',len(name_details),'warning',details=name_details)
         source = Path(self.settings["GEOMAP_DEFAULT_LISTS_DIR"])/"redlisted-lepidoptera/source/complete-run.json"
         self.check(result,"catalogue_source_hash",int(hashlib.sha256(source.read_bytes()).hexdigest()!=self.catalogue["source_sha256"]))
         result["metrics"] = dict(catalogue_species=len(self.species), sqlite_species=len(ids),
@@ -129,21 +138,11 @@ class Validator:
             unknown = sorted(set(ids)-self.species)
             outside += len(unknown)
             for tid in unknown:
-                from geomap.list_review import approved, source_context
-                jobs=self.settings.get("GEOMAP_TAXONOMY_JOBS")
-                if jobs:
-                    try:
-                        context=source_context(self.settings,jobs,tid)
-                        if approved(db,list_id,tid,context,ids):
-                            reviewed += 1
-                            outside -= 1
-                            continue
-                    except ValueError:
-                        pass
                 row = db.execute("SELECT scientific_name,swedish_name FROM taxa WHERE taxon_id=?",(tid,)).fetchone()
                 fallback = dict(scientific_name=row[0],swedish_name=row[1]) if row else {}
                 detail = self.describe_taxon(tid,"outside_catalogue",fallback)
                 detail["list_id"] = list_id
+                detail["visibility"] = visibility
                 if visibility=="public":
                     public_details.append(detail)
                 else:

@@ -3,6 +3,7 @@
 Registered as a request dispatcher so legacy write APIs cannot accidentally
 write to the old demonstration database while shared-store mode is enabled.
 """
+import hashlib
 import json
 import os
 import re
@@ -132,6 +133,19 @@ def register_shared_api(app):
                             if state:
                                 item['taxonomy_needs_regeneration']=bool(state[0])
                                 item['taxonomy_reviewed_at']=state[1]
+                    catalogue_path=Path(os.environ.get('GEOMAP_DEFAULT_LISTS_DIR',''))/'lepidoptera-species.json'
+                    if catalogue_path.is_file():
+                        catalogue=json.loads(catalogue_path.read_text())
+                        ids={int(row['taxon_id']) for row in catalogue['species']}
+                        basis=hashlib.sha256(json.dumps(dict(species=sorted(ids),mapping=catalogue['species_mapping']),sort_keys=True).encode()).hexdigest()
+                        has_imports=db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='list_imports'").fetchone()
+                        for item in items:
+                            if item['visibility']!='private':continue
+                            row=db.execute('SELECT metadata_json FROM list_imports WHERE list_id=?',(item['id'],)).fetchone() if has_imports else None
+                            meta=json.loads(row[0]) if row else {}
+                            item_ids={row[0] for row in db.execute('SELECT taxon_id FROM list_taxa WHERE list_id=?',(item['id'],))}
+                            outdated=(meta['taxonomy_basis_sha256']!=basis) if meta.get('taxonomy_basis_sha256') else (meta.get('taxonomy_source_sha256')!=catalogue['source_sha256'])
+                            item['list_needs_csv_import']=bool(item_ids-ids) or outdated
                     return jsonify(ok=True,lists=items,default_list_id='redlisted-lepidoptera',data_import=imported_status())
                 chosen=selected(db)
                 revision=db.execute("SELECT value FROM metadata WHERE key='revision'").fetchone()[0]
