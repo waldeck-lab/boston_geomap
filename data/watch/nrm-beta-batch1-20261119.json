@@ -1,0 +1,461 @@
+{
+  "version": "nrm-beta-batch1-20261119",
+  "checked_at": "2026-11-19",
+  "profiles": [
+    {
+      "scientific_name": "Anarsia lineatella",
+      "id": 92,
+      "status": "taxonomic_split_review",
+      "author": "Gregersen & Karsholt, 2017 (inbäddad bildkredit)",
+      "countries": [
+        "DE"
+      ],
+      "hosts": [
+        "Prunus persica",
+        "Prunus armeniaca",
+        "Prunus domestica",
+        "Prunus spinosa",
+        "Malus domestica",
+        "Pyrus communis"
+      ],
+      "rationale": "En relevant bevakningsart från grannländerna, men äldre svenska lineatella-uppgifter måste tolkas om efter uppdelningen från A. innoxiella 2017. Införsel med frukt är en annan process än naturlig expansion.",
+      "status_summary": "Taxonuppdelning: svenska råposter är inte verifierade belägg för dagens A. lineatella. Naturlig spridning och införsel måste skiljas åt.",
+      "facts": [
+        [
+          "distribution",
+          "Tyska bild- och fyndexempel finns från Brandenburg (Oderberg, 10 juni 2017, genitalundersökt) och Sachsen. En uppfödd individ från slån i Sachsen kläcktes 30 maj 2009. Exemplen visar förekomst, inte en uppmätt expansion mot Sverige.",
+          [
+            "lepi"
+          ]
+        ],
+        [
+          "distribution",
+          "Gregersen & Karsholt beskrev A. innoxiella 2017 och skilde den från A. lineatella. ET:s svenska rapport 2018 rättar den äldre svenska lineatella-tillämpningen till innoxiella. NRM:s frånvarouppgift från 2017 är därför historisk, inte ett fullständigt svenskt statusbesked för 2026.",
+          [
+            "anarsia-original",
+            "et2018",
+            "nrm"
+          ]
+        ],
+        [
+          "habitat",
+          "Värdväxter och skott-/fruktangrepp gör odlingar, trädgårdar och varma buskmarker med Prunus relevanta att undersöka i det europeiska området. Ett fynd i importerad frukt visar däremot inte att en lokal population finns.",
+          [
+            "nrm"
+          ]
+        ],
+        [
+          "hosts",
+          "Lepiforum redovisar bland annat persika, aprikos, plommon och slån samt äpple och päron. Acer-uppgifter hör i regel ihop med A. innoxiella; lönn ska därför inte föras över som säker värdväxt för lineatella.",
+          [
+            "lepi"
+          ]
+        ],
+        [
+          "search",
+          "NRM anger juli–augusti, medan daterade uppfödnings- och fyndexempel hos Lepiforum även ligger i maj–juni. Sökperioden varierar med region och generation; detta är ingen svensk flygkalender. Dokumentera larver i skott eller frukt tillsammans med växt och kläckningsdatum.",
+          [
+            "nrm",
+            "lepi"
+          ]
+        ],
+        [
+          "search",
+          "11–15 mm enligt NRM. Likheten med A. innoxiella kräver försiktig bestämning. Bevara dokumentation och ta specialiststöd; en fotografisk likhet eller ett äldre databasnamn räcker inte för att avgöra taxonet.",
+          [
+            "nrm",
+            "anarsia-original"
+          ]
+        ]
+      ],
+      "hypotheses": [
+        [
+          "Varma stenfruktsmiljöer i söder",
+          "Börja med lämpliga Prunus-bestånd i Skånes odlingar, trädgårdar och varma bryn. Detta är en värdväxtbaserad sökhypotes, utan belagd svensk förekomst eller beräknad ankomstsannolikhet."
+        ],
+        [
+          "Håll införsel separat",
+          "Larver i inköpt/importerad frukt bör dokumenteras med varans ursprung. Redovisa sådana fynd separat från fjärilar eller larver som påträffats på friland."
+        ]
+      ],
+      "limitations": "Äldre svenska och utländska råposter kan innehålla namn från före taxonuppdelningen. Kartans GBIF-punkter är leverantörernas bestämningar, inte ombestämda exemplar. Ogranskade kartposter från före uppdelningen 2017 visas inte som artens fynd.",
+      "gaps": [
+        "Aktuell svensk status efter individuell granskning av äldre poster",
+        "Säker nordlig populationsgräns och dokumenterad expansionsriktning",
+        "Svensk flygperiod och etablering"
+      ],
+      "occurrence_identity_policy": {
+        "exclude_unreviewed_before_year": 2017,
+        "reason": "Pre-split lineatella labels cannot establish the current species; no individual vouchers re-examined",
+        "sources": [
+          "https://doi.org/10.3897/nl.40.11184"
+        ]
+      }
+    },
+    {
+      "scientific_name": "Crombrugghia tristis",
+      "id": 93,
+      "status": "misidentified_swedish_record_excluded",
+      "author": "Fotograf inte angiven i NRM:s bild eller sidtext",
+      "countries": [
+        "NO",
+        "DE",
+        "PL"
+      ],
+      "hosts": [
+        "Hieracium echioides",
+        "Hieracium cymosum",
+        "Hieracium piloselloides",
+        "Hieracium amplexicaule"
+      ],
+      "rationale": "Norska expertunderlag anger en etablerad art i Agder, Telemark och Oslofjordområdet. Den är därför en relevant regional bevakningsart. Missjöposten 2017 är felbestämd enligt Jonas Waldeck och räknas inte som svenskt belägg.",
+      "status_summary": "Svensk råpost utesluten efter Jonas Waldecks rättelse. Taxonomin kring tristis/distans/pravieli kräver fortsatt försiktighet.",
+      "facts": [
+        [
+          "distribution",
+          "Norska rödlistan 2021 bedömer arten som nära hotad (NT) och anger ungefär 40 lokaler i Agder, Telemark och Oslofjordområdet. Material har tidigare sammanblandats med O. distans. Detta visar en etablerad norsk förekomst, inte i sig en pågående expansion.",
+          [
+            "norway-tristis"
+          ]
+        ],
+        [
+          "distribution",
+          "Lepiforum behandlar arten som Oxyptilus tristis. En revision 2024 skiljer åter ut O. pravieli; särskilt alpina äldre uppgifter kan därför avse annat taxon. Tyska, norska och polska uppgifter behöver bedömas inom denna taxonomiska ram.",
+          [
+            "lepi"
+          ]
+        ],
+        [
+          "habitat",
+          "Den norska bedömningen pekar på soliga, torra gräsmarker och sluttningar. Igenväxning, gödsling och exploatering hotar miljöerna. Värdväxtens förekomst behöver vägas ihop med öppenhet, värme och markens hävd.",
+          [
+            "norway-tristis"
+          ]
+        ],
+        [
+          "hosts",
+          "NRM anger fibblor (Hieracium/Pilosella). Lepiforums nyare genomgång preciserar bland annat H. echioides, H. cymosum, H. piloselloides och H. amplexicaule. Uppgiften om H. pilosella är ifrågasatt; varje fibblebestånd är alltså inte en likvärdig sökmiljö.",
+          [
+            "nrm",
+            "lepi"
+          ]
+        ],
+        [
+          "search",
+          "NRM anger slutet av maj–början av juni samt juli–september. Tyska daterade exempel hos Lepiforum ligger bland annat i juli och augusti. Sök kring fibblornas skott och blad, men tolka dessa utländska tider regionalt.",
+          [
+            "nrm",
+            "lepi"
+          ]
+        ],
+        [
+          "search",
+          "14–19 mm enligt NRM. Förväxlingar med närstående fjädermott och den reviderade taxonomin gör specialistgranskning viktig; genitalier och ibland DNA kan behövas. NRM-bilden är en artillustration, inte ett omgranskat svenskt belägg.",
+          [
+            "nrm",
+            "lepi"
+          ]
+        ],
+        [
+          "distribution",
+          "Den svenska Artportalenposten från Missjö Mellersta 29 juli 2017 (GBIF 1821015801) är felbestämd enligt Jonas Waldeck, meddelat 19 november 2026. Råposten bevaras i granskningshistoriken. Rättelsen är lokal och innebär inte att GBIF eller Artportalen har korrigerats.",
+          [
+            "record-correction"
+          ]
+        ]
+      ],
+      "hypotheses": [
+        [
+          "Sydvästra Sveriges torra fibblemarker",
+          "Varma, öppna fibblesluttningar i Bohuslän, Halland och Skåne är en rimlig första sökhypotes utifrån de norska miljöerna. Välj bestånd efter växtbestämning och mikroklimat, inte bara en generell förekomst av gråfibbla."
+        ]
+      ],
+      "limitations": "Inget svenskt belägg godkänns här. Kartans utländska råposter kan innehålla äldre bestämningar från före revisionen; inga enskilda exemplar har ombestämts.",
+      "gaps": [
+        "Ombestämning av äldre internationella tristis-poster",
+        "Svensk förekomst och regional flygperiod",
+        "Daterat stöd för expansion mot Sverige"
+      ]
+    },
+    {
+      "scientific_name": "Agdistis adactyla",
+      "id": 94,
+      "status": "not_listed_in_reviewed_sources",
+      "author": "Fotograf inte angiven i NRM:s bild eller sidtext",
+      "countries": [
+        "DE"
+      ],
+      "hosts": [
+        "Artemisia campestris"
+      ],
+      "rationale": "En specialiserad art i grannområdet med en tydligt beskriven värdväxt och torrmarksanknytning. Därför går det att formulera konkreta, men ännu oprövade svenska sökhypoteser.",
+      "status_summary": "Inga svenska råposter i den daterade kontrollen. Det bevisar inte frånvaro. Expansion är inte fastställd.",
+      "facts": [
+        [
+          "distribution",
+          "NRM:s äldre översikt tar upp Danmark. Lepiforum visar dokumenterade tyska exempel, bland annat från Sachsen och Kyffhäuserområdet. De olika källornas ålder och geografiska omfattning ska inte läsas som en aktuell sammanhängande utbredningsgräns.",
+          [
+            "nrm",
+            "lepi"
+          ]
+        ],
+        [
+          "habitat",
+          "Lepiforums miljöexempel omfattar torra, glest bevuxna sluttningar på kalk-/gipsmark, tidigare militärområden och ett nedlagt stenbrott. Gemensamt är öppna, varma strukturer med lämpliga värdväxter, inte enbart ett namn på en bred naturtyp.",
+          [
+            "lepi"
+          ]
+        ],
+        [
+          "hosts",
+          "Artemisia campestris (fältmalört) är den väl underbyggda värdväxten i Lepiforums genomgång. NRM beskriver larven på bladens undersidor och förpuppning i väv på växten. Äldre alternativuppgifter ges inte samma säkerhet som fältmalörten.",
+          [
+            "lepi",
+            "nrm"
+          ]
+        ],
+        [
+          "search",
+          "NRM anger mitten av juni–mitten av augusti och dagaktivitet. Genitalundersökta tyska honor hos Lepiforum är daterade 15 juli 2024 och 17 juni 2025. Undersök värdväxtbestånd i lämpligt väder; en fullständig regional larvkalender saknas här.",
+          [
+            "nrm",
+            "lepi"
+          ]
+        ],
+        [
+          "search",
+          "22–26 mm enligt NRM. Dokumentera habitus, värdväxt och exakt biotop. Låt misstänkta förstafynd bedömas av fjädermottkunnig specialist; en bild och värdväxten tillsammans är stöd, inte en garanti för bestämningen.",
+          [
+            "nrm"
+          ]
+        ]
+      ],
+      "hypotheses": [
+        [
+          "Fältmalört på varm, öppen mark",
+          "Sök i verifierade bestånd av fältmalört på sandhedar, torrängar och liknande öppna miljöer i Skåne, på Öland eller Gotland. Förslaget bygger på värdväxt och utländska biotoper; det är ingen prognos över vilka svenska lokaler som är bebodda."
+        ]
+      ],
+      "limitations": "Svensk flygperiod, etablering och expansionsriktning är inte belagda. En värdväxtlokal behöver rätt mikroklimat och struktur för att vara relevant.",
+      "gaps": [
+        "Svensk förekomst",
+        "Nordlig generations- och larvkalender",
+        "Aktuell dansk populationsstatus och expansionsunderlag"
+      ]
+    },
+    {
+      "scientific_name": "Agdistis bennetii",
+      "id": 95,
+      "status": "not_listed_in_reviewed_sources",
+      "author": "Fotograf inte angiven i NRM:s bild eller sidtext",
+      "countries": [
+        "DK",
+        "DE",
+        "GB"
+      ],
+      "hosts": [
+        "Limonium vulgare"
+      ],
+      "rationale": "En kustbunden grannlandsart med en tydlig värdväxtkoppling. Den passar som ett riktat bevakningsförslag för lämpliga saltpåverkade miljöer, utan att därmed vara dokumenterat på väg mot Sverige.",
+      "status_summary": "Regional bevakningsart utan verifierad svensk förekomst i denna granskning; expansion ej fastställd.",
+      "facts": [
+        [
+          "distribution",
+          "Lepiforum anger europeiska saltmarkskuster från Danmark till Spanien. NRM tar upp Danmark. UKmoths beskriver en lokalt förekommande art vid södra och östra Englands kuster. Uppgifterna avser olika regioner och är ingen ankomstprognos.",
+          [
+            "lepi",
+            "nrm",
+            "uk-bennetii"
+          ]
+        ],
+        [
+          "habitat",
+          "NRM beskriver leriga, saltpåverkade marker. UKmoths anger saltmarsk; Lepiforum visar även en brackvattenlokal vid Butrint i Albanien. Skilj larvens värdväxtmiljö från platser där flygande vuxna kan påträffas.",
+          [
+            "nrm",
+            "uk-bennetii",
+            "lepi"
+          ]
+        ],
+        [
+          "hosts",
+          "Limonium vulgare (marrisp) är den tydliga nordvästeuropeiska värdväxtkopplingen. Lepiforum nämner Limonium i vidare geografisk mening, men det styrker inte att alla odlade strandlavendelarter fungerar lika väl. NRM anger förpuppning i väv på bladens undersidor.",
+          [
+            "lepi",
+            "nrm"
+          ]
+        ],
+        [
+          "search",
+          "NRM anger ett brett maj–septemberfönster. UKmoths anger juli–augusti i sin brittiska beskrivning och att arten kommer till ljus. Dessa regionala uppgifter ska behållas åtskilda; ingen svensk flygperiod är fastställd.",
+          [
+            "nrm",
+            "uk-bennetii"
+          ]
+        ],
+        [
+          "search",
+          "24–30 mm enligt NRM. UKmoths beskriver den karakteristiska viloställningen och att framvingarna är odelade, till skillnad från många andra fjädermott. För säker åtskillnad från andra Agdistis bör specialistbedömning användas; Lepiforum visar diagnostiska hanliga genitalier.",
+          [
+            "nrm",
+            "uk-bennetii",
+            "lepi"
+          ]
+        ]
+      ],
+      "hypotheses": [
+        [
+          "Saltpåverkad kust med rätt värdväxt",
+          "Börja bara där Limonium vulgare faktiskt har verifierats. Undersök värdväxtbestånd och anslutande salt-/brackmarker. All svensk kust, eller varje planterad strandlavendel, kan inte antas erbjuda samma förutsättningar."
+        ]
+      ],
+      "limitations": "Lämpliga svenska värdväxtlokaler är inte inventerade i detta underlag. Kustförekomst utomlands bevisar varken spridning över havet eller etablering i Sverige.",
+      "gaps": [
+        "Verifierade svenska söklokaler med Limonium vulgare",
+        "Svensk status och flygperiod",
+        "Daterat stöd för nordlig expansion"
+      ]
+    },
+    {
+      "scientific_name": "Aterpia chalybeia",
+      "id": 96,
+      "status": "not_listed_in_reviewed_sources",
+      "author": "J. Tyllinen (inbäddad kredit: det. & fot.)",
+      "countries": [
+        "FI",
+        "PL"
+      ],
+      "hosts": [],
+      "rationale": "En östlig/nordostlig bevakningsart med finska belägg, men betydligt svagare ekologiskt underlag än de värdväxtkända arterna. Den tas med för att synliggöra både närheten och kunskapsluckorna.",
+      "status_summary": "Finska belägg finns. Värdväxt och primär biotop är fortfarande okända i de granskade källorna; svenska sökförslag har låg säkerhet.",
+      "facts": [
+        [
+          "distribution",
+          "NRM tar upp Finland. Lepiforum visar ett exemplar från Parikkala, Siikalahti 2008 och ett polskt exemplar från Zawadówka 21 juni 1995. Dessa är platsexempel, inte en fullständig utbredningsgräns eller dokumenterad expansion mot Sverige.",
+          [
+            "nrm",
+            "lepi"
+          ]
+        ],
+        [
+          "habitat",
+          "Någon tillräckligt säker beskrivning av primär larvbiotop har inte hittats. Att ett exemplar kommer från Siikalahti visar inte i sig vilken mikrobiotop, vegetation eller vattenregim arten kräver.",
+          [
+            "lepi"
+          ],
+          "unresolved"
+        ],
+        [
+          "hosts",
+          "Både NRM och Lepiforum anger att larven eller larvfödan är okänd. Det svenska namnet lysingkärrvecklare är inte ett belägg för Lysimachia som värdväxt. Ingen sådan värdväxtrelation läggs in i databasen.",
+          [
+            "nrm",
+            "lepi"
+          ],
+          "unresolved"
+        ],
+        [
+          "search",
+          "Det polska exemplaret är daterat 21 juni 1995. Ett enstaka vuxendatum ger en möjlig utgångspunkt för eftersök men räcker inte till en flygkalender. Larvperiod, generationer och övervintring är inte verifierade här.",
+          [
+            "lepi"
+          ],
+          "unresolved"
+        ],
+        [
+          "search",
+          "11–16 mm enligt NRM. Dokumentera misstänkta vuxna noggrant och sök specialistbestämning. Värdväxtstyrt larvsök kan inte rekommenderas som etablerad metod när larvbiologin är okänd.",
+          [
+            "nrm"
+          ]
+        ]
+      ],
+      "hypotheses": [
+        [
+          "Explorativ bevakning i öster",
+          "Jämför skyddade bryn- och våtmarksmosaiker på Sveriges Östersjösida med de finska fyndregionerna. Detta är en lågprioriterad, svagt underbyggd habitatidé – inte en dokumenterad biotoppreferens."
+        ],
+        [
+          "Samla miljöuppgifter vid varje misstänkt fynd",
+          "Notera vegetation, fuktighet, avstånd till vatten och ljus-/fångstmetod. Sådana uppgifter kan vara mer värdefulla än att utgå från en ännu obelagd värdväxt."
+        ]
+      ],
+      "limitations": "Biotopförslagen är uttryckligen explorativa. Värdväxt, svensk flygtid och riktad spridning är inte kända från de granskade underlagen.",
+      "gaps": [
+        "Larv och värdväxt",
+        "Primär biotop och mikroklimat",
+        "Sammanhängande fenologi",
+        "Aktuell spridningsriktning"
+      ]
+    },
+    {
+      "scientific_name": "Atremaea lonchoptera",
+      "id": 97,
+      "status": "not_listed_in_reviewed_sources",
+      "author": "Michel Kettner (inbäddad bildkredit)",
+      "countries": [
+        "DK",
+        "DE",
+        "PL"
+      ],
+      "hosts": [
+        "Typha sp."
+      ],
+      "rationale": "En kaveldunsanknuten mal med dokumenterade förekomster i Danmark och nordöstra Tyskland. Värdväxten ger konkreta sökmöjligheter, men det sammanställda materialet visar ännu inte en säker expansionshastighet eller ankomsttid.",
+      "status_summary": "Kaveldunsanknuten bevakningsart i grannområdet. Äldre och nya fynd visar förekomst, inte automatiskt nordlig expansion.",
+      "facts": [
+        [
+          "distribution",
+          "NRM anger Danmark. Lepiforum hänvisar till publicerade uppgifter från Brandenburg, Mecklenburg-Vorpommern och Polen; dessutom finns daterade vuxenbilder från Sachsen 2023. Dessa belägg motiverar bevakning men räcker inte för att mäta en spridningsfront.",
+          [
+            "nrm",
+            "lepi"
+          ]
+        ],
+        [
+          "habitat",
+          "Larvens koppling till kaveldun ger ett våtmarkssammanhang. Vuxenfynd hos Lepiforum kommer också från ett tidigare militärt område med skogsöppningar och från skogsbryn med gräsmark. En vuxen vid ljus visar inte exakt var larven har utvecklats.",
+          [
+            "lepi"
+          ]
+        ],
+        [
+          "hosts",
+          "Typha anges av NRM. Lepiforum återger Staudingers originaluppgift från 1871 om två vuxna uppfödda ur kaveldunsstjälkar från Vendée i Frankrike. Underlaget anger inte säkert samma användning av både bredkaveldun och smalkaveldun; här lagras därför Typha på släktnivå.",
+          [
+            "nrm",
+            "lepi"
+          ]
+        ],
+        [
+          "search",
+          "Vuxenexempel från Sachsen är daterade 11 juli och 22 augusti 2023 och tagna vid ljus. NRM ger ingen komplett flygkalender. Juli–augusti är därför ett utländskt observationsfönster, inte en fastställd svensk period eller uppgift om antalet generationer.",
+          [
+            "lepi",
+            "nrm"
+          ]
+        ],
+        [
+          "search",
+          "18–21 mm enligt NRM. Misstänkta fynd bör dokumenteras med foton, miljö och eventuell koppling till kaveldun. Vid larvfynd behövs uppfödning eller annan säker bestämningskontroll; växtskador ensamma visar inte vilken art som orsakat dem.",
+          [
+            "nrm"
+          ]
+        ]
+      ],
+      "hypotheses": [
+        [
+          "Varma kaveldunskanter i södra Sverige",
+          "Väl exponerade dammkanter, diken och våtmarksbryn med Typha i Skåne och sydöstra Sverige är möjliga sökmiljöer. Kombinationen värdväxt och varmt läge är en hypotes från utländskt material, inte en verifierad svensk preferens."
+        ]
+      ],
+      "limitations": "Vuxenfynd och larvhabitat hålls isär. Art av kaveldun, övervintring och antal generationer är inte tillräckligt klarlagda här.",
+      "gaps": [
+        "Svensk status",
+        "Regional larv- och övervintringskalender",
+        "Betydelsen av olika Typha-arter",
+        "Daterat stöd för expansion mot Sverige"
+      ]
+    }
+  ]
+}

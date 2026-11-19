@@ -1,0 +1,225 @@
+{
+  "sources": [
+    {
+      "id": "anarsia-lineatella-nrm",
+      "title": "NRM: Anarsia lineatella",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/anarsia_lineatella.html",
+      "sha256": "0031109d9ec288756067e3074ee4027b1126e87bd4c4cff1c10fb1b2a7243ec3",
+      "checked_at": "2026-11-19"
+    },
+    {
+      "id": "anarsia-lineatella-lepi",
+      "title": "Lepiforum: Anarsia lineatella",
+      "url": "https://lepiforum.org/wiki/page/Anarsia_lineatella",
+      "sha256": "0f817dfc65e8914b9470960fb55fa7d5d38a304f52af9c2a1ff962eae8308061",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.333255+00:00"
+    },
+    {
+      "id": "anarsia-lineatella-image",
+      "title": "NRM artbild: Anarsia lineatella",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/anarsia_lineatella_bild.jpg",
+      "sha256": "210df13b5e0fa019c59e6b8d7bf769f009f3386b95eeaeb40709e7e0f846b1da",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.503975+00:00"
+    },
+    {
+      "id": "crombrugghia-tristis-nrm",
+      "title": "NRM: Crombrugghia tristis",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/crombrugghia_tristis.html",
+      "sha256": "38b35c1ef79dbb00c13dda99198742d269155815cc4fecff2f28e9be113e0a30",
+      "checked_at": "2026-11-19"
+    },
+    {
+      "id": "crombrugghia-tristis-lepi",
+      "title": "Lepiforum: Oxyptilus tristis",
+      "url": "https://lepiforum.org/wiki/page/Oxyptilus_tristis",
+      "sha256": "eedf795f8723d5b49af1cb5360bc9d2a96b9bc3610297a21b5bc8f4e59d399b1",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.538761+00:00"
+    },
+    {
+      "id": "crombrugghia-tristis-image",
+      "title": "NRM artbild: Crombrugghia tristis",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/images/crombrugghia_tristis_male.jpg",
+      "sha256": "b683d3478518b8d3fdfbdb8cd7c963b89f01ddab8b7e2b23819bc1060f6f8688",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.614645+00:00"
+    },
+    {
+      "id": "agdistis-adactyla-nrm",
+      "title": "NRM: Agdistis adactyla",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/agdistis_adactyla.html",
+      "sha256": "e193f27056defaa74038a42c45f14f57f47973070dd7611fb3fed4b8960b655f",
+      "checked_at": "2026-11-19"
+    },
+    {
+      "id": "agdistis-adactyla-lepi",
+      "title": "Lepiforum: Agdistis adactyla",
+      "url": "https://lepiforum.org/wiki/page/Agdistis_adactyla",
+      "sha256": "ebc346575075cbd815be255961359bc20a67f7c205cae62c7763c5f031a73c42",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.651725+00:00"
+    },
+    {
+      "id": "agdistis-adactyla-image",
+      "title": "NRM artbild: Agdistis adactyla",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/agdistis_adactyla_female.jpg",
+      "sha256": "097dd75b5ada65d0704ebcf3de663b009e68c401af10f7f9a8589afe19a2f635",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.701527+00:00"
+    },
+    {
+      "id": "agdistis-bennetii-nrm",
+      "title": "NRM: Agdistis bennetii",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/agdistis_bennetii.html",
+      "sha256": "f87656b78ded2e523228a8b1406e50bb33d6166d7113a4cf42f1b66410ac7038",
+      "checked_at": "2026-11-19"
+    },
+    {
+      "id": "agdistis-bennetii-lepi",
+      "title": "Lepiforum: Agdistis bennetii",
+      "url": "https://lepiforum.org/wiki/page/Agdistis_bennetii",
+      "sha256": "aa249282fe2b83203bb3d8c81b60bd3f21df99c74dc1b1ad9e677cd20da7a1e6",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.736130+00:00"
+    },
+    {
+      "id": "agdistis-bennetii-image",
+      "title": "NRM artbild: Agdistis bennetii",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/agdistis_bennetii_female.jpg",
+      "sha256": "91d455334a21d1b4c4acf993becd515fa4d0f97169a8cec9eebc967b1653cad9",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.793447+00:00"
+    },
+    {
+      "id": "aterpia-chalybeia-nrm",
+      "title": "NRM: Aterpia chalybeia",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/aterpia_chalybeia.html",
+      "sha256": "0691d67c915d08ab9982664dda36b5fd61cb4ee258af78df45cb8c4cf44324dc",
+      "checked_at": "2026-11-19"
+    },
+    {
+      "id": "aterpia-chalybeia-lepi",
+      "title": "Lepiforum: Aterpia chalybeia",
+      "url": "https://lepiforum.org/wiki/page/Aterpia_chalybeia",
+      "sha256": "8ae7fbd11c898c73933ffb8fb99c9d9bb2db009534a1b1c45778d2abeec8f1f4",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.825220+00:00"
+    },
+    {
+      "id": "aterpia-chalybeia-image",
+      "title": "NRM artbild: Aterpia chalybeia",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/aterpia_chalybeia_male.jpg",
+      "sha256": "d1e9da35d12322dff85d18ac89d3844060a121fa687e1cb950637ae86aa955fe",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.856386+00:00"
+    },
+    {
+      "id": "atremaea-lonchoptera-nrm",
+      "title": "NRM: Atremaea lonchoptera",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/atremaea_lonchoptera.html",
+      "sha256": "6a5d8a6a9ba3625287ef02c4438b413b469c6a2e50a5c75500d1e1a06ea364b1",
+      "checked_at": "2026-11-19"
+    },
+    {
+      "id": "atremaea-lonchoptera-lepi",
+      "title": "Lepiforum: Atremaea lonchoptera",
+      "url": "https://lepiforum.org/wiki/page/Atremaea_lonchoptera",
+      "sha256": "f1afdf5991fe3c48c93eedd663f0801b0219803058c001f7a3e153d65028adc4",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.889617+00:00"
+    },
+    {
+      "id": "atremaea-lonchoptera-image",
+      "title": "NRM artbild: Atremaea lonchoptera",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/atremaea_lonchoptera_male.jpg",
+      "sha256": "634b21f68d91cb398cd155b9a0fe82edc7a987ba03cb663da0ce4426d87bb06c",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:42.911648+00:00"
+    },
+    {
+      "id": "norway-tristis",
+      "title": "Norsk rödlista 2021: Oxyptilus tristis",
+      "url": "https://lister.artsdatabanken.no/rodlisteforarter/2021/10800",
+      "sha256": "0476ae4b6e1c98b5917b3a626dadaff30c7966f4301bb610dbccbf0a3194e662",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:43.084938+00:00"
+    },
+    {
+      "id": "et2018",
+      "title": "Bengtsson 2018: fynd 2017 och rättelse av Anarsia",
+      "url": "https://www.sef.nu/download/entomologisk_tidskrift/et_2018/ET%20139%208-20%20Bengtsson%202018.pdf",
+      "sha256": "01aa8b01cbb61e46bd63490a04ed2fc8603b5f462e10f5a045c3d234c09e4476",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:43.545979+00:00"
+    },
+    {
+      "id": "anarsia-original",
+      "title": "Gregersen & Karsholt 2017: uppdelningen av Anarsia",
+      "url": "https://nl.pensoft.net/article/11184/download/pdf/",
+      "sha256": "8344e39e5a93b4b6a9b05bd3fdae56e084c2fe52dc2479bcae5daa4e22267cae",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:45.992032+00:00"
+    },
+    {
+      "id": "uk-bennetii",
+      "title": "UKmoths: Agdistis bennetii",
+      "url": "https://www.ukmoths.org.uk/species/agdistis-bennetii/",
+      "sha256": "7bf578d5712dc421e9b90652543a069b4fd6d9f09481585f5eff8bdffc756f4b",
+      "checked_at": "2026-11-19",
+      "retrieved_at": "2026-11-19T20:31:46.213242+00:00"
+    }
+  ],
+  "photos": [
+    {
+      "scientific_name": "Anarsia lineatella",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/anarsia_lineatella_bild.jpg",
+      "source_page": "http://www3.nrm.se/en/svenska_fjarilar/a/anarsia_lineatella.html",
+      "source_html_sha256": "0031109d9ec288756067e3074ee4027b1126e87bd4c4cff1c10fb1b2a7243ec3",
+      "image_sha256": "210df13b5e0fa019c59e6b8d7bf769f009f3386b95eeaeb40709e7e0f846b1da",
+      "caption_source": "NRM species-page IMG alt label; photo author not separately stated in HTML"
+    },
+    {
+      "scientific_name": "Crombrugghia tristis",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/c/images/crombrugghia_tristis_male.jpg",
+      "source_page": "http://www3.nrm.se/en/svenska_fjarilar/c/crombrugghia_tristis.html",
+      "source_html_sha256": "38b35c1ef79dbb00c13dda99198742d269155815cc4fecff2f28e9be113e0a30",
+      "image_sha256": "b683d3478518b8d3fdfbdb8cd7c963b89f01ddab8b7e2b23819bc1060f6f8688",
+      "caption_source": "NRM species-page IMG alt label; photo author not separately stated in HTML"
+    },
+    {
+      "scientific_name": "Agdistis adactyla",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/agdistis_adactyla_female.jpg",
+      "source_page": "http://www3.nrm.se/en/svenska_fjarilar/a/agdistis_adactyla.html",
+      "source_html_sha256": "e193f27056defaa74038a42c45f14f57f47973070dd7611fb3fed4b8960b655f",
+      "image_sha256": "097dd75b5ada65d0704ebcf3de663b009e68c401af10f7f9a8589afe19a2f635",
+      "caption_source": "NRM species-page IMG alt label; photo author not separately stated in HTML"
+    },
+    {
+      "scientific_name": "Agdistis bennetii",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/agdistis_bennetii_female.jpg",
+      "source_page": "http://www3.nrm.se/en/svenska_fjarilar/a/agdistis_bennetii.html",
+      "source_html_sha256": "f87656b78ded2e523228a8b1406e50bb33d6166d7113a4cf42f1b66410ac7038",
+      "image_sha256": "91d455334a21d1b4c4acf993becd515fa4d0f97169a8cec9eebc967b1653cad9",
+      "caption_source": "NRM species-page IMG alt label; photo author not separately stated in HTML"
+    },
+    {
+      "scientific_name": "Aterpia chalybeia",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/aterpia_chalybeia_male.jpg",
+      "source_page": "http://www3.nrm.se/en/svenska_fjarilar/a/aterpia_chalybeia.html",
+      "source_html_sha256": "0691d67c915d08ab9982664dda36b5fd61cb4ee258af78df45cb8c4cf44324dc",
+      "image_sha256": "d1e9da35d12322dff85d18ac89d3844060a121fa687e1cb950637ae86aa955fe",
+      "caption_source": "NRM species-page IMG alt label; photo author not separately stated in HTML"
+    },
+    {
+      "scientific_name": "Atremaea lonchoptera",
+      "url": "http://www3.nrm.se/en/svenska_fjarilar/a/images/atremaea_lonchoptera_male.jpg",
+      "source_page": "http://www3.nrm.se/en/svenska_fjarilar/a/atremaea_lonchoptera.html",
+      "source_html_sha256": "6a5d8a6a9ba3625287ef02c4438b413b469c6a2e50a5c75500d1e1a06ea364b1",
+      "image_sha256": "634b21f68d91cb398cd155b9a0fe82edc7a987ba03cb663da0ce4426d87bb06c",
+      "caption_source": "NRM species-page IMG alt label; photo author not separately stated in HTML"
+    }
+  ],
+  "version": "nrm-beta-batch1-20261119"
+}

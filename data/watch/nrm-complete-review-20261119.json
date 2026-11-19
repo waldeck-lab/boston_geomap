@@ -39,12 +39,11 @@
   ],
   "screened": 363,
   "counts": {
-    "priority_review_candidate": 163,
-    "already_visible": 59,
+    "priority_review_candidate": 158,
+    "already_visible": 65,
     "source_only_review_candidate": 43,
     "swedish_records_need_review": 85,
     "swedish_in_nrm": 10,
-    "taxonomic_split_candidate": 1,
     "catalogue_only_taxon_review": 2
   },
   "results": [
@@ -564,7 +563,7 @@
           "checklist-2017.pdf"
         ]
       },
-      "status": "priority_review_candidate",
+      "status": "already_visible",
       "swedish_name": "hedfjädermott",
       "nrm_phenology": "Från mitten av juni till mitten av augusti.",
       "nrm_hosts": "",
@@ -575,7 +574,11 @@
       ],
       "source_urls": [
         "http://www3.nrm.se/en/svenska_fjarilar/a/agdistis_adactyla.html"
-      ]
+      ],
+      "screening_status_before_publication": "priority_review_candidate",
+      "published_profile_id": 94,
+      "published_review_version": "nrm-beta-batch1-20261119",
+      "shown_as": "Agdistis adactyla"
     },
     {
       "url": "http://www3.nrm.se/en/svenska_fjarilar/a/agdistis_bennetii.html",
@@ -619,7 +622,7 @@
           "checklist-2017.pdf"
         ]
       },
-      "status": "priority_review_candidate",
+      "status": "already_visible",
       "swedish_name": "marskfjädermott",
       "nrm_phenology": "Maj-september.",
       "nrm_hosts": "Limonium vulgare .",
@@ -630,7 +633,11 @@
       ],
       "source_urls": [
         "http://www3.nrm.se/en/svenska_fjarilar/a/agdistis_bennetii.html"
-      ]
+      ],
+      "screening_status_before_publication": "priority_review_candidate",
+      "published_profile_id": 95,
+      "published_review_version": "nrm-beta-batch1-20261119",
+      "shown_as": "Agdistis bennetii"
     },
     {
       "url": "http://www3.nrm.se/en/svenska_fjarilar/a/aglossa_caprealis.html",
@@ -1250,7 +1257,7 @@
           "checklist-2017.pdf"
         ]
       },
-      "status": "taxonomic_split_candidate",
+      "status": "already_visible",
       "review_note": "Taxonuppdelningen 2017 måste vägas in. ET 2018 rättar det äldre svenska namnet till A. innoxiella; äldre svenska etiketter är inte ett automatiskt belägg för dagens A. lineatella.",
       "swedish_name": "körsbärspalpmal",
       "nrm_phenology": "Juli-augusti.",
@@ -1264,7 +1271,11 @@
       ],
       "source_urls": [
         "http://www3.nrm.se/en/svenska_fjarilar/a/anarsia_lineatella.html"
-      ]
+      ],
+      "screening_status_before_publication": "taxonomic_split_candidate",
+      "published_profile_id": 92,
+      "published_review_version": "nrm-beta-batch1-20261119",
+      "shown_as": "Anarsia lineatella"
     },
     {
       "url": "http://www3.nrm.se/en/svenska_fjarilar/a/anarta_colletti.html",
@@ -1853,7 +1864,7 @@
           "checklist-2017.pdf"
         ]
       },
-      "status": "priority_review_candidate",
+      "status": "already_visible",
       "swedish_name": "lysingkärrvecklare",
       "nrm_phenology": "",
       "nrm_hosts": "",
@@ -1864,7 +1875,11 @@
       ],
       "source_urls": [
         "http://www3.nrm.se/en/svenska_fjarilar/a/aterpia_chalybeia.html"
-      ]
+      ],
+      "screening_status_before_publication": "priority_review_candidate",
+      "published_profile_id": 96,
+      "published_review_version": "nrm-beta-batch1-20261119",
+      "shown_as": "Aterpia chalybeia"
     },
     {
       "url": "http://www3.nrm.se/en/svenska_fjarilar/a/athetis_furvula.html",
@@ -1990,7 +2005,7 @@
           "checklist-2017.pdf"
         ]
       },
-      "status": "priority_review_candidate",
+      "status": "already_visible",
       "swedish_name": "kaveldunsmal",
       "nrm_phenology": "",
       "nrm_hosts": "",
@@ -2001,7 +2016,11 @@
       ],
       "source_urls": [
         "http://www3.nrm.se/en/svenska_fjarilar/a/atremaea_lonchoptera.html"
-      ]
+      ],
+      "screening_status_before_publication": "priority_review_candidate",
+      "published_profile_id": 97,
+      "published_review_version": "nrm-beta-batch1-20261119",
+      "shown_as": "Atremaea lonchoptera"
     },
     {
       "url": "http://www3.nrm.se/en/svenska_fjarilar/a/atypha_pulmonaris.html",
@@ -5231,7 +5250,7 @@
           "count": 1
         }
       ],
-      "status": "priority_review_candidate",
+      "status": "already_visible",
       "review_note": "Missjö-posten 2017 är felbestämd enligt Jonas Waldeck (2026-11-19) och används inte som svenskt belägg för arten. Råposten och rättelsens ursprung behålls.",
       "swedish_name": "mörkt fibblefjädermott",
       "nrm_phenology": "Slutet av maj till början av juni samt juli till september.",
@@ -5266,7 +5285,11 @@
       "excluded_sweden_record_ids": [
         1821015801
       ],
-      "usable_swedish_records_in_review": 0
+      "usable_swedish_records_in_review": 0,
+      "screening_status_before_publication": "priority_review_candidate",
+      "published_profile_id": 93,
+      "published_review_version": "nrm-beta-batch1-20261119",
+      "shown_as": "Crombrugghia tristis"
     },
     {
       "url": "http://www3.nrm.se/en/svenska_fjarilar/c/ctenoplusia_limbirena.html",
