@@ -103,11 +103,22 @@ class Validator:
         details = [self.describe_taxon(tid,"csv_only") for tid in sorted(self.species-ids)]
         details += [self.describe_taxon(tid,"sqlite_only",stored[tid]) for tid in sorted(ids-self.species)]
         self.check(result,"catalogue_alignment",len(ids ^ self.species),"warning",details=details)
+        sql_names=self.catalogue_names
+        sql_reference_at=self.catalogue["retrieved_at"]
+        if self.settings.get("GEOMAP_TAXONOMY_JOBS"):
+            from geomap.taxonomy_history import saved_sources,load_source,normalized_taxon
+            snapshots=saved_sources(self.settings,self.settings["GEOMAP_TAXONOMY_JOBS"])
+            if snapshots:
+                latest,_=load_source(snapshots[-1][1])
+                sql_names={int(t["taxonId"]):normalized_taxon(t) for t in latest["taxa"]}
+                sql_reference_at=latest["retrieved_at"]
         name_details=[]
         for tid in sorted(ids & self.species):
-            expected=self.catalogue_names[tid]
+            expected=sql_names.get(tid,self.catalogue_names[tid])
             if any((stored[tid].get(key) or '')!=(expected.get(key) or '') for key in ('scientific_name','swedish_name')):
                 item=self.describe_taxon(tid,'outdated_stored_name',stored[tid])
+                item['scientific_name']=expected.get('scientific_name','')
+                item['swedish_name']=expected.get('swedish_name','')
                 item['stored_scientific_name']=stored[tid]['scientific_name']
                 item['stored_swedish_name']=stored[tid]['swedish_name']
                 name_details.append(item)
@@ -116,7 +127,7 @@ class Validator:
         self.check(result,"catalogue_source_hash",int(hashlib.sha256(source.read_bytes()).hexdigest()!=self.catalogue["source_sha256"]))
         result["metrics"] = dict(catalogue_species=len(self.species), sqlite_species=len(ids),
                                  csv_only=len(self.species-ids), sqlite_only=len(ids-self.species))
-        result["source"] = dict(retrieved_at=self.catalogue["retrieved_at"], sqlite_run_at=run,
+        result["source"] = dict(retrieved_at=self.catalogue["retrieved_at"], sql_reference_at=sql_reference_at, sqlite_run_at=run,
                                 hash=self.catalogue["source_sha256"])
         return result
 

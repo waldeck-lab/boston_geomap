@@ -171,17 +171,17 @@ def record_source_file(database,path):
         return record_source(db,path)
 
 
-def apply_taxon(db, *, source_path, taxon_id, job_id, actor_id):
+def apply_taxon(db, *, source_path, taxon_id, job_id, actor_id, prepared=None):
     prior=db.execute("SELECT * FROM taxonomy_update_receipts WHERE job_id=?",(job_id,)).fetchone()
     if prior:
         if prior["taxon_id"]!=taxon_id:
             raise ValueError("Job ID belongs to another taxon")
         return dict(prior)
-    source,digest=load_source(source_path)
+    source,digest=(prepared[0],prepared[1]) if prepared else load_source(source_path)
     age=(datetime.now(timezone.utc)-datetime.fromisoformat(source["retrieved_at"])).total_seconds()
     if not -300<=age<=3600:
         raise ValueError("Fetch a fresh source before updating")
-    source_id=record_source(db,source_path)
+    source_id=prepared[2] if prepared else record_source(db,source_path)
     latest=db.execute("SELECT MAX(retrieved_at) FROM taxonomy_sources").fetchone()[0]
     if source["retrieved_at"]<latest:
         raise ValueError("A newer source is already recorded")
@@ -233,6 +233,7 @@ def saved_sources(config,jobs_root):
     paths.extend(root.glob("*/source/complete-run.json"))
     paths.extend(root.glob("consolidations/*/taxonomy/source/complete-run.json"))
     paths.extend(root.glob("taxon-updates/*/fresh/source/complete-run.json"))
+    paths.extend(root.glob("taxonomy-bulk/*/fresh/source/complete-run.json"))
     sources=[]
     for path in paths:
         if path.is_file():
