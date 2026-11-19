@@ -39,10 +39,10 @@
   ],
   "screened": 363,
   "counts": {
-    "priority_review_candidate": 162,
+    "priority_review_candidate": 163,
     "already_visible": 59,
     "source_only_review_candidate": 43,
-    "swedish_records_need_review": 86,
+    "swedish_records_need_review": 85,
     "swedish_in_nrm": 10,
     "taxonomic_split_candidate": 1,
     "catalogue_only_taxon_review": 2
@@ -5231,8 +5231,8 @@
           "count": 1
         }
       ],
-      "status": "swedish_records_need_review",
-      "review_note": "Norsk förekomst är expertbelagd. Den svenska posten från Missjö 2017 behöver kvalitetssäkras; artens svenska status lämnas öppen.",
+      "status": "priority_review_candidate",
+      "review_note": "Missjö-posten 2017 är felbestämd enligt Jonas Waldeck (2026-11-19) och används inte som svenskt belägg för arten. Råposten och rättelsens ursprung behålls.",
       "swedish_name": "mörkt fibblefjädermott",
       "nrm_phenology": "Slutet av maj till början av juni samt juli till september.",
       "nrm_hosts": "Hieracium, Pilosella .",
@@ -5247,7 +5247,26 @@
       ],
       "source_urls": [
         "http://www3.nrm.se/en/svenska_fjarilar/c/crombrugghia_tristis.html"
-      ]
+      ],
+      "record_reviews": [
+        {
+          "gbif_key": 1860076,
+          "record_id": 1821015801,
+          "record_url": "https://www.gbif.org/occurrence/1821015801",
+          "scientific_name": "Crombrugghia tristis",
+          "event_date": "2017-07-29",
+          "locality": "Missjö Mellersta, Östergötland",
+          "decision": "misidentified_not_supporting_species",
+          "asserted_by": "Jonas Waldeck",
+          "asserted_at": "2026-11-19",
+          "basis": "Explicit user correction in WCR project chat",
+          "replacement_taxon_id": null
+        }
+      ],
+      "excluded_sweden_record_ids": [
+        1821015801
+      ],
+      "usable_swedish_records_in_review": 0
     },
     {
       "url": "http://www3.nrm.se/en/svenska_fjarilar/c/ctenoplusia_limbirena.html",
@@ -18697,5 +18716,6 @@
       "note": "Explicitly reviewed NRM/Dyntaxa name versus GBIF ending/spelling variant. No general fuzzy admission."
     }
   ],
-  "finished_at": "2026-11-19T17:40:05.278673+00:00"
+  "finished_at": "2026-11-19T17:40:05.278673+00:00",
+  "record_review_version": "2026-11-19"
 }

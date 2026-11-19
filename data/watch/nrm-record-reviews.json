@@ -1,0 +1,18 @@
+{
+  "version": "2026-11-19",
+  "reviews": [
+    {
+      "gbif_key": 1860076,
+      "record_id": 1821015801,
+      "record_url": "https://www.gbif.org/occurrence/1821015801",
+      "scientific_name": "Crombrugghia tristis",
+      "event_date": "2017-07-29",
+      "locality": "Missjö Mellersta, Östergötland",
+      "decision": "misidentified_not_supporting_species",
+      "asserted_by": "Jonas Waldeck",
+      "asserted_at": "2026-11-19",
+      "basis": "Explicit user correction in WCR project chat",
+      "replacement_taxon_id": null
+    }
+  ]
+}

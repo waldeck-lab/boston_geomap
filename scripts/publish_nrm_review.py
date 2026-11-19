@@ -5,6 +5,23 @@ import hashlib
 import json
 from pathlib import Path
 
+def apply_record_reviews(rows,reviews):
+    for row in rows:
+        rejected=[r for r in reviews if r["gbif_key"]==row.get("gbif_key")
+                  and r["decision"]=="misidentified_not_supporting_species"]
+        if not rejected:continue
+        if row.get("sweden_count",0)<len(rejected):
+            raise ValueError("Refresh Swedish source count before applying record reviews")
+        row["record_reviews"]=rejected
+        row["excluded_sweden_record_ids"]=[r["record_id"] for r in rejected]
+        row["usable_swedish_records_in_review"]=row["sweden_count"]-len(rejected)
+        row["review_note"]="Missjö-posten 2017 är felbestämd enligt Jonas Waldeck (2026-11-19) och används inte som svenskt belägg för arten. Råposten och rättelsens ursprung behålls."
+        if row["usable_swedish_records_in_review"]==0:
+            row["status"]="priority_review_candidate" if row.get("recent_neighbour_count",0)>0 else "source_only_review_candidate"
+        for review in rejected:
+            if review["record_url"] not in row["evidence_urls"]:row["evidence_urls"].append(review["record_url"])
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument("--stage",type=Path,required=True);p.add_argument("--output",type=Path,required=True)
     args=p.parse_args();root=args.stage;report=json.loads((root/"final-review.json").read_text())
@@ -26,6 +43,11 @@ def main():
                 page_updated="Äldre katalog 2015",nrm_phenology="",nrm_hosts="",habitat_tags=[],
                 review_note="Namnet finns i det äldre NRM-grannlandsunderlaget. Ingen aktuell länkad artsida kunde verifieras; nomenklatur och svensk status behöver granskas.",
                 content_sha256=None))
+    review_path=Path(__file__).resolve().parents[1]/"data/watch/nrm-record-reviews.json"
+    if review_path.exists():
+        record_reviews=json.loads(review_path.read_text())
+        apply_record_reviews(results,record_reviews["reviews"])
+        report["record_review_version"]=record_reviews["version"]
     counts={}
     for row in results:counts[row["status"]]=counts.get(row["status"],0)+1
     report.update(results=results,counts=counts,unique_taxa=len(results))
